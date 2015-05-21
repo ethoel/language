@@ -41,10 +41,9 @@ if (Meteor.isClient) {
   };
   
   // session variables
-  Session.setDefault("answer", "Answer");
   Session.setDefault("words", Words.find({}).fetch());
   Session.setDefault("current", 0);
-  // also choices, question
+  // also answer, choices, question
   
   // cue a question on player
   var cueQuestion = function (player) {
@@ -67,40 +66,18 @@ if (Meteor.isClient) {
     var allWords = Words.find({}).fetch();
     var choices = LTools.getChoices(allWords, 2, words[current]);
     Session.set("choices", choices);
+    
+    // reset the page for new question
+    document.getElementById("choices").reset();
+    document.getElementById("speed").reset();
+    Session.set("answer", "Select an answer");
   };
-  
-//  // to get the timing right the video has to be loaded first
-//  var videoLoaded = false;
-//  onPlayerStateChange = function (event) {
-//    if (event.data == YT.PlayerState.PLAYING)
-//    {
-//      if (videoLoaded) {
-//        event.target.seekTo(42, true);
-//        setTimeout(function () { event.target.pauseVideo() }, 2500);
-//      } else {
-//        event.target.pauseVideo();
-//        videoLoaded = true;
-//        event.target.playVideo();
-//      }
-//    }
-//  };
-  
   
   Meteor.startup(function () {
     
   });
   
   Template.body.helpers({
-    // temporary list of quiz sentences
-//    words: [
-//      { word: "I don't know what I'm doing" },
-//      { word: "When is the real thing coming" },
-//      { word: "มึงเห็นไอ้คนที่เลี้ยงบาสอยู่นั้นป่ะ" }
-//    ],
-//    
-//    word: function () {
-//      return Session.get("word");
-//    },
     
     // chosen answer
     answer: function () {
@@ -116,18 +93,25 @@ if (Meteor.isClient) {
     
     choices: function () {
       return Session.get("choices");
+    },
+    
+    // return all words marked for learning
+    // TODO filter for learning marks
+    words: function () {
+      return Words.find({});
     }
+    
   });
   
   Template.body.events({
     //debugging function
     "click #debug-button": function () {
-      Session.set("answer", "Answer");
+      Session.set("answer", "Select an answer");
       Session.set("words", Words.find({}).fetch());
       Session.set("current", 0);  
     },
     
-    "change #answer": function () {
+    "change #choices": function (event) {
       Session.set("answer", event.target.value);
       console.log(event.target.value);
     },
@@ -139,13 +123,19 @@ if (Meteor.isClient) {
     },
     
     "click #next": function (event) {
-      // increment current
-      var current = Session.get("current");
-      var words = Session.get("words");
-      current = (current + 1) % words.length;
-      Session.set("current", current);
-      // cue next question
-      cueQuestion(player);
+      // make sure correct answer has been selected
+      if (Session.get("answer") === "Correct") {
+        // advance to next question
+        // increment current
+        var current = Session.get("current");
+        var words = Session.get("words");
+        current = (current + 1) % words.length;
+        Session.set("current", current);
+        // cue next question
+        cueQuestion(player);
+      } else {
+        Session.set("answer", "Select correct answer");
+      }
     },
     
     "submit #addVideoForm": function (event) {

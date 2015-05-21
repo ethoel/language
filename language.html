@@ -29,8 +29,8 @@
   <!--<h1>มึงเห็นไอ้คนที่เลี้ยงบาสอยู่นั้นป่ะ</h1>-->
   <h1>{{question}}</h1>
   
-  <form id="answer">
-    <span>Answer</span>
+  <h2>{{answer}}</h2>
+  <form id="choices">
     {{#each choices}}
       {{> choice}}
     {{/each}}   
@@ -40,23 +40,38 @@
     <input type="button" value="Next" />
   </form>
   
-  <h1>{{answer}}</h1>
   
   
   <!--add stuff to add to database-->
-  
+  <p>-------------------------------------------------------------------------------------</p>
+  <h2>Add another question to the site</h2>
   <form id="addVideoForm">
-    Video ID: <input type="text" name="videoId" placeholder="ID" />
-    Word: <input type="text" name="word" />
+    <label>Video ID:
+      <input type="text" name="videoId" placeholder="ID" required/>
+    </label>
+    <label>Start second:
+      <input type="text" name="word" required/>
+    </label>
+    <label>Stop second:
+      <input type="text" name="word" required/>
+    </label> 
+    <label>Word:
+      <input type="text" name="word" required/>
+    </label>
+    <label>Sentence:
+      <input type="text" name="word" required/>
+    </label>
+    <label>Translation:
+      <input type="text" name="word" required/>
+    </label> 
     <input type="submit" name="videoSubmitButton" value="Add" />
   </form>
   
-<!--  <p>Words</p>
+  <p>-------------------------------------------------------------------------------------</p>
+  <h2>Words to learn</h2>
   {{#each words}}
     {{> word}}
-  {{/each}}-->
-  
-  <!--{{> hello}}-->
+  {{/each}}
   
 </body>
 
@@ -64,4 +79,8 @@
 <!--  TODO make the value corret-->
   <input id="answer-{{choice}}" type="radio" name="answer" value="{{value}}" />
   <label for="answer-{{choice}}">{{choice}}</label>
+</template>
+
+<template name="word">
+  <p>{{word}}</p>
 </template>

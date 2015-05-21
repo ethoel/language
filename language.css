@@ -12,7 +12,16 @@
 }*/
 
 body {
-  margin: 0px;
+/*  margin: 0px;*/
+/*  max-width: 62.5em;*/
+  max-width: 50em;
+/*  background-color: bisque;*/
+  margin: 0 auto !important;
+  float: none !important;
+}
+
+#addVideoForm input {
+  display: block;
 }
 
 .segmented {
