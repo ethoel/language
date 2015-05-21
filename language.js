@@ -1,3 +1,4 @@
+// TODO README.md, LICENSE.md, and .gitignore
 Words = new Mongo.Collection("words");
 Questions = new Mongo.Collection("questions");
 
