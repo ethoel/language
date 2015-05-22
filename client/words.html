@@ -1,0 +1,10 @@
+<template name="words">
+  <h2>Words to learn</h2>
+  {{#each words}}
+    {{> word}}
+  {{/each}}
+</template>
+
+<template name="word">
+  <p>{{word}}</p>
+</template>

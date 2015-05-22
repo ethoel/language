@@ -2,6 +2,8 @@
 
 
 if (Meteor.isClient) {
+  var wordsHandle = Meteor.subscribe("words");
+  var questionsHandle = Meteor.subscribe("questions");
   
     // session variables
   Session.setDefault("words", Words.find({}).fetch());
@@ -61,10 +63,9 @@ if (Meteor.isClient) {
     var wordfind = Words.find({});
     //alert("Words.find({}) " + wordfind);
     var words;
-    for (i = 0; i < 1; i++) {
-      words = wordfind.fetch();
+    
+    words = wordfind.fetch();
       //alert("is words undefined? " + words + " is wordfind undefined? " + wordfind);
-    }
     //alert("Hello 4");
     //alert("current " + current);
     //alert("Words " + Words);
@@ -124,12 +125,6 @@ if (Meteor.isClient) {
       return Session.get("choices");
     },
     
-    // return all words marked for learning
-    // TODO filter for learning marks
-    words: function () {
-      return Words.find({});
-    }
-    
   });
   
   Template.body.events({
@@ -166,35 +161,6 @@ if (Meteor.isClient) {
       } else {
         Session.set("answer", "Select correct answer");
       }
-    },
-    
-    "submit #addVideoForm": function (event) {
-      var word = event.target.word.value;
-      
-      var questionId = Questions.insert({
-        word: word,
-        sentence: event.target.sentence.value,
-        translation: event.target.translation.value,
-        videoId: event.target.videoId.value,
-        startSeconds: event.target.startSeconds.value,
-        endSeconds: event.target.endSeconds.value,
-        explanation: "Explanation",
-        verified: false,
-        likes: 0,
-        createdAt: new Date()
-      });
-      
-      // TODO support multiple questions per word
-      var questionIds = [];
-      questionIds.push(questionId);
-      
-      Words.insert({
-        word: word,
-        questionIds: questionIds
-      });
-      
-      //event.target.reset();
-      return false;
     }
   });
   
@@ -218,6 +184,13 @@ if (Meteor.isClient) {
 if (Meteor.isServer) {
   Meteor.startup(function () {
     // code to run on server at startup
+    Meteor.publish("words", function () {
+      return Words.find();
+    });
+    
+    Meteor.publish("questions", function () {
+      return Questions.find();
+    });
   });
 }
 
@@ -237,6 +210,7 @@ Meteor.methods({
       createdAt: new Date()
     });
     
+    // TODO support multiple questions per word
     var questionIds = [];
     questionIds.push(questionId);
     
@@ -246,3 +220,12 @@ Meteor.methods({
     });
   }
 });
+
+
+Router.route("/", function () {
+  this.render("home");
+});
+
+Router.route("/words");
+
+Router.route("/contribute");
