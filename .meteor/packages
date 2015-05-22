@@ -6,5 +6,5 @@
 
 meteor-platform
 autopublish
-insecure
 adrianliaw:youtube-iframe-api
+iron:router

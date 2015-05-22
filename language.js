@@ -1,10 +1,14 @@
 // TODO README.md, LICENSE.md, and .gitignore
-Words = new Mongo.Collection("words");
-Questions = new Mongo.Collection("questions");
+
 
 if (Meteor.isClient) {
-  // load youtube iframe api
-  YT.load();
+  
+    // session variables
+  Session.setDefault("words", Words.find({}).fetch());
+  Session.setDefault("current", 0);
+  // also answer, choices, question
+  
+
   
   // youtube api will call onYouTubeIframeAPIReady() when API ready
   // make sure it's a global variable
@@ -29,35 +33,59 @@ if (Meteor.isClient) {
       events: {
         "onStateChange": function (event) {
           if (event.data == YT.PlayerState.PLAYING) {
-            console.log("hello");
+          
             event.target.seekTo(Session.get("question").startSeconds, true);
           }
         },
         "onReady": function (event) {
+          //alert("Hello 2");
           cueQuestion(event.target);
         }
       }
     });
   };
   
-  // session variables
-  Session.setDefault("words", Words.find({}).fetch());
-  Session.setDefault("current", 0);
-  // also answer, choices, question
+  // load youtube iframe api
+  //alert("Hello 1");
+  YT.load();
+
   
   // cue a question on player
   var cueQuestion = function (player) {
     // grab new current question
+    //alert("Hello 3");
+    
     var current = Session.get("current");
-    var words = Session.get("words");
+
+    //var words = Session.get("words");
+    var wordfind = Words.find({});
+    //alert("Words.find({}) " + wordfind);
+    var words;
+    for (i = 0; i < 1; i++) {
+      words = wordfind.fetch();
+      //alert("is words undefined? " + words + " is wordfind undefined? " + wordfind);
+    }
+    //alert("Hello 4");
+    //alert("current " + current);
+    //alert("Words " + Words);
+    //alert("words " + words);
+    //alert("words[current]" + words[current]);
+    //alert("words[current].word " + words[current].word);
+    // TODO what the fuck is wrong after deploy?
     var question = Questions.findOne({ word: words[current].word });
+    
+     //alert("Hello 5");
+    
     
     // set the current question
     Session.set("question", question);
     
+    
+    
     // cue video. start seconds will be set when video is started
     player.cueVideoById({
         "videoId": question.videoId,
+        "startSeconds": question.startSeconds,
         "endSeconds": question.endSeconds
     });
     
@@ -84,11 +112,12 @@ if (Meteor.isClient) {
       return Session.get("answer");
     },
     
-    question: function () {
-      var current = Session.get("current");
-      var words = Session.get("words");
-      console.log("function question, current =" + current);
-      return words[current].word;
+    sentence: function () {
+      var question = Session.get("question"); 
+      var sentence = question.sentence;
+      var word = question.word;
+      
+      return LTools.replaceAll(word, "___", sentence);
     },
     
     choices: function () {
@@ -128,7 +157,8 @@ if (Meteor.isClient) {
         // advance to next question
         // increment current
         var current = Session.get("current");
-        var words = Session.get("words");
+        //var words = Session.get("words");
+        var words = Words.find({}).fetch();
         current = (current + 1) % words.length;
         Session.set("current", current);
         // cue next question
@@ -139,14 +169,22 @@ if (Meteor.isClient) {
     },
     
     "submit #addVideoForm": function (event) {
-      var videoId = event.target.videoId.value;
       var word = event.target.word.value;
       
       var questionId = Questions.insert({
         word: word,
-        videoId: videoId
+        sentence: event.target.sentence.value,
+        translation: event.target.translation.value,
+        videoId: event.target.videoId.value,
+        startSeconds: event.target.startSeconds.value,
+        endSeconds: event.target.endSeconds.value,
+        explanation: "Explanation",
+        verified: false,
+        likes: 0,
+        createdAt: new Date()
       });
       
+      // TODO support multiple questions per word
       var questionIds = [];
       questionIds.push(questionId);
       
@@ -155,7 +193,7 @@ if (Meteor.isClient) {
         questionIds: questionIds
       });
       
-      console.log("adding video " + videoId + " for " + word);
+      //event.target.reset();
       return false;
     }
   });
@@ -182,3 +220,29 @@ if (Meteor.isServer) {
     // code to run on server at startup
   });
 }
+
+Meteor.methods({
+  addQuestion: function (question) {
+    //TODO idiot proof this method
+    var questionId = Questions.insert({
+      word: question.word,
+      sentence: question.sentence,
+      translation: question.translation,
+      videoId: question.videoId,
+      startSeconds: question.startSeconds,
+      endSeconds: question.endSeconds,
+      explanation: "Explanation",
+      verified: false,
+      likes: 0,
+      createdAt: new Date()
+    });
+    
+    var questionIds = [];
+    questionIds.push(questionId);
+    
+    Words.insert({
+      word: question.word,
+      questionIds: questionIds
+    });
+  }
+});

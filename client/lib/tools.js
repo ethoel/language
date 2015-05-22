@@ -7,6 +7,10 @@ LTools = (function () {
       alert("THIS IS A TEST");
       console.log("This test");
     },
+    
+    replaceAll: function (find, replace, str) {
+      return str.replace(new RegExp(find, 'g'), replace);
+    },
 
     // returns random multiple choice array of length n
     // from given array of objects including correct object
