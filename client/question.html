@@ -1,0 +1,31 @@
+<template name="question">
+  
+  <div id="player"></div
+  
+  ><form id="speed" class="segmented"
+    ><span>Speed</span
+    ><input id="speed-slow" type="radio" name="speed" value=0.5
+    /><label for="speed-slow">Slow</label
+    ><input id="speed-normal" type="radio" name="speed" value=1 checked="checked"
+    /><label for="speed-normal">Normal</label>
+  </form>
+  
+  <h1>{{sentence}}</h1>
+  
+  <h2>{{answer}}</h2>
+  <form id="choices">
+    {{#each choices}}
+      {{> choice}}
+    {{/each}}   
+  </form>
+  
+  <form id="next">
+    <input type="button" value="Next" />
+  </form>
+  
+</template>
+
+<template name="choice">
+  <input id="answer-{{choice}}" type="radio" name="answer" value="{{value}}" />
+  <label for="answer-{{choice}}">{{choice}}</label>
+</template>

@@ -19,8 +19,18 @@
     </label>
     <label>Translation:
       <input type="text" name="translation" required/>
-    </label> 
-    <input type="submit" name="videoSubmitButton" value="Add" />
+    </label>
+    <input type="button" id="videoPreviewButton" value="Preview" />
+    <input type="submit" name="videoSubmitButton" value="Submit" />
   </form>
-  
+ 
+  {{#if preview}}
+    <h2>Preview</h2>
+    Word: {{question.word}} <br>
+    Sentence: {{question.sentence}} <br>
+    Translation: {{question.translation}} <br>
+    Video ID: {{question.videoId}} <br>
+    Start second: {{question.startSeconds}} <br>
+    End second: {{question.endSeconds}} <br>
+  {{/if}}
 </template>
