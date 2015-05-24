@@ -83,6 +83,8 @@ var cueQuestion = function (player) {
   //alert("words[current]" + words[current]);
   //alert("words[current].word " + words[current].word);
   // TODO what the fuck is wrong after deploy?
+  
+  // TODO Randomize this
   var question = Questions.findOne({ word: words[current].word });
 
    //alert("Hello 5");

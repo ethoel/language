@@ -3,27 +3,33 @@
 Meteor.methods({
   addQuestion: function (question) {
     //TODO idiot proof this method
-    var questionId = Questions.insert({
-      word: question.word,
-      sentence: question.sentence,
-      translation: question.translation,
-      videoId: question.videoId,
-      startSeconds: question.startSeconds,
-      endSeconds: question.endSeconds,
-      explanation: "Explanation",
-      verified: false,
-      likes: 0,
-      createdAt: new Date()
-    });
+    var result;
     
-    // TODO support multiple questions per word
-    var questionIds = [];
-    questionIds.push(questionId);
-    
-    Words.insert({
-      word: question.word,
-      questionIds: questionIds
-    });
+    if (question.sentence.indexOf(question.word) === -1) {
+      // word is not a substring of sentence
+      result = '"' + question.word + '" is not in "' + question.sentence + '"';
+    } else if (!(parseInt(question.startSeconds) < parseInt(question.endSeconds))) { 
+      result = "End seconds should be greater than start seconds";
+    } else {
+      
+      var questionId = Questions.insert({
+        word: question.word,
+        sentence: question.sentence,
+        translation: question.translation,
+        videoId: question.videoId,
+        startSeconds: question.startSeconds,
+        endSeconds: question.endSeconds,
+        explanation: "Explanation",
+        verified: false,
+        likes: 0,
+        createdAt: new Date()
+      });
+
+      Words.upsert({ word: question.word }, {$push: { questionIds: questionId }});
+
+      result = "Submitted";
+    }
+    return result;
   }
 });
 

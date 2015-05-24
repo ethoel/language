@@ -1,36 +1,42 @@
 <template name="contribute">
   <h2>Add another question to the site</h2>
   
+  
+  
   <form id="addVideoForm">
+    <fieldset>
     <label>YouTube Video ID:
-      <input type="text" name="videoId" placeholder="ID" required/>
+      <input type="text" name="videoId" 
+             placeholder="Example: pDXHfmHxg_A" 
+             value={{question.videoId}} required/>
     </label>
     <label>Start second:
-      <input type="text" name="startSeconds" required/>
+      <input type="number" name="startSeconds" value={{question.startSeconds}} required/>
+<!--      <input type="range" name="startSeconds" min="0" max="200" required/>-->
     </label>
     <label>End second:
-      <input type="text" name="endSeconds" required/>
-    </label> 
+      <input type="number" name="endSeconds" value={{question.endSeconds}} required/>
+<!--      <input type="range" name="endSeconds" min="0" max="300" required/>-->
+    </label>
+      </fieldset>
+    <fieldset>
     <label>Word:
-      <input type="text" name="word" required/>
+      <input type="text" name="word" value={{question.word}} required/>
     </label>
     <label>Sentence:
-      <input type="text" name="sentence" required/>
+      <input type="text" name="sentence" value={{question.sentence}} required/>
     </label>
     <label>Translation:
-      <input type="text" name="translation" required/>
+      <input type="text" name="translation" value={{question.translation}} required/>
     </label>
-    <input type="button" id="videoPreviewButton" value="Preview" />
-    <input type="submit" name="videoSubmitButton" value="Submit" />
+  </fieldset>
+    <input type="button" id="preview" name="preview" value="Preview" />
+    <input type="submit" name="videoSubmitButton" value="Submit" /> 
   </form>
- 
-  {{#if preview}}
-    <h2>Preview</h2>
-    Word: {{question.word}} <br>
-    Sentence: {{question.sentence}} <br>
-    Translation: {{question.translation}} <br>
-    Video ID: {{question.videoId}} <br>
-    Start second: {{question.startSeconds}} <br>
-    End second: {{question.endSeconds}} <br>
-  {{/if}}
+  
+  <div id="contributePlayer"></div>
+  <h3>{{question.sentence}}</h3>
+  <h5>{{question.word}}</h5>
+  <h4>{{question.translation}}</h4>
+  
 </template>
