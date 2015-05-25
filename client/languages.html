@@ -1,0 +1,16 @@
+<template name="languages">
+  <select>
+    {{#each languages}}
+      {{> language}}
+    {{/each}}
+  </select>
+</template>
+
+
+<template name="language">
+  {{#if selected}}
+    <option selected="selected" value={{language}}>{{language}}</option>
+  {{else}}
+    <option value={{language}}>{{language}}</option>
+  {{/if}}
+</template>
