@@ -5,6 +5,9 @@ Meteor.methods({
     //TODO idiot proof this method
     var result;
     question.language = question.language.toLowerCase();
+    question.word = question.word.toLowerCase();
+    question.sentence = question.sentence.toLowerCase();
+    question.translation = question.translation.toLowerCase();
     
     if (question.sentence.indexOf(question.word) === -1) {
       // word is not a substring of sentence
@@ -57,6 +60,7 @@ Router.route("/question", function () {
   
   if (this.ready()) {
     this.render();
+    this.render("/languages", { to: "languages" });
   } else {
     this.render("/loading");
   }
@@ -67,6 +71,7 @@ Router.route("/words", function() {
   this.wait(Meteor.subscribe("languages"));
   if (this.ready()) {
     this.render();
+    this.render("/languages", { to: "languages" });
   } else {
     this.render("/loading");
   }
@@ -79,6 +84,7 @@ Router.route("/contribute", function () {
   
   if (this.ready()) {
     this.render();
+    this.render("/languages", { to: "languages" });
   } else {
     this.render("/loading");
   }

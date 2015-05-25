@@ -1,9 +1,5 @@
 <template name="words">
-  <select>
-  {{#each languages}}
-    {{> language}}
-  {{/each}}
-  </select>
+
   
   
   <h2>Words to learn</h2>
@@ -15,8 +11,4 @@
 
 <template name="word">
   <p>{{word}}</p>
-</template>
-
-<template name="language">
-  <option value={{language}}>{{language}}</option>
 </template>

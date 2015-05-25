@@ -9,10 +9,6 @@ Meteor.startup(function () {
   Session.set("YTApiLoaded", false);
   Session.set("questionRendered", false);
   YT.load();
-  
-  // subscribe to collections
-  //Meteor.subscribe("words");
-  //Meteor.subscribe("questions");
 
   // set default session variables
   Session.setDefault("words", Words.find({}).fetch());
@@ -75,14 +71,6 @@ var cueQuestion = function (player) {
   var words;
 
   words = wordfind.fetch();
-    //alert("is words undefined? " + words + " is wordfind undefined? " + wordfind);
-  //alert("Hello 4");
-  //alert("current " + current);
-  //alert("Words " + Words);
-  //alert("words " + words);
-  //alert("words[current]" + words[current]);
-  //alert("words[current].word " + words[current].word);
-  // TODO what the fuck is wrong after deploy?
   
   // TODO Randomize this
   var question = Questions.findOne({ word: words[current].word });
