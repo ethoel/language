@@ -19,7 +19,9 @@ Router.route("/test/:_id", function () {
   this.wait(Meteor.subscribe("languages"));
   
   if (this.ready()) {
-    this.render("/test", { data: function () { return Questions.findOne({_id: this.params._id}) }});
+    this.render("/test", { data: function () { 
+      return Questions.findOne({_id: this.params._id});
+    }});
     this.render("/languages", { to: "languages" });
   } else {
     this.render("/loading");

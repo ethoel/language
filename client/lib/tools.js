@@ -47,9 +47,9 @@ LTools = (function () {
         var choice = array[array.length - (i + 1)];
         if (i === correctPosition) {
           // randomly insert corret object
-          choices.push({ choice: correct.word, value: "Correct" });
+          choices.push({ choice: correct, value: "Correct" });
           
-        } else if (choice.word !== correct.word) {
+        } else if (choice.word !== correct) {
           // insert random incorrect object
           choices.push({ choice: choice.word, value: "Incorrect" });
           

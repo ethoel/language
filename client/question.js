@@ -8,6 +8,7 @@ Meteor.startup(function () {
   // set up youtube api and player
   Session.set("YTApiLoaded", false);
   Session.set("questionRendered", false);
+  Session.set("playerReady", false);
   YT.load();
 
   // set default session variables
@@ -41,10 +42,36 @@ Tracker.autorun(function () {
           }
         },
         "onReady": function (event) {
-          cueQuestion(event.target);
+          //cueQuestion(event.target);
+          Session.set("playerReady", true);
         }
       }
     });
+  }
+});
+
+
+
+// TODO are autoruns really the best way to do this?
+Tracker.autorun(function () {
+  if (Session.get("playerReady")) {
+    // reload video when question is changed
+    var language = Session.get("language");
+    var question = Session.get("question");
+    
+    if (language !== question.language) {
+      
+      // TODO this needs to be changed in the future
+      Session.set("current", 0);
+      Router.go("question", { _id: Words.findOne({ language: language }).questionIds[0] });
+      
+    } else {
+    
+    
+      //alert("AUTORUN " + question.word);
+      // cue question
+      cueQuestion(question);
+    }
   }
 });
 
@@ -54,37 +81,17 @@ Template.question.onRendered(function () {
 
 Template.question.onDestroyed(function () {
   Session.set("questionRendered", false);
+  Session.set("playerReady", false);
   // destroy player if it has been created
   player && player.destroy();
 });
 
+
 // cue a question on player
-var cueQuestion = function (player) {
-  // grab new current question
-  //alert("Hello 3");
-
-  var current = Session.get("current");
-
-  //var words = Session.get("words");
-  var wordfind = Words.find({});
-  //alert("Words.find({}) " + wordfind);
-  var words;
-
-  words = wordfind.fetch();
-  
-  // TODO Randomize this
-  var question = Questions.findOne({ word: words[current].word });
-
-   //alert("Hello 5");
-
-
-  // set the current question
-  Session.set("question", question);
-
-
+var cueQuestion = function (question) {
 
   // cue video. start seconds will be set when video is started
-  player.cueVideoById({
+  player && player.cueVideoById({
       "videoId": question.videoId,
       "startSeconds": question.startSeconds,
       "endSeconds": question.endSeconds
@@ -92,8 +99,13 @@ var cueQuestion = function (player) {
 
   // generate and set multiple choice for question from all words user
   // is trying to learn, not just those in this set
-  var allWords = Words.find({}).fetch();
-  var choices = LTools.getChoices(allWords, 4, words[current]);
+  // TODO idiot proof this
+  var allWords = Words.find({ language: Session.get("language") }).fetch();
+  var numberChoices = 4;
+  if (allWords.length < 4) {
+    numberChoices = allWords.length - 1;
+  }
+  var choices = LTools.getChoices(allWords, numberChoices, question.word);
   Session.set("choices", choices);
 
   // reset the page for new question
@@ -109,17 +121,17 @@ Template.question.helpers({
     return Session.get("answer");
   },
 
-  sentence: function () {
-    var question = Session.get("question"); 
-    var sentence = question.sentence;
-    var word = question.word;
-
-    return LTools.replaceAll(word, "___", sentence);
-  },
+//  sentence: function () {
+//    var question = Session.get("question"); 
+//    var sentence = question.sentence;
+//    var word = question.word;
+//
+//    return LTools.replaceAll(word, "___", sentence);
+//  },
 
   choices: function () {
     return Session.get("choices");
-  },
+  }
 
 });
 
@@ -139,15 +151,22 @@ Template.question.events({
   "click #next": function (event) {
     // make sure correct answer has been selected
     if (Session.get("answer") === "Correct") {
+
       // advance to next question
       // increment current
       var current = Session.get("current");
       //var words = Session.get("words");
-      var words = Words.find({}).fetch();
+
+      var words = Words.find({ language: Session.get("language") }).fetch();
       current = (current + 1) % words.length;
+      
+
       Session.set("current", current);
       // cue next question
-      cueQuestion(player);
+
+      Router.go("question", { _id: words[current].questionIds[0] });
+
+      
     } else {
       Session.set("answer", "Select correct answer");
     }

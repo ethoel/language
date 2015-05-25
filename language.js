@@ -53,16 +53,70 @@ Router.route("/", function () {
   this.redirect("/question");
 });
 
-Router.route("/question", function () {
-  this.wait(Meteor.subscribe("questions"));
+//Router.route("/question", function () {
+//  this.wait(Meteor.subscribe("questions"));
+//  this.wait(Meteor.subscribe("words"));
+//  this.wait(Meteor.subscribe("languages"));
+//  
+//  if (this.ready()) {
+//    this.render();
+//    this.render("/languages", { to: "languages" });
+//  } else {
+//    this.render("/loading");
+//  }
+//});
+//
+//Router.route("/question/:_id", function () {
+//  this.wait(Meteor.subscribe("questions"));
+//  this.wait(Meteor.subscribe("words"));
+//  this.wait(Meteor.subscribe("languages"));
+//  
+//  if (this.ready()) {
+//    this.render("question", { data: function () { 
+//      return Questions.findOne({_id: this.params._id});
+//    }});
+//    this.render("languages", { to: "languages" });
+//  } else {
+//    this.render("loading");
+//  }
+//}, { name: "question" });
+//
+//Router.onBeforeAction(function () {
+//  alert("hello hook");
+//  this.next();
+//}, { only: ["question"] });
+
+// temporary first videos
+Router.route("/question", function() {
   this.wait(Meteor.subscribe("words"));
   this.wait(Meteor.subscribe("languages"));
-  
+  this.subscribe("questions").wait();
   if (this.ready()) {
-    this.render();
-    this.render("/languages", { to: "languages" });
+    var questionId = Words.findOne({ language: Session.get("language") }).questionIds[0];
+    this.redirect("question", { _id: questionId });
+    //this.render("loading");
   } else {
-    this.render("/loading");
+    this.render("loading");
+  }
+}, { name: "defaultquestion" });
+
+
+
+Router.route("/question/:_id", {
+  name: "question",
+  yieldRegions: { "languages" : { to: "languages" } },
+  subscriptions: function () {
+    this.subscribe("questions").wait();
+    this.subscribe("words").wait();
+    this.subscribe("languages").wait();
+  },
+  onBeforeAction: function () {
+    //alert("HOOK " + this.params._id);
+    Session.set("question", Questions.findOne({ _id: this.params._id }));
+    this.next();
+  },
+  action: function () {
+    this.render();
   }
 });
 
@@ -76,6 +130,7 @@ Router.route("/words", function() {
     this.render("/loading");
   }
 });
+
 
 Router.route("/contribute", function () {
   this.wait(Meteor.subscribe("questions"));
