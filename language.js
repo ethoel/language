@@ -4,6 +4,7 @@ Meteor.methods({
   addQuestion: function (question) {
     //TODO idiot proof this method
     var result;
+    question.language = question.language.toLowerCase();
     
     if (question.sentence.indexOf(question.word) === -1) {
       // word is not a substring of sentence
@@ -19,14 +20,22 @@ Meteor.methods({
         videoId: question.videoId,
         startSeconds: question.startSeconds,
         endSeconds: question.endSeconds,
+        language: question.language,
         explanation: "Explanation",
         verified: false,
         likes: 0,
         createdAt: new Date()
       });
 
-      Words.upsert({ word: question.word }, {$push: { questionIds: questionId }});
-
+      Words.upsert({ 
+        word: question.word,
+        language: question.language
+      }, {$push: { questionIds: questionId }});
+      
+      // insert language if doesn't exist
+      if (!Languages.findOne({ language: question.language })) {
+        Languages.insert({ language: question.language});
+      }
       result = "Submitted";
     }
     return result;
@@ -44,6 +53,7 @@ Router.route("/", function () {
 Router.route("/question", function () {
   this.wait(Meteor.subscribe("questions"));
   this.wait(Meteor.subscribe("words"));
+  this.wait(Meteor.subscribe("languages"));
   
   if (this.ready()) {
     this.render();
@@ -54,6 +64,7 @@ Router.route("/question", function () {
 
 Router.route("/words", function() {
   this.wait(Meteor.subscribe("words"));
+  this.wait(Meteor.subscribe("languages"));
   if (this.ready()) {
     this.render();
   } else {
@@ -64,6 +75,7 @@ Router.route("/words", function() {
 Router.route("/contribute", function () {
   this.wait(Meteor.subscribe("questions"));
   this.wait(Meteor.subscribe("words"));
+  this.wait(Meteor.subscribe("languages"));
   
   if (this.ready()) {
     this.render();

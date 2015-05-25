@@ -20,6 +20,11 @@
     </label>
       </fieldset>
     <fieldset>
+    <label>Language:
+      <input type="text" name="language" 
+             placeholder="Example: Thai, English, etc." 
+             value="{{question.language}}" required/>
+    </label>
     <label>Word:
       <input type="text" name="word" value={{question.word}} required/>
     </label>
@@ -30,13 +35,14 @@
       <input type="text" name="translation" value={{question.translation}} required/>
     </label>
   </fieldset>
+
     <input type="button" id="preview" name="preview" value="Preview" />
-    <input type="submit" name="videoSubmitButton" value="Submit" /> 
+    <input type="submit" name="videoSubmitButton" value="Submit" />
   </form>
   
   <div id="contributePlayer"></div>
+  <h2>{{question.word}}</h2>
   <h3>{{question.sentence}}</h3>
-  <h5>{{question.word}}</h5>
-  <h4>{{question.translation}}</h4>
+  <h3>{{question.translation}}</h3>
   
 </template>

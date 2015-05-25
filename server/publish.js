@@ -7,4 +7,8 @@ Meteor.startup(function () {
   Meteor.publish("questions", function () {
     return Questions.find();
   });
+  
+  Meteor.publish("languages", function () {
+    return Languages.find();
+  });
 });

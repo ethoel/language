@@ -5,7 +5,8 @@ Meteor.startup(function () {
     translation: "",
     videoId: "",
     startSeconds: "",
-    endSeconds: ""
+    endSeconds: "",
+    language: ""
   });
   Session.set("contributeRendered", false);
 });
@@ -20,7 +21,8 @@ Template.contribute.events({
       translation: event.target.translation.value,
       videoId: event.target.videoId.value,
       startSeconds: event.target.startSeconds.value,
-      endSeconds: event.target.endSeconds.value
+      endSeconds: event.target.endSeconds.value,
+      language: event.target.language.value
     }, function (error, result) {
       alert(result);
     });
@@ -72,9 +74,6 @@ Template.contribute.events({
 });
 
 Template.contribute.helpers({
-  preview: function () {
-    return true;
-  },
   question: function () {
     return Session.get("preview");
   }
