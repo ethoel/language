@@ -12,9 +12,9 @@ Meteor.startup(function () {
   YT.load();
 
   // set default session variables TODO tidy this up
-  Session.setDefault("words", UserWords.find({}).fetch());
-  Session.setDefault("question", { _id: "cHeHS3WiTb4Zmwg9x" });
-  Session.setDefault("current", 0);
+  //Session.setDefault("words", UserWords.find({}).fetch());
+  //Session.setDefault("question", { _id: "cHeHS3WiTb4Zmwg9x" });
+  //Session.setDefault("current", 0);
   // also answer, choices, question
 });
 
@@ -57,23 +57,48 @@ Tracker.autorun(function () {
 Tracker.autorun(function () {
   if (Session.get("playerReady")) {
     // reload video when question is changed
-    var language = Session.get("language");
+//    var language = Session.get("language");
+//    var question = Session.get("question");
+//    
+//    if (language !== question.language) {
+//      
+//      // TODO this needs to be changed in the future
+//      Session.set("current", 0);
+//      var words = UserWords.find({ language: language }).fetch();
+//      Router.go("question", { _id: Questions.findOne({ word: words[0].word })._id });
+//      
+//    } else {
+//    
+//    
+//      //alert("AUTORUN " + question.word);
+//      // cue question
+//      cueQuestion(question);
+//    }
+      
     var question = Session.get("question");
     
-    if (language !== question.language) {
-      
-      // TODO this needs to be changed in the future
-      Session.set("current", 0);
-      var words = UserWords.find({ language: language }).fetch();
-      Router.go("question", { _id: Questions.findOne({ word: words[0].word })._id });
-      
-    } else {
-    
-    
-      //alert("AUTORUN " + question.word);
-      // cue question
-      cueQuestion(question);
+    // cue video. start seconds will be set when video is started
+    player && player.loadVideoById({
+        "videoId": question.videoId,
+        "startSeconds": question.startSeconds,
+        "endSeconds": question.endSeconds
+    });
+
+    // generate and set multiple choice for question from all words user
+    // is trying to learn, not just those in this set
+    // TODO idiot proof this
+    var allWords = UserWords.find({ language: Session.get("language") }).fetch();
+    var numberChoices = 4;
+    if (allWords.length < 4) {
+      numberChoices = allWords.length - 1;
     }
+    var choices = LTools.getChoices(allWords, numberChoices, question.word);
+    Session.set("choices", choices);
+
+    // reset the page for new question
+    document.getElementById("choices").reset();
+    document.getElementById("speed").reset();
+    Session.set("answer", "Select an answer");
   }
 });
 
@@ -92,31 +117,31 @@ Template.question.onDestroyed(function () {
 // cue a question on player
 // TODO i think i have to separate these out into different trackers to
 // prevent it from being run over and over
-var cueQuestion = function (question) {
-
-  // cue video. start seconds will be set when video is started
-  player && player.loadVideoById({
-      "videoId": question.videoId,
-      "startSeconds": question.startSeconds,
-      "endSeconds": question.endSeconds
-  });
-
-  // generate and set multiple choice for question from all words user
-  // is trying to learn, not just those in this set
-  // TODO idiot proof this
-  var allWords = UserWords.find({ language: Session.get("language") }).fetch();
-  var numberChoices = 4;
-  if (allWords.length < 4) {
-    numberChoices = allWords.length - 1;
-  }
-  var choices = LTools.getChoices(allWords, numberChoices, question.word);
-  Session.set("choices", choices);
-
-  // reset the page for new question
-  document.getElementById("choices").reset();
-  document.getElementById("speed").reset();
-  Session.set("answer", "Select an answer");
-};
+//var cueQuestion = function (question) {
+//
+//  // cue video. start seconds will be set when video is started
+//  player && player.loadVideoById({
+//      "videoId": question.videoId,
+//      "startSeconds": question.startSeconds,
+//      "endSeconds": question.endSeconds
+//  });
+//
+//  // generate and set multiple choice for question from all words user
+//  // is trying to learn, not just those in this set
+//  // TODO idiot proof this
+//  var allWords = UserWords.find({ language: Session.get("language") }).fetch();
+//  var numberChoices = 4;
+//  if (allWords.length < 4) {
+//    numberChoices = allWords.length - 1;
+//  }
+//  var choices = LTools.getChoices(allWords, numberChoices, question.word);
+//  Session.set("choices", choices);
+//
+//  // reset the page for new question
+//  document.getElementById("choices").reset();
+//  document.getElementById("speed").reset();
+//  Session.set("answer", "Select an answer");
+//};
 
 Template.question.helpers({
 
@@ -171,7 +196,8 @@ Template.question.events({
       var current = Session.get("current");
       //var words = Session.get("words");
 
-      var words = UserWords.find({ language: Session.get("language") }).fetch();
+      //var words = UserWords.find({ language: Session.get("language") }).fetch();
+      var words = Session.get("reviewWords");
       current = (current + 1) % words.length;
       
 

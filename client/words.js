@@ -18,7 +18,7 @@ Template.word.helpers({
 
 Template.word.events({
   "change .wordBox": function () {
-    alert(this.word + " " + event.target.checked);
+    //alert(this.word + " " + event.target.checked);
     if (event.target.checked) {
       // add word to user words
       Meteor.call("insertUserWord", this.word, this.language);

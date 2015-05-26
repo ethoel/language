@@ -54,7 +54,7 @@ Meteor.methods({
     });
   },
   
-  removeUserWord: function (userWord) {
+  removeUserWord: function (word, language) {
     UserWords.remove({ 
       word: word,
       language: language,
@@ -68,22 +68,33 @@ Router.configure({
 });
 
 Router.route("/", function () {
-  this.redirect("/question");
+  this.redirect("/review");
 });
 
-Router.route("/question", function () {
-  this.redirect("question", { _id: Session.get("question")._id });
-}, { name: "currentQuestion" });
+//Router.route("/question", function () {
+//  this.redirect("question", { _id: Session.get("question")._id });
+//}, { name: "currentQuestion" });
+//
+Router.route("/review", function () {
+  this.wait(Meteor.subscribe("languages"));
+  this.wait(Meteor.subscribe("userWords"));
+  this.subscribe("questions").wait();
+  if (this.ready()) {
+    this.render();
+    this.render("languages", { to: "languages" });
+  } else {
+    this.render("loading");
+  }
+});
 
 
 
 Router.route("/question/:_id", {
   name: "question",
-  yieldRegions: { "languages" : { to: "languages" } },
   subscriptions: function () {
     this.subscribe("questions").wait();
     this.subscribe("words").wait();
-    this.subscribe("languages").wait();
+    //this.subscribe("languages").wait();
     this.subscribe("userWords").wait();
   },
   action: function () {
@@ -94,6 +105,16 @@ Router.route("/question/:_id", {
       this.render("loading");
     }
   }
+//  , in case some one types it in before reviewWords is set
+  // TODO unlikely but still possible
+//  onBeforeAction: function () {
+//    alert("BEFORE Q");
+//    if (!Session.get("reviewWords")) {
+//      this.redirect("review");
+//    };
+//    alert("BEFORE Q 2");
+//    this.next();
+//  }
 });
 
 Router.route("/words", function() {
@@ -119,5 +140,16 @@ Router.route("/contribute", function () {
     //this.render("/languages", { to: "languages" });
   } else {
     this.render("/loading");
+  }
+});
+
+Router.onBeforeAction(function () {
+  if (!Meteor.userId()) {
+    // user is not logged in, force log in
+    this.layout("");
+    this.render("login");
+  } else {
+    // otherwise continue routing
+    this.next();
   }
 });
