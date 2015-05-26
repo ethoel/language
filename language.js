@@ -87,18 +87,22 @@ Router.route("/", function () {
 //}, { only: ["question"] });
 
 // temporary first videos
-Router.route("/question", function() {
-  this.wait(Meteor.subscribe("words"));
-  this.wait(Meteor.subscribe("languages"));
-  this.subscribe("questions").wait();
-  if (this.ready()) {
-    var questionId = Words.findOne({ language: Session.get("language") }).questionIds[0];
-    this.redirect("question", { _id: questionId });
-    //this.render("loading");
-  } else {
-    this.render("loading");
-  }
-}, { name: "defaultquestion" });
+//Router.route("/question", function() {
+//  this.wait(Meteor.subscribe("words"));
+//  this.wait(Meteor.subscribe("languages"));
+//  this.subscribe("questions").wait();
+//  if (this.ready()) {
+//    //var questionId = Words.findOne({ language: Session.get("language") }).questionIds[0];
+//    this.redirect("question", { _id: Session.get("question")._id });
+//    //this.render("loading");
+//  } else {
+//    this.render("loading");
+//  }
+//}, { name: "defaultquestion" });
+
+Router.route("/question", function () {
+  this.redirect("question", { _id: Session.get("question")._id });
+}, { name: "currentQuestion" });
 
 
 
@@ -110,13 +114,13 @@ Router.route("/question/:_id", {
     this.subscribe("words").wait();
     this.subscribe("languages").wait();
   },
-  onBeforeAction: function () {
-    //alert("HOOK " + this.params._id);
-    Session.set("question", Questions.findOne({ _id: this.params._id }));
-    this.next();
-  },
   action: function () {
-    this.render();
+    if (this.ready()) {
+      Session.set("question", Questions.findOne({ _id: this.params._id }));
+      this.render();
+    } else {
+      this.render("loading");
+    }
   }
 });
 
@@ -139,7 +143,7 @@ Router.route("/contribute", function () {
   
   if (this.ready()) {
     this.render();
-    this.render("/languages", { to: "languages" });
+    //this.render("/languages", { to: "languages" });
   } else {
     this.render("/loading");
   }

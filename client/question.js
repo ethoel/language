@@ -11,8 +11,9 @@ Meteor.startup(function () {
   Session.set("playerReady", false);
   YT.load();
 
-  // set default session variables
+  // set default session variables TODO tidy this up
   Session.setDefault("words", Words.find({}).fetch());
+  Session.setDefault("question", { _id: "cHeHS3WiTb4Zmwg9x" });
   Session.setDefault("current", 0);
   // also answer, choices, question
 });
@@ -88,10 +89,12 @@ Template.question.onDestroyed(function () {
 
 
 // cue a question on player
+// TODO i think i have to separate these out into different trackers to
+// prevent it from being run over and over
 var cueQuestion = function (question) {
 
   // cue video. start seconds will be set when video is started
-  player && player.cueVideoById({
+  player && player.loadVideoById({
       "videoId": question.videoId,
       "startSeconds": question.startSeconds,
       "endSeconds": question.endSeconds
@@ -118,16 +121,26 @@ Template.question.helpers({
 
   // chosen answer
   answer: function () {
-    return Session.get("answer");
+    // TODO organize better
+    var answer = Session.get("answer");
+    if (answer === "Correct") {
+      answer = "Correct: " + Session.get("question").translation;
+    }
+    return answer;
   },
 
-//  sentence: function () {
-//    var question = Session.get("question"); 
-//    var sentence = question.sentence;
-//    var word = question.word;
-//
-//    return LTools.replaceAll(word, "___", sentence);
-//  },
+  sentence: function () {
+    var question = Session.get("question"); 
+    var sentence = question.sentence;
+    var word = question.word;
+    
+    // TODO organize better
+    if (Session.get("answer") !== "Correct") {
+      sentence = LTools.replaceAll(word, "___", sentence);
+    }
+
+    return sentence;
+  },
 
   choices: function () {
     return Session.get("choices");

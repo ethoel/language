@@ -39,7 +39,7 @@ LTools = (function () {
       // construct and return array of length n with randomly
       // inserted correct object
       var choices = [];
-      var correctPosition = Math.floor(Math.random() * 2);
+      var correctPosition = Math.floor(Math.random() * n);
     
       for (i = 0; choices.length < n; i++) {
     
