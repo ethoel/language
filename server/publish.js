@@ -11,4 +11,8 @@ Meteor.startup(function () {
   Meteor.publish("languages", function () {
     return Languages.find();
   });
+  
+  Meteor.publish("userWords", function () {
+    return UserWords.find({ owner: this.userId });
+  });
 });

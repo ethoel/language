@@ -16,7 +16,7 @@ Meteor.methods({
       result = "End seconds should be greater than start seconds";
     } else {
       
-      var questionId = Questions.insert({
+      Questions.insert({
         word: question.word,
         sentence: question.sentence,
         translation: question.translation,
@@ -30,10 +30,12 @@ Meteor.methods({
         createdAt: new Date()
       });
 
-      Words.upsert({ 
-        word: question.word,
-        language: question.language
-      }, {$push: { questionIds: questionId }});
+      if (!Words.findOne({ word: question.word })) {
+        Words.insert({
+          word: question.word,
+          language: question.language
+        });
+      }
       
       // insert language if doesn't exist
       if (!Languages.findOne({ language: question.language })) {
@@ -42,6 +44,22 @@ Meteor.methods({
       result = "Submitted";
     }
     return result;
+  },
+  
+  insertUserWord: function (word, language) {
+    UserWords.insert({ 
+      word: word,
+      language: language,
+      owner: Meteor.userId()
+    });
+  },
+  
+  removeUserWord: function (userWord) {
+    UserWords.remove({ 
+      word: word,
+      language: language,
+      owner: Meteor.userId()
+    });
   }
 });
 
@@ -52,53 +70,6 @@ Router.configure({
 Router.route("/", function () {
   this.redirect("/question");
 });
-
-//Router.route("/question", function () {
-//  this.wait(Meteor.subscribe("questions"));
-//  this.wait(Meteor.subscribe("words"));
-//  this.wait(Meteor.subscribe("languages"));
-//  
-//  if (this.ready()) {
-//    this.render();
-//    this.render("/languages", { to: "languages" });
-//  } else {
-//    this.render("/loading");
-//  }
-//});
-//
-//Router.route("/question/:_id", function () {
-//  this.wait(Meteor.subscribe("questions"));
-//  this.wait(Meteor.subscribe("words"));
-//  this.wait(Meteor.subscribe("languages"));
-//  
-//  if (this.ready()) {
-//    this.render("question", { data: function () { 
-//      return Questions.findOne({_id: this.params._id});
-//    }});
-//    this.render("languages", { to: "languages" });
-//  } else {
-//    this.render("loading");
-//  }
-//}, { name: "question" });
-//
-//Router.onBeforeAction(function () {
-//  alert("hello hook");
-//  this.next();
-//}, { only: ["question"] });
-
-// temporary first videos
-//Router.route("/question", function() {
-//  this.wait(Meteor.subscribe("words"));
-//  this.wait(Meteor.subscribe("languages"));
-//  this.subscribe("questions").wait();
-//  if (this.ready()) {
-//    //var questionId = Words.findOne({ language: Session.get("language") }).questionIds[0];
-//    this.redirect("question", { _id: Session.get("question")._id });
-//    //this.render("loading");
-//  } else {
-//    this.render("loading");
-//  }
-//}, { name: "defaultquestion" });
 
 Router.route("/question", function () {
   this.redirect("question", { _id: Session.get("question")._id });
@@ -113,6 +84,7 @@ Router.route("/question/:_id", {
     this.subscribe("questions").wait();
     this.subscribe("words").wait();
     this.subscribe("languages").wait();
+    this.subscribe("userWords").wait();
   },
   action: function () {
     if (this.ready()) {
@@ -127,6 +99,7 @@ Router.route("/question/:_id", {
 Router.route("/words", function() {
   this.wait(Meteor.subscribe("words"));
   this.wait(Meteor.subscribe("languages"));
+  this.wait(Meteor.subscribe("userWords"));
   if (this.ready()) {
     this.render();
     this.render("/languages", { to: "languages" });

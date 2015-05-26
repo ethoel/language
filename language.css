@@ -65,6 +65,9 @@ fieldset input {
   background: #60AA85;
 }
 
+#wordList label {
+  display: block;
+}
 /*
 .segmented-button {
   padding: 12px;

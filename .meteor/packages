@@ -7,3 +7,5 @@
 meteor-platform
 adrianliaw:youtube-iframe-api
 iron:router
+accounts-ui
+accounts-password

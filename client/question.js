@@ -12,7 +12,7 @@ Meteor.startup(function () {
   YT.load();
 
   // set default session variables TODO tidy this up
-  Session.setDefault("words", Words.find({}).fetch());
+  Session.setDefault("words", UserWords.find({}).fetch());
   Session.setDefault("question", { _id: "cHeHS3WiTb4Zmwg9x" });
   Session.setDefault("current", 0);
   // also answer, choices, question
@@ -64,7 +64,8 @@ Tracker.autorun(function () {
       
       // TODO this needs to be changed in the future
       Session.set("current", 0);
-      Router.go("question", { _id: Words.findOne({ language: language }).questionIds[0] });
+      var words = UserWords.find({ language: language }).fetch();
+      Router.go("question", { _id: Questions.findOne({ word: words[0].word })._id });
       
     } else {
     
@@ -103,7 +104,7 @@ var cueQuestion = function (question) {
   // generate and set multiple choice for question from all words user
   // is trying to learn, not just those in this set
   // TODO idiot proof this
-  var allWords = Words.find({ language: Session.get("language") }).fetch();
+  var allWords = UserWords.find({ language: Session.get("language") }).fetch();
   var numberChoices = 4;
   if (allWords.length < 4) {
     numberChoices = allWords.length - 1;
@@ -170,14 +171,14 @@ Template.question.events({
       var current = Session.get("current");
       //var words = Session.get("words");
 
-      var words = Words.find({ language: Session.get("language") }).fetch();
+      var words = UserWords.find({ language: Session.get("language") }).fetch();
       current = (current + 1) % words.length;
       
 
       Session.set("current", current);
       // cue next question
 
-      Router.go("question", { _id: words[current].questionIds[0] });
+      Router.go("question", { _id: Questions.findOne({ word: words[current].word })._id });
 
       
     } else {

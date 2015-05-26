@@ -3,12 +3,15 @@
   
   
   <h2>Words to learn</h2>
-  {{#each words}}
-    {{> word}}
-  {{/each}}
-
+  <form id="wordList">
+    {{#each words}}
+      {{> word}}
+    {{/each}}
+  </form>
 </template>
 
 <template name="word">
-  <p>{{word}}</p>
+  <label>
+    <input class="wordBox" type="checkbox" {{checked}}/>{{word}}
+  </label>
 </template>
