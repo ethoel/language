@@ -15,3 +15,5 @@ Template.review.helpers({
     return Questions.findOne({ word: reviewWords[0].word })._id;
   }
 });
+
+// do I need to use a tracker autofunction for the above?

@@ -89,7 +89,7 @@ Tracker.autorun(function () {
     // TODO idiot proof this
     var allWords = UserWords.find({ language: Session.get("language") }).fetch();
     var numberChoices = 4;
-    if (allWords.length < 4) {
+    if (allWords.length <= 4) {
       numberChoices = allWords.length - 1;
     }
     var choices = LTools.getChoices(allWords, numberChoices, question.word);

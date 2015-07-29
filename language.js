@@ -143,6 +143,16 @@ Router.route("/contribute", function () {
   }
 });
 
+Router.route("/atlas", function () {
+  
+  if (this.ready()) {
+    this.render();
+    //this.render("/languages", { to: "languages" });
+  } else {
+    this.render("/loading");
+  }
+});
+
 Router.onBeforeAction(function () {
   if (!Meteor.userId()) {
     // user is not logged in, force log in
