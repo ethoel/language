@@ -60,6 +60,16 @@ Meteor.methods({
       language: language,
       owner: Meteor.userId()
     });
+  },
+  // atlas project
+  upsertOrgan: function(film, organ, data) {
+    Organs.upsert({
+      film: film,
+      organ: organ 
+    }, { $set: {
+      data: data,
+      createdAt: new Date()
+    }});
   }
 });
 
@@ -145,9 +155,12 @@ Router.route("/contribute", function () {
 
 Router.route("/atlas", function () {
   
+  this.wait(Meteor.subscribe("organs"));
+  
   if (this.ready()) {
+    this.layout("");
     this.render();
-    //this.render("/languages", { to: "languages" });
+    
   } else {
     this.render("/loading");
   }

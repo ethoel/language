@@ -2,5 +2,18 @@
   <h2>Atlas</h2>
 <!--  <img id="film" src="/normal/Im{{index}}.jpg"/>-->
   <canvas id="canvas" width="600" height="600"></canvas>
-  <h2>CT</h2>
+  <button id="save">Save</button>
+  <button id="clear">Clear</button>
+  <form id="organs">
+    {{#each organs}}
+      {{> organ}}
+    {{/each}}
+  </form>
+</template>
+
+<template name="organ">
+  <label>
+    <input type="checkbox" checked/>{{.}}
+<!--    <input type="checkbox" {{checked}}/>{{organ}}-->
+  </label>
 </template>

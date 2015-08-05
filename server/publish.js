@@ -15,4 +15,8 @@ Meteor.startup(function () {
   Meteor.publish("userWords", function () {
     return UserWords.find({ owner: this.userId });
   });
+  
+  Meteor.publish("organs", function () {
+    return Organs.find();
+  });
 });
