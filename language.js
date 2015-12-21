@@ -61,13 +61,22 @@ Meteor.methods({
       owner: Meteor.userId()
     });
   },
+  checkOrgan: function(organ, checked) {
+    Organs.upsert({
+      organ: organ 
+    }, { $set: {
+      checked: checked,
+      createdAt: new Date()
+    }}, { multi: true });
+  },
   // atlas project
-  upsertOrgan: function(film, organ, data) {
+  upsertOrgan: function(film, organ, data, checked) {
     Organs.upsert({
       film: film,
       organ: organ 
     }, { $set: {
       data: data,
+      checked: checked,
       createdAt: new Date()
     }});
   }

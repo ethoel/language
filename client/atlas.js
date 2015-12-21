@@ -1,6 +1,7 @@
 var clickX = [];
 var clickY = [];
 var clickDrag = [];
+var clickColor = 0;
 var paint = false;
 var films = [];
 var index = 0;
@@ -39,14 +40,23 @@ var loadOrgan = function () {
   var organ = Organs.findOne({ film: films[index].src });
   console.log("organ " + organ);
   // var data = Organs.findOne({ film: "Im3.jpg" }).data;
-  if (organ) {
+//  if (organ.checked) {
+//    alert("true");
+//  } else {
+//    alert("false " + organ.checked);
+//  }
+  
+  if (organ && organ.checked) {
+    console.log("organ checked");
     clickX = organ.data.clickX;
     clickY = organ.data.clickY;
     clickDrag = organ.data.clickDrag;
+    clickColor = organ.data.clickColor;
   } else {
     clickX = [];
     clickY = [];
     clickDrag = [];
+    clickColor = 0;
   }
 }
 
@@ -64,11 +74,14 @@ var redraw = function () {
 
   
   
-  context.strokeStyle = "#df4b26";
+  //context.strokeStyle = "#df4b26";
+  // context.strokeStyle = $("#colorpicker").val();
+  context.strokeStyle = clickColor;
+  //console.log("value " + $('#colorpicker').val());
   context.lineJoin = "round";
   context.lineCap = "round";
   context.lineWidth = 10;
-  context.globalAlpha = 0.5;
+  //context.globalAlpha = 0.5;
   
   context.beginPath();
   for (var i = 0; i < clickX.length; i++) {	
@@ -96,6 +109,12 @@ Meteor.startup(function () {
 
 Template.atlas.onCreated(function () {
   loadFilms();
+});
+
+Template.atlas.onRendered(function () {
+  console.log("onRendered");
+  $('#colorpicker').colorpicker();
+  console.log("onRendered2");
 });
 
 //Template.atlas.onRendered(function () {
@@ -176,12 +195,32 @@ Template.atlas.events({
   "mouseleave #canvas": function (e) {
     paint = false;
   },
+  "click #organbox": function (e) {
+    // currently working on this TODO
+    // this doesn't automagically work, have to click for
+    // every one to add the field TODO TODO
+    console.log("checked");
+    //alert("checked " + event.target.checked);
+    Meteor.call("checkOrgan",
+      "aorta",
+      event.target.checked
+    );
+    loadOrgan();
+    redraw();
+  },
+  "click #changeColor": function (e) {
+    // TODO change JQuery to meteor
+    clickColor = $("#colorpicker").val();
+    console.log("clickColor " + clickColor);
+    console.log("labelvalue " + $('#testingabc').text().trim());
+    redraw();
+  },
   "click #save": function (e) {
-    console.log("saved");
+    console.log("saved " + clickColor);
     Meteor.call("upsertOrgan", 
       films[index].src,
       "aorta",
-      { clickX: clickX, clickY: clickY, clickDrag: clickDrag }
+      { clickX: clickX, clickY: clickY, clickDrag: clickDrag, clickColor: clickColor }
     );
   },
   "click #clear": function (e) {
@@ -189,6 +228,7 @@ Template.atlas.events({
     clickX = [];
     clickY = [];
     clickDrag = [];
+    clickColor = 0;
     redraw();
   }
 });

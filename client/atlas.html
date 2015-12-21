@@ -4,6 +4,10 @@
   <canvas id="canvas" width="600" height="600"></canvas>
   <button id="save">Save</button>
   <button id="clear">Clear</button>
+  
+  <input type="text" id="colorpicker" value="5367ce"/>
+  <button id="changeColor">Change</button>
+  
   <form id="organs">
     {{#each organs}}
       {{> organ}}
@@ -12,8 +16,8 @@
 </template>
 
 <template name="organ">
-  <label>
-    <input type="checkbox" checked/>{{.}}
+  <label id="testingabc">
+    <input id="organbox" type="checkbox" checked/>{{.}}
 <!--    <input type="checkbox" {{checked}}/>{{organ}}-->
   </label>
 </template>
