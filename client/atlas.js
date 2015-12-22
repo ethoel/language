@@ -7,14 +7,30 @@ var films = [];
 var index = 0;
 
 var loadFilms = function () {
-  // TODO generalize this to get all images in a dir
-  var loaded = 0;
-  var total = 29;
-  for (var i = 0; i < 29; i++) {
-    films.push(new Image());
-    films[i].onload = function () { if (++loaded >= total) redraw(); };
-    films[i].src = "normal/Im" + (i + 1) + ".jpg";
+  
+  var study = Studies.findOne({name: "Normal"});
+  
+  // if there isn't any normal study in database
+  if (study) {
+    console.log("STUDY READY " + study.imageArray);
+    // TODO generalize this to get all images in a dir
+    // TODO make this nicer so it doesn't have to depend on 29
+    var loaded = 0;
+    var total = 29;
+    for (var i = 0; i < 29; i++) {
+      films.push(new Image());
+      films[i].onload = function () { if (++loaded >= total) redraw(); };
+      var imageFile = Images.findOne({_id: study.imageArray[i]});
+      films[i].src = imageFile.url();
+    }
   }
+  // the new code
+//  var study;
+//  study = Studies.findOne({ name: "Normal" });
+//  
+//  for (var i = 0; i < study.imageArray.length; i++) {
+//    console.log("imageArray" + imageArray[i]);
+//  }
 }
 
 var addClick = function (x, y, dragging) {
@@ -37,7 +53,8 @@ var loadOrgan = function () {
   
   // draw organs for film
   console.log("loading film " + films[index].src);
-  var organ = Organs.findOne({ film: films[index].src });
+  var study = Studies.findOne({ name: "Normal" });
+  var organ = study.organs[0];
   console.log("organ " + organ);
   // var data = Organs.findOne({ film: "Im3.jpg" }).data;
 //  if (organ.checked) {
@@ -46,21 +63,36 @@ var loadOrgan = function () {
 //    alert("false " + organ.checked);
 //  }
   
-  if (organ && organ.checked) {
+  if (organ && organ.data[index] && organ.checked) {
     console.log("organ checked");
-    clickX = organ.data.clickX;
-    clickY = organ.data.clickY;
-    clickDrag = organ.data.clickDrag;
-    clickColor = organ.data.clickColor;
+    clickX = organ.data[index].clickX;
+    clickY = organ.data[index].clickY;
+    clickDrag = organ.data[index].clickDrag;
+    clickColor = organ.color;
   } else {
     clickX = [];
     clickY = [];
     clickDrag = [];
     clickColor = 0;
   }
+  
 }
 
 var redraw = function () {
+  
+  
+//  var testImg = Images.findOne({_id: study.imageArray[2]});
+//  console.log("TEST IMAGE " + testImg.url());
+//  
+//  var testImage2 = new Image();
+//  testImage2.src = testImg.url();
+//  
+//  var context1 = document.getElementById("testImage").getContext("2d");
+//  context1.globalAlpha = 1;
+//  context1.clearRect(0, 0, context1.canvas.width, context1.canvas.height);
+//  context1.drawImage(testImage2, 0, 0);
+  
+  
   // set up and clear canvas
   var context = document.getElementById("canvas").getContext("2d");
   context.globalAlpha = 1;
@@ -70,9 +102,10 @@ var redraw = function () {
   //var film = document.getElementById("film");
   //var index = Session.get("index") - 1;
   context.drawImage(films[index], 0, 0);
+  //context.drawImage(image, 0, 0);
   
 
-  
+
   
   //context.strokeStyle = "#df4b26";
   // context.strokeStyle = $("#colorpicker").val();
@@ -134,14 +167,17 @@ Template.atlas.onRendered(function () {
 
 Template.atlas.helpers({
   organs: function () {
-    var organs = Organs.find().fetch();
-
-    organs = _.pluck(organs, "organ");
+    // TODO works because only one study
+    var organs = Studies.findOne({}).organs;
     
     console.log(organs);
-    organs = _.uniq(organs);
     
-    console.log(organs);
+//    organs = _.pluck(organs, "organ");
+//    
+//    console.log(organs);
+//    organs = _.uniq(organs);
+//    
+//    console.log(organs);
     return organs;
   }
 });
@@ -201,10 +237,12 @@ Template.atlas.events({
     // every one to add the field TODO TODO
     console.log("checked");
     //alert("checked " + event.target.checked);
-    Meteor.call("checkOrgan",
-      "aorta",
-      event.target.checked
-    );
+//    Meteor.call("checkOrgan",
+//      "Normal",
+//      "Aorta",
+//      event.target.checked
+//    );
+    // JUST REDRAW
     loadOrgan();
     redraw();
   },
@@ -216,12 +254,20 @@ Template.atlas.events({
     redraw();
   },
   "click #save": function (e) {
+    // WORKING ON THIS
     console.log("saved " + clickColor);
-    Meteor.call("upsertOrgan", 
-      films[index].src,
-      "aorta",
-      { clickX: clickX, clickY: clickY, clickDrag: clickDrag, clickColor: clickColor }
-    );
+//    Meteor.call("upsertOrgan", 
+//      films[index].src,
+//      "aorta",
+//      { clickX: clickX, clickY: clickY, clickDrag: clickDrag, clickColor: clickColor }
+//    );
+    Meteor.call("saveDrawingToOrgan",
+                "Normal",
+                "Aorta",
+                clickColor,
+                index,
+                { clickX: clickX, clickY: clickY, clickDrag: clickDrag }
+               );
   },
   "click #clear": function (e) {
     console.log("cleared");
@@ -230,6 +276,46 @@ Template.atlas.events({
     clickDrag = [];
     clickColor = 0;
     redraw();
+  },
+  "change #loadImages": function (e) {
+    FS.Utility.eachFile(e, function(file) {
+      Images.insert(file, function (err, fileObj) {
+        console.log(fileObj._id);
+        // add image id to array as they load
+//        var study, imageArray;
+//        study = Studies.findOne({name: "Normal"});
+//        if (!study) {
+//          imageArray = [];
+//        } else {
+//          imageArray = study.imageArray;
+//        }
+//        imageArray.push(fileObj._id);
+        // now update database with new array
+        Meteor.call("addImageToStudy",
+                    "Normal",
+                    fileObj._id
+                   );
+      });
+    });
+    console.log("loadImages");
+  },
+  "click #testButton": function (e) {
+    console.log("Test");
+    Meteor.call("addOrganToStudy",
+               "Normal"
+               )
+    
+    // TODO above needs to become more than just a test button
+  },
+  "click #testButton2": function (e) {
+    console.log("Test2");
+//    Meteor.call("saveDrawingToOrgan",
+//                "Normal",
+//                "Aorta",
+//                clickColor,
+//                index,
+//                { clickX: clickX, clickY: clickY, clickDrag: clickDrag }
+//               )
   }
 });
 

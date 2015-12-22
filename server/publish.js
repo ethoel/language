@@ -3,4 +3,10 @@ Meteor.startup(function () {
   Meteor.publish("organs", function () {
     return Organs.find();
   });
+  
+  Meteor.publish("studies", function () {
+    return Studies.find();
+  });
+  
+  Meteor.publish("images", function(){ return Images.find(); });
 });
