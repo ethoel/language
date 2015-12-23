@@ -4,11 +4,15 @@
   <canvas id="canvas" width="600" height="600"></canvas>
   <button id="save">Save</button>
   <button id="clear">Clear</button>
+  <button id="clearAll">Clear All</button>
   
   <input type="text" id="colorpicker" value="5367ce"/>
   <button id="changeColor">Change</button>
   
   <input type="file" id="loadImages" multiple>
+  
+  <input type="text" id="currentOrgan" value="Aorta"/>
+  <button id="saveCurrentOrgan">Save Organ</button>
   
   <form id="organs">
     {{#each organs}}

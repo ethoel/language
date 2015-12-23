@@ -27,15 +27,27 @@ Meteor.methods({
          $set: { createdAt: new Date() }
     });
   },
-  addOrganToStudy: function(name) {
+  addOrganToStudy: function(name, organ) {
     // TODO make this function better
     Studies.upsert({
       name: name
     }, { $push: { 
-      organs: { organ: "Aorta", color: "#FFFFFF",
+      organs: { organ: organ, color: "#FFFFFF",
               data: new Array(29) } 
     }
     });
+  },
+  deleteDrawing: function(name, organ, index) {
+    // prepare key for drawing index b/c mongodb cannot handle $$
+    var key = "organs.$.data." + index;
+    var drawData = {};
+    drawData[key] = { clickX: [], clickY: [], clickDrag: [] };
+    console.log(drawData);
+    
+    Studies.update({
+      "name": name,
+      "organs.organ": organ
+    }, { $set: drawData });
   },
   saveDrawingToOrgan: function(name, organ, color, index, data) {
     // prepare key for drawing index b/c mongodb cannot handle $$

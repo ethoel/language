@@ -51,32 +51,65 @@ var loadOrgan = function () {
   // array3 = array1.concat(array2);
   
   
-  // draw organs for film
-  console.log("loading film " + films[index].src);
-  var study = Studies.findOne({ name: "Normal" });
-  var organ = study.organs[0];
-  console.log("organ " + organ);
-  // var data = Organs.findOne({ film: "Im3.jpg" }).data;
-//  if (organ.checked) {
-//    alert("true");
+//  // draw organs for film
+//  console.log("loading film " + films[index].src);
+//  var study = Studies.findOne({ name: "Normal" });
+//  var organ = study.organs[0];
+//  console.log("organ " + organ);
+//  // var data = Organs.findOne({ film: "Im3.jpg" }).data;
+////  if (organ.checked) {
+////    alert("true");
+////  } else {
+////    alert("false " + organ.checked);
+////  }
+//  
+//  if (organ && organ.data[index] && organ.checked) {
+//    console.log("organ checked");
+//    clickX = organ.data[index].clickX;
+//    clickY = organ.data[index].clickY;
+//    clickDrag = organ.data[index].clickDrag;
+//    clickColor = organ.color;
 //  } else {
-//    alert("false " + organ.checked);
+//    clickX = [];
+//    clickY = [];
+//    clickDrag = [];
+//    clickColor = 0;
 //  }
-  
-  if (organ && organ.data[index] && organ.checked) {
-    console.log("organ checked");
-    clickX = organ.data[index].clickX;
-    clickY = organ.data[index].clickY;
-    clickDrag = organ.data[index].clickDrag;
-    clickColor = organ.color;
-  } else {
-    clickX = [];
-    clickY = [];
-    clickDrag = [];
-    clickColor = 0;
-  }
+ clickX = [];
+ clickY = [];
+ clickDrag = [];
+ clickColor = "#FFFFFF";
   
 }
+
+// drawOrgan is complete
+var drawOrgan = function(context, x, y, continuation, color) {
+  // only draw if there is something to draw
+  if (!x.length) { return; }
+  
+  // draw organ given x, y, drag arrays in color
+  context.fillStyle = color;
+  for (var i = 0; i < x.length; i++) {	
+    // draw shapes
+    if (!continuation[i]) {
+      if (i) {
+        // fill previous shape
+        context.closePath();
+        context.fill();   
+      }
+      // start new shape
+      context.beginPath();
+      context.moveTo(x[i], y[i]);
+    } else {
+      // continue current shape
+      context.lineTo(x[i], y[i]);
+    }
+  }
+  // fill last shape
+  context.closePath();
+  context.fill();
+}
+
 
 var redraw = function () {
   
@@ -104,34 +137,166 @@ var redraw = function () {
   context.drawImage(films[index], 0, 0);
   //context.drawImage(image, 0, 0);
   
-
-
+  //if (clickX.length) {
+  drawOrgan(context, clickX, clickY, clickDrag, clickColor);
+  //}
+//  // draw new path, then draw organs
+//      //context.strokeStyle = "#df4b26";
+//    // context.strokeStyle = $("#colorpicker").val();
+//   // context.strokeStyle = clickColor;
+//      context.fillStyle = clickColor;
+//    //console.log("value " + $('#colorpicker').val());
+//    //context.lineJoin = "round";
+//    //context.lineCap = "round";
+//    //context.lineWidth = 10;
+//    //context.globalAlpha = 0.5;
+//  
+//    console.log(clickX);
+//    // only attempt to draw if there is something to draw
+//    if (clickX.length > 0 ) {
+//      context.beginPath();
+//      for (var i = 0; i < clickX.length; i++) {	
+//        
+//        if (!clickDrag[i]) {
+//          // close previous path if i not 0
+//          if (i) { 
+//            context.closePath();
+//            context.fill();
+//            //context.stroke();
+//            context.beginPath();
+//          }
+//          
+//          // start new line
+//          context.moveTo(clickX[i], clickY[i]);
+//        } else {
+//          // continue current line
+//          context.lineTo(clickX[i], clickY[i]);
+//        }
+//
+//
+////        if (clickDrag[i] && i) {
+////          context.moveTo(clickX[i-1], clickY[i-1]);
+////        } else {
+////          context.moveTo(clickX[i]-1, clickY[i]);
+////        }
+////
+////        context.lineTo(clickX[i], clickY[i]);
+//
+//
+//      }
+//      // close path for last line
+//      context.closePath();
+//      context.fill();
+//      //context.stroke();
+//    }
   
-  //context.strokeStyle = "#df4b26";
-  // context.strokeStyle = $("#colorpicker").val();
-  context.strokeStyle = clickColor;
-  //console.log("value " + $('#colorpicker').val());
-  context.lineJoin = "round";
-  context.lineCap = "round";
-  context.lineWidth = 10;
-  //context.globalAlpha = 0.5;
+  // TODO clean up this hack (making new local vars)
+  var clickXX, clickYY, clickDragD, clickColorC;
   
-  context.beginPath();
-  for (var i = 0; i < clickX.length; i++) {	
+  // TODO: right now, only one study, images were preloaded as above
+  var study = Studies.findOne({ name: "Normal" });
+  var organs = study.organs;
+  console.log(organs);
+  for (var i = 0; i < organs.length; i++) {
+    console.log("start loop");
+    var organ = organs[i];
+    console.log("Organ to draw: " + organ.organ);
     
-    
-    if (clickDrag[i] && i) {
-      context.moveTo(clickX[i-1], clickY[i-1]);
+    if (organ && organ.data[index]) {
+      clickXX = organ.data[index].clickX;
+      clickYY = organ.data[index].clickY;
+      clickDragD = organ.data[index].clickDrag;
+      clickColorC = organ.color;
     } else {
-      context.moveTo(clickX[i]-1, clickY[i]);
+      clickXX = [];
+      clickYY = [];
+      clickDragD = [];
+      clickColorC = "#000000";
     }
     
-    context.lineTo(clickX[i], clickY[i]);
-     
     
+    //if (clickXX.length > 0 ) {
+    drawOrgan(context, clickXX, clickYY, clickDragD, clickColorC);// }
+//    //context.strokeStyle = "#df4b26";
+//    // context.strokeStyle = $("#colorpicker").val();
+//    context.strokeStyle = clickColorC;
+//    //console.log("value " + $('#colorpicker').val());
+//    context.lineJoin = "round";
+//    context.lineCap = "round";
+//    context.lineWidth = 10;
+//    //context.globalAlpha = 0.5;
+//
+//    // only attempt to draw if there is something to draw
+//    if (clickXX.length > 0 ) {
+//      context.beginPath();
+//      for (var j = 0; j < clickXX.length; j++) {	
+//
+//        //console.log(clickDragD);
+//        if (clickDragD[j] && j) {
+//          //console.log("line to");
+//         context.moveTo(clickXX[j-1], clickYY[j-1]);
+//         // context.lineTo(clickXX[j], clickYY[j]);
+//        } else {
+//          
+//          //console.log("close path");
+//          //context.closePath();
+//          context.moveTo(clickXX[j]-1, clickYY[j]);
+//          //context.moveTo(clickXX[j], clickYY[j]);
+//        }
+//
+//        context.lineTo(clickXX[j], clickYY[j]);
+//        
+//
+//      }
+//      
+//      
+//      context.stroke();
+//      
+//      
+//    }
+//    
+    console.log("Done with " + organ.organ);
   }
-  context.closePath();
-  context.stroke();
+  
+  // now, for each organ, draw it for this index
+//  for (var i = 0; i < organs.length; i++) {
+//    console.log("Organ to draw: " + organs[i].organ);
+//    
+//    var organ = organs[0];
+
+    
+//    //context.strokeStyle = "#df4b26";
+//    // context.strokeStyle = $("#colorpicker").val();
+//    context.strokeStyle = clickColor;
+//    //console.log("value " + $('#colorpicker').val());
+//    context.lineJoin = "round";
+//    context.lineCap = "round";
+//    context.lineWidth = 10;
+//    //context.globalAlpha = 0.5;
+//
+//    context.beginPath();
+//    for (var i = 0; i < clickX.length; i++) {	
+//
+//
+//      if (clickDrag[i] && i) {
+//        context.moveTo(clickX[i-1], clickY[i-1]);
+//      } else {
+//        context.moveTo(clickX[i]-1, clickY[i]);
+//      }
+//
+//      context.lineTo(clickX[i], clickY[i]);
+//
+//
+//    }
+//    context.closePath();
+//    context.stroke();
+//    
+//  }
+  
+
+
+  
+ 
   
 
 }
@@ -254,19 +419,46 @@ Template.atlas.events({
     redraw();
   },
   "click #save": function (e) {
-    // WORKING ON THIS
+    // TODO this method works grossly but needs cleaning up
     console.log("saved " + clickColor);
 //    Meteor.call("upsertOrgan", 
 //      films[index].src,
 //      "aorta",
 //      { clickX: clickX, clickY: clickY, clickDrag: clickDrag, clickColor: clickColor }
 //    );
+    var study = Studies.findOne({ name: "Normal" }, {fields: { organs: 1, _id: 0 }});
+    
+    //elemMatch not supported, { organs: { $elemMatch: { organ: "Aorta" }}});
+    //so using this hack instead ughh
+    var clickXX =[];
+    var clickYY = [];
+    var clickDragD = [];
+    console.log(study);
+    for (var i = 0; i < study.organs.length; i++) {
+      if (study.organs[i].organ === $("#currentOrgan").val()) {
+        // this is the organ we are looking for
+        var organ = study.organs[i];
+        clickXX = organ.data[index] ? organ.data[index].clickX : [];
+        clickYY = organ.data[index] ? organ.data[index].clickY : [];
+        clickDragD = organ.data[index] ? organ.data[index].clickDrag : [];
+      }
+    }
+    
+
+    // omg this code
+    var clickXXX = clickXX.concat(clickX);
+    var clickYYY = clickYY.concat(clickY);
+    var clickDragDD = clickDragD.concat(clickDrag);
+    
+    console.log(clickXXX);
+    
+    
     Meteor.call("saveDrawingToOrgan",
                 "Normal",
-                "Aorta",
+                $("#currentOrgan").val(),
                 clickColor,
                 index,
-                { clickX: clickX, clickY: clickY, clickDrag: clickDrag }
+                { clickX: clickXXX, clickY: clickYYY, clickDrag: clickDragDD }
                );
   },
   "click #clear": function (e) {
@@ -275,6 +467,14 @@ Template.atlas.events({
     clickY = [];
     clickDrag = [];
     clickColor = 0;
+    redraw();
+  },
+  "click #clearAll": function (e) {
+    Meteor.call("deleteDrawing",
+                "Normal",
+                $("#currentOrgan").val(),
+                index
+               );
     redraw();
   },
   "change #loadImages": function (e) {
@@ -299,12 +499,10 @@ Template.atlas.events({
     });
     console.log("loadImages");
   },
-  "click #testButton": function (e) {
-    console.log("Test");
-    Meteor.call("addOrganToStudy",
-               "Normal"
-               )
-    
+  "click #saveCurrentOrgan": function (e) {
+    console.log("saving current organ");
+    Meteor.call("addOrganToStudy", "Normal", $("#currentOrgan").val());
+    // TODO get rid of jquery
     // TODO above needs to become more than just a test button
   },
   "click #testButton2": function (e) {
