@@ -42,7 +42,7 @@ Meteor.methods({
     var key = "organs.$.data." + index;
     var drawData = {};
     drawData[key] = { clickX: [], clickY: [], clickDrag: [] };
-    console.log(drawData);
+    //console.log(drawData);
     
     Studies.update({
       "name": name,
@@ -54,7 +54,7 @@ Meteor.methods({
     var key = "organs.$.data." + index;
     var drawData = {};
     drawData[key] = data;
-    console.log(drawData);
+    //console.log(drawData);
     
     // add color to object
     key = "organs.$.color";
