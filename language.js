@@ -101,14 +101,32 @@ Router.route("/atlas", function () {
   }
 });
 
+Router.route("/admin", function() {
+  this.layout("layoutAdmin");
+  
+  this.wait(Meteor.subscribe("organs"));
+  this.wait(Meteor.subscribe("studies"));
+  this.wait(Meteor.subscribe("images"));
+  
+  if (this.ready()) {
+    this.render("atlas");
+    
+  } else {
+    this.render("/loading");
+  }
+})
+
 // When log in should be required
-//Router.onBeforeAction(function () {
-//  if (!Meteor.userId()) {
-//    // user is not logged in, force log in
-//    this.layout("");
-//    this.render("login");
-//  } else {
-//    // otherwise continue routing
-//    this.next();
-//  }
-//});
+Router.onBeforeAction(function () {
+  if (!Meteor.userId()) {
+    // user is not logged in, force log in
+    this.layout("");
+    this.render("login");
+  } else if (Meteor.user().username !== "admin") {
+    this.layout("");
+    this.render("unauthorized");
+  } else {
+    // otherwise continue routing
+    this.next();
+  }
+}, { only: ['admin'] });

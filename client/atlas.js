@@ -12,7 +12,7 @@ var loadFilms = function () {
   
   // if there isn't any normal study in database
   if (study) {
-    console.log("STUDY READY " + study.imageArray);
+    //console.log("STUDY READY " + study.imageArray);
     // TODO generalize this to get all images in a dir
     // TODO make this nicer so it doesn't have to depend on 29
     var loaded = 0;
@@ -137,7 +137,7 @@ var redraw = function () {
     var organ = organs[i];
     
     // if organ is not checked, continue to next organ w/o drawing
-    console.log(organ.organ + Session.get(organ.organ));
+    //console.log(organ.organ + Session.get(organ.organ));
     if (!Session.get(organ.organ)) { continue };
     
     if (organ && organ.data[index]) {
@@ -258,10 +258,10 @@ Template.atlas.events({
     // currently working on this TODO
     // this doesn't automagically work, have to click for
     // every one to add the field TODO TODO
-    console.log("checked");
-    console.log(e.target);
-    console.log(e.target.checked);
-    console.log(e.target.getAttribute("value"));
+    //console.log("checked");
+    //console.log(e.target);
+    //console.log(e.target.checked);
+    //console.log(e.target.getAttribute("value"));
     Session.set(e.target.getAttribute("value"), e.target.checked);
     
     redraw();
@@ -275,7 +275,10 @@ Template.atlas.events({
     // JUST REDRAW
     //loadOrgan();
     //redraw();
-  },
+  }
+});
+  
+Template.layoutAdmin.events({
   "click #changeColor": function (e) {
     // TODO change JQuery to meteor
     clickColor = $("#colorpicker").val();
@@ -298,7 +301,7 @@ Template.atlas.events({
     var clickXX =[];
     var clickYY = [];
     var clickDragD = [];
-    console.log(study);
+    //console.log(study);
     for (var i = 0; i < study.organs.length; i++) {
       if (study.organs[i].organ === $("#currentOrgan").val()) {
         // this is the organ we are looking for
@@ -315,7 +318,7 @@ Template.atlas.events({
     var clickYYY = clickYY.concat(clickY);
     var clickDragDD = clickDragD.concat(clickDrag);
     
-    console.log(clickXXX);
+    //console.log(clickXXX);
     
     
     Meteor.call("saveDrawingToOrgan",

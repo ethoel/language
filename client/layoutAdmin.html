@@ -1,4 +1,10 @@
-<template name="layout">
+<template name="layoutAdmin">
+
+  <header>
+    {{> loginButtons}}
+  </header>
+
+  
 <!--
   <nav>
     <a href="/review">Learn</a>
@@ -11,5 +17,8 @@
     {{> yield}}
   </main>
   
+  <admin>
+    {{> yield "admin"}}
+  </admin>
+  
 </template>
-

@@ -6,7 +6,9 @@
       {{> organ}}
     {{/each}}
   </form>
-    
+  
+  {{#contentFor "admin"}}
+
   <p>------------Upload New Study--------</p>
   
   <input type="file" id="loadImages" multiple>
@@ -34,6 +36,11 @@
   
   <button id="testButton">Test</button>
   <button id="testButton2">Test2</button>  
+  
+  
+  
+  {{/contentFor}}
+  
 </template>
 
 <template name="organ">
