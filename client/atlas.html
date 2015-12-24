@@ -1,60 +1,48 @@
 <template name="atlas">
-  <h2>Atlas</h2>
-<!--  <img id="film" src="/normal/Im{{index}}.jpg"/>-->
-  <canvas id="canvas" width="600" height="600"></canvas>
-  <button id="save">Save</button>
-  <button id="clear">Clear</button>
-  <button id="clearAll">Clear All</button>
-  
-  <input type="text" id="colorpicker" value="5367ce"/>
-  <button id="changeColor">Change</button>
-  
-  <input type="file" id="loadImages" multiple>
-  
-  <input type="text" id="currentOrgan" value="Aorta"/>
-  <button id="saveCurrentOrgan">Save Organ</button>
+  <canvas id="canvas" width="500" height="500"></canvas>
   
   <form id="organs">
     {{#each organs}}
       {{> organ}}
     {{/each}}
   </form>
+    
+  <p>------------Upload New Study--------</p>
+  
+  <input type="file" id="loadImages" multiple>
+  
+  <p>---------Organ Being Edited---------</p>
+  
+  <input type="text" id="currentOrgan" value="Aorta"/>
+  <button id="saveCurrentOrgan">Create New Organ</button>
+  
+  <p>---------Select Color for Organ---------</p>
+  
+  <input type="text" id="colorpicker" value="5367ce"/>
+  <button id="changeColor">Set Color</button>
+  
+  <p>---------Save Current State---------</p>
+  
+  <button id="save">Save</button>
+  <button id="clear">Undo</button>
+  
+  <p>----------Delete Organ Drawing From This Film--------</p>
+  
+  <button id="clearAll">Delete Drawing</button>
+
+  <p>---------Test Buttons----------------</p>
   
   <button id="testButton">Test</button>
-  <button id="testButton2">Test2</button>
-  
-<!--  <canvas id="testImage" width="600" height="600"></canvas>-->
-  
-  
-
-  
-<!--
-<output id="list"></output>
-
-<script>
-  function handleFileSelect(evt) {
-    var files = evt.target.files; // FileList object
-
-    // files is a FileList of File objects. List some properties.
-    var output = [];
-    for (var i = 0, f; f = files[i]; i++) {
-      output.push('<li><strong>', escape(f.name), '</strong> (', f.type || 'n/a', ') - ',
-                  f.size, ' bytes, last modified: ',
-                  f.lastModifiedDate ? f.lastModifiedDate.toLocaleDateString() : 'n/a',
-                  '</li>');
-    }
-    document.getElementById('list').innerHTML = '<ul>' + output.join('') + '</ul>';
-  }
-
-  document.getElementById('files').addEventListener('change', handleFileSelect, false);
-</script>
--->
-  
+  <button id="testButton2">Test2</button>  
 </template>
 
 <template name="organ">
-  <label id="testingabc">
-    <input id="organbox" type="checkbox" checked/>{{this.organ}}
-<!--    <input type="checkbox" {{checked}}/>{{organ}}-->
+  
+  <label>
+  <input id="organCheckBox" type="checkbox" value="{{this.organ}}" {{checked this.organ}}/>
+  {{this.organ}}
   </label>
+<!--  <label for="organCheckBox">{{this.organ}}</label>-->
+<!--    <input type="checkbox" {{checked}}/>{{organ}}-->
+  
 </template>

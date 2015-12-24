@@ -112,19 +112,7 @@ var drawOrgan = function(context, x, y, continuation, color) {
 
 
 var redraw = function () {
-  
-  
-//  var testImg = Images.findOne({_id: study.imageArray[2]});
-//  console.log("TEST IMAGE " + testImg.url());
-//  
-//  var testImage2 = new Image();
-//  testImage2.src = testImg.url();
-//  
-//  var context1 = document.getElementById("testImage").getContext("2d");
-//  context1.globalAlpha = 1;
-//  context1.clearRect(0, 0, context1.canvas.width, context1.canvas.height);
-//  context1.drawImage(testImage2, 0, 0);
-  
+  // draw everything on canvsas
   
   // set up and clear canvas
   var context = document.getElementById("canvas").getContext("2d");
@@ -132,75 +120,25 @@ var redraw = function () {
   context.clearRect(0, 0, context.canvas.width, context.canvas.height);
  
   // draw film
-  //var film = document.getElementById("film");
-  //var index = Session.get("index") - 1;
   context.drawImage(films[index], 0, 0);
-  //context.drawImage(image, 0, 0);
   
-  //if (clickX.length) {
+  // draw the current edits for organ
   drawOrgan(context, clickX, clickY, clickDrag, clickColor);
-  //}
-//  // draw new path, then draw organs
-//      //context.strokeStyle = "#df4b26";
-//    // context.strokeStyle = $("#colorpicker").val();
-//   // context.strokeStyle = clickColor;
-//      context.fillStyle = clickColor;
-//    //console.log("value " + $('#colorpicker').val());
-//    //context.lineJoin = "round";
-//    //context.lineCap = "round";
-//    //context.lineWidth = 10;
-//    //context.globalAlpha = 0.5;
-//  
-//    console.log(clickX);
-//    // only attempt to draw if there is something to draw
-//    if (clickX.length > 0 ) {
-//      context.beginPath();
-//      for (var i = 0; i < clickX.length; i++) {	
-//        
-//        if (!clickDrag[i]) {
-//          // close previous path if i not 0
-//          if (i) { 
-//            context.closePath();
-//            context.fill();
-//            //context.stroke();
-//            context.beginPath();
-//          }
-//          
-//          // start new line
-//          context.moveTo(clickX[i], clickY[i]);
-//        } else {
-//          // continue current line
-//          context.lineTo(clickX[i], clickY[i]);
-//        }
-//
-//
-////        if (clickDrag[i] && i) {
-////          context.moveTo(clickX[i-1], clickY[i-1]);
-////        } else {
-////          context.moveTo(clickX[i]-1, clickY[i]);
-////        }
-////
-////        context.lineTo(clickX[i], clickY[i]);
-//
-//
-//      }
-//      // close path for last line
-//      context.closePath();
-//      context.fill();
-//      //context.stroke();
-//    }
   
   // TODO clean up this hack (making new local vars)
   var clickXX, clickYY, clickDragD, clickColorC;
   
-  // TODO: right now, only one study, images were preloaded as above
+  // TODO: right now, only one study named "Normal" 
+  // images from study were preloaded into films
   var study = Studies.findOne({ name: "Normal" });
   var organs = study.organs;
-  console.log(organs);
+
   for (var i = 0; i < organs.length; i++) {
-    console.log("start loop");
     var organ = organs[i];
-    console.log("Organ to draw: " + organ.organ);
+    
+    // if organ is not checked, continue to next organ w/o drawing
+    console.log(organ.organ + Session.get(organ.organ));
+    if (!Session.get(organ.organ)) { continue };
     
     if (organ && organ.data[index]) {
       clickXX = organ.data[index].clickX;
@@ -213,96 +151,12 @@ var redraw = function () {
       clickDragD = [];
       clickColorC = "#000000";
     }
-    
-    
-    //if (clickXX.length > 0 ) {
-    drawOrgan(context, clickXX, clickYY, clickDragD, clickColorC);// }
-//    //context.strokeStyle = "#df4b26";
-//    // context.strokeStyle = $("#colorpicker").val();
-//    context.strokeStyle = clickColorC;
-//    //console.log("value " + $('#colorpicker').val());
-//    context.lineJoin = "round";
-//    context.lineCap = "round";
-//    context.lineWidth = 10;
-//    //context.globalAlpha = 0.5;
-//
-//    // only attempt to draw if there is something to draw
-//    if (clickXX.length > 0 ) {
-//      context.beginPath();
-//      for (var j = 0; j < clickXX.length; j++) {	
-//
-//        //console.log(clickDragD);
-//        if (clickDragD[j] && j) {
-//          //console.log("line to");
-//         context.moveTo(clickXX[j-1], clickYY[j-1]);
-//         // context.lineTo(clickXX[j], clickYY[j]);
-//        } else {
-//          
-//          //console.log("close path");
-//          //context.closePath();
-//          context.moveTo(clickXX[j]-1, clickYY[j]);
-//          //context.moveTo(clickXX[j], clickYY[j]);
-//        }
-//
-//        context.lineTo(clickXX[j], clickYY[j]);
-//        
-//
-//      }
-//      
-//      
-//      context.stroke();
-//      
-//      
-//    }
-//    
-    console.log("Done with " + organ.organ);
+    drawOrgan(context, clickXX, clickYY, clickDragD, clickColorC);
   }
-  
-  // now, for each organ, draw it for this index
-//  for (var i = 0; i < organs.length; i++) {
-//    console.log("Organ to draw: " + organs[i].organ);
-//    
-//    var organ = organs[0];
-
-    
-//    //context.strokeStyle = "#df4b26";
-//    // context.strokeStyle = $("#colorpicker").val();
-//    context.strokeStyle = clickColor;
-//    //console.log("value " + $('#colorpicker').val());
-//    context.lineJoin = "round";
-//    context.lineCap = "round";
-//    context.lineWidth = 10;
-//    //context.globalAlpha = 0.5;
-//
-//    context.beginPath();
-//    for (var i = 0; i < clickX.length; i++) {	
-//
-//
-//      if (clickDrag[i] && i) {
-//        context.moveTo(clickX[i-1], clickY[i-1]);
-//      } else {
-//        context.moveTo(clickX[i]-1, clickY[i]);
-//      }
-//
-//      context.lineTo(clickX[i], clickY[i]);
-//
-//
-//    }
-//    context.closePath();
-//    context.stroke();
-//    
-//  }
-  
-
-
-  
- 
-  
 
 }
 
 Meteor.startup(function () {
-  //Session.setDefault("index", 1);
 });
 
 Template.atlas.onCreated(function () {
@@ -332,18 +186,22 @@ Template.atlas.onRendered(function () {
 
 Template.atlas.helpers({
   organs: function () {
-    // TODO works because only one study
+    // TODO works because only one study, that is "Normal"
     var organs = Studies.findOne({}).organs;
-    
-    console.log(organs);
-    
-//    organs = _.pluck(organs, "organ");
-//    
-//    console.log(organs);
-//    organs = _.uniq(organs);
-//    
-//    console.log(organs);
     return organs;
+  }
+});
+
+Template.organ.helpers({
+  // if organs are checked from previous sessions
+  // i hate using Session vars cause i dont quite understand them
+  // this will have to do for now
+  checked: function(organ) {
+    if (organ && Session.get(organ)) {
+      return "checked";
+    } else {
+      return "";
+    }
   }
 });
 
@@ -396,11 +254,18 @@ Template.atlas.events({
   "mouseleave #canvas": function (e) {
     paint = false;
   },
-  "click #organbox": function (e) {
+  "click #organCheckBox": function (e) {
     // currently working on this TODO
     // this doesn't automagically work, have to click for
     // every one to add the field TODO TODO
     console.log("checked");
+    console.log(e.target);
+    console.log(e.target.checked);
+    console.log(e.target.getAttribute("value"));
+    Session.set(e.target.getAttribute("value"), e.target.checked);
+    
+    redraw();
+    
     //alert("checked " + event.target.checked);
 //    Meteor.call("checkOrgan",
 //      "Normal",
@@ -408,14 +273,14 @@ Template.atlas.events({
 //      event.target.checked
 //    );
     // JUST REDRAW
-    loadOrgan();
-    redraw();
+    //loadOrgan();
+    //redraw();
   },
   "click #changeColor": function (e) {
     // TODO change JQuery to meteor
     clickColor = $("#colorpicker").val();
     console.log("clickColor " + clickColor);
-    console.log("labelvalue " + $('#testingabc').text().trim());
+    //console.log("labelvalue " + $('#testingabc').text().trim());
     redraw();
   },
   "click #save": function (e) {
