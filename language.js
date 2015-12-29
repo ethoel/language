@@ -122,7 +122,7 @@ Router.onBeforeAction(function () {
     // user is not logged in, force log in
     this.layout("");
     this.render("login");
-  } else if (Meteor.user().username !== "admin") {
+  } else if (Meteor.user() && (Meteor.user().username !== "admin")) {
     this.layout("");
     this.render("unauthorized");
   } else {
