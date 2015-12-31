@@ -235,24 +235,8 @@ Template.atlas.events({
         redraw();
       }
     }
-  },
-  "mousedown #canvas": function (e) {
-    //console.log(e);
-    paint = true;
-    addClick(e.pageX - e.target.offsetLeft, e.pageY - e.target.offsetTop, false);
-    redraw();
-  },
-  "mousemove #canvas": function (e) {
-    if (paint) {
-      addClick(e.pageX - e.target.offsetLeft, e.pageY - e.target.offsetTop, true);
-      redraw();
-    }
-  },
-  "mouseup #canvas": function(e) {
-    paint = false;
-  },
-  "mouseleave #canvas": function (e) {
-    paint = false;
+    //prevents default action
+    return false;
   },
   "click #organCheckBox": function (e) {
     // currently working on this TODO
@@ -279,6 +263,24 @@ Template.atlas.events({
 });
   
 Template.layoutAdmin.events({
+  "mousedown #canvas": function (e) {
+    //console.log(e);
+    paint = true;
+    addClick(e.pageX - e.target.offsetLeft, e.pageY - e.target.offsetTop, false);
+    redraw();
+  },
+  "mousemove #canvas": function (e) {
+    if (paint) {
+      addClick(e.pageX - e.target.offsetLeft, e.pageY - e.target.offsetTop, true);
+      redraw();
+    }
+  },
+  "mouseup #canvas": function(e) {
+    paint = false;
+  },
+  "mouseleave #canvas": function (e) {
+    paint = false;
+  },
   "click #changeColor": function (e) {
     // TODO change JQuery to meteor
     clickColor = $("#colorpicker").val();
