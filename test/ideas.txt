@@ -1,0 +1,1 @@
+find( type=organ, group=kidney) returns all kidney related "organs"
