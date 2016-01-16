@@ -156,6 +156,77 @@ var redraw = function () {
 
 }
 
+var doInOrgan = function(e, doMe, elseDoMe) {
+  // TODO consolidate code with redraw somehow
+    // put it in a separate function
+    // draw everything on canvsas
+  
+    // set up and clear canvas
+    var canvas = document.getElementById("canvas");
+    var context = document.getElementById("canvas").getContext("2d");
+    var mouseX = e.pageX - e.target.offsetLeft;
+    var mouseY = e.pageY - e.target.offsetTop;
+
+    // TODO: right now, only one study named "Normal" 
+    // images from study were preloaded into films
+    var study = Studies.findOne({ name: "Normal" });
+    var organs = study.organs;
+    
+
+    for (var k = 0; k < organs.length; k++) {
+      var organ = organs[k];
+      
+      
+      // if organ is not checked, continue to next organ w/o drawing
+      //console.log(organ.organ + Session.get(organ.organ));
+      //if (!Session.get(organ.organ)) { continue };
+      
+      var x, y, continuation;
+      if (organ && organ.data[index]) {
+        x = organ.data[index].clickX;
+        y = organ.data[index].clickY;
+        continuation = organ.data[index].clickDrag;
+      } else {
+        x = [];
+        y = [];
+        continuation = [];
+      }
+
+      // only draw if there is something to draw
+      if (!x.length) { continue; }
+
+      // draw organ given x, y, drag arrays in color
+      for (var i = 0; i < x.length; i++) {	
+        // draw shapes
+        if (!continuation[i]) {
+          if (i) {
+            // fill previous shape
+            context.closePath();
+            if (context.isPointInPath(mouseX, mouseY)) {
+              doMe(canvas, organ);
+              return organ;
+            }
+          }
+          // start new shape
+          context.beginPath();
+          context.moveTo(x[i], y[i]);
+        } else {
+          // continue current shape
+          context.lineTo(x[i], y[i]);
+        }
+      }
+      // fill last shape
+      context.closePath();
+      if (context.isPointInPath(mouseX, mouseY)) {
+        doMe(canvas, organ);
+        return organ;
+      }
+    }
+    
+    elseDoMe(canvas);
+  return 0;
+}
+
 Meteor.startup(function () {
 });
 
@@ -189,6 +260,14 @@ Template.atlas.helpers({
     // TODO works because only one study, that is "Normal"
     var organs = Studies.findOne({}).organs;
     return organs;
+  },
+  hoverOrgan: function () {
+    var hoverOrgan = Session.get("hoverOrgan");
+    if (hoverOrgan) {
+      return hoverOrgan;
+    } else {
+      return "";
+    }
   }
 });
 
@@ -261,73 +340,33 @@ Template.atlas.events({
     //redraw();
   },
   "mousemove #canvas": function (e) {
-    // TODO consolidate code with redraw somehow
-    // put it in a separate function
-    // draw everything on canvsas
-  
-    // set up and clear canvas
-    var canvas = document.getElementById("canvas");
-    var context = document.getElementById("canvas").getContext("2d");
-    var mouseX = e.pageX - e.target.offsetLeft;
-    var mouseY = e.pageY - e.target.offsetTop;
-
-    // TODO: right now, only one study named "Normal" 
-    // images from study were preloaded into films
-    var study = Studies.findOne({ name: "Normal" });
-    var organs = study.organs;
-    
-
-    for (var k = 0; k < organs.length; k++) {
-      var organ = organs[k];
-      
-      
-      // if organ is not checked, continue to next organ w/o drawing
-      //console.log(organ.organ + Session.get(organ.organ));
-      //if (!Session.get(organ.organ)) { continue };
-      
-      var x, y, continuation;
-      if (organ && organ.data[index]) {
-        x = organ.data[index].clickX;
-        y = organ.data[index].clickY;
-        continuation = organ.data[index].clickDrag;
+    //TODO this is real uuugly
+    doInOrgan(e, function (canvas, myorgan) {
+      canvas.style.cursor = "pointer";
+      if (Session.get(myorgan.organ)) {
+        console.log(myorgan.organ);
+        Session.set("hoverOrgan", myorgan.organ);
       } else {
-        x = [];
-        y = [];
-        continuation = [];
+        Session.set("hoverOrgan", "");
       }
-
-      // only draw if there is something to draw
-      if (!x.length) { continue; }
-
-      // draw organ given x, y, drag arrays in color
-      for (var i = 0; i < x.length; i++) {	
-        // draw shapes
-        if (!continuation[i]) {
-          if (i) {
-            // fill previous shape
-            context.closePath();
-            if (context.isPointInPath(mouseX, mouseY)) {
-              canvas.style.cursor = "pointer";
-              return;
-            }
-          }
-          // start new shape
-          context.beginPath();
-          context.moveTo(x[i], y[i]);
-        } else {
-          // continue current shape
-          context.lineTo(x[i], y[i]);
-        }
-      }
-      // fill last shape
-      context.closePath();
-      if (context.isPointInPath(mouseX, mouseY)) {
-        canvas.style.cursor = "pointer";
-        return;
-      }
-    }
+    }, function (canvas) {
+      canvas.style.cursor = "default";
+      Session.set("hoverOrgan", "");
+    });
+  },
+  "click #canvas": function (e) {
+    // TODO this is way too convuluted man
+    var organ = doInOrgan(e, function (canvas, myorgan) {
+      console.log("clicked organ");
+    }, function (canvas) {
+      console.log("clicked no organ");
+    });
     
-    canvas.style.cursor = "default";
+    if (organ) {
+      console.log(organ.organ);
+      Session.set(organ.organ, !Session.get(organ.organ));
+      redraw();
+    }
   }
 });
   
