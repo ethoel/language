@@ -228,6 +228,7 @@ var doInOrgan = function(e, doMe, elseDoMe) {
 }
 
 Meteor.startup(function () {
+  
 });
 
 Template.atlas.onCreated(function () {
@@ -238,6 +239,36 @@ Template.atlas.onRendered(function () {
   console.log("onRendered");
   $('#colorpicker').colorpicker();
   console.log("onRendered2");
+  
+  $('body').on('keydown',function(e) { 
+      e = e || window.event;
+
+    if (e.keyCode == '38') {
+        // up arrow
+      console.log("up");
+      if ((index - 1) >= 0) {
+        index = index - 1;
+        loadOrgan();
+        redraw();
+      }
+    }
+    else if (e.keyCode == '40') {
+        // down arrow
+      console.log("down");
+      if ((index + 1) < 29) {
+        //console.log("index up");
+        index = index + 1;
+        loadOrgan();
+        redraw();
+      }
+    }
+    else if (e.keyCode == '37') {
+       // left arrow
+    }
+    else if (e.keyCode == '39') {
+       // right arrow
+    }
+  }); 
 });
 
 //Template.atlas.onRendered(function () {
