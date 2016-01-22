@@ -251,6 +251,7 @@ Template.atlas.onRendered(function () {
         loadOrgan();
         redraw();
       }
+      e.preventDefault();
     }
     else if (e.keyCode == '40') {
         // down arrow
@@ -261,6 +262,7 @@ Template.atlas.onRendered(function () {
         loadOrgan();
         redraw();
       }
+      e.preventDefault();
     }
     else if (e.keyCode == '37') {
        // left arrow
@@ -389,13 +391,18 @@ Template.atlas.events({
     // TODO this is way too convuluted man
     var organ = doInOrgan(e, function (canvas, myorgan) {
       console.log("clicked organ");
+      Session.set(myorgan.organ, !Session.get(myorgan.organ));
+      if (Session.get(myorgan.organ)) {
+        Session.set("hoverOrgan", myorgan.organ);
+      } else {
+        Session.set("hoverOrgan", "");
+      }
     }, function (canvas) {
       console.log("clicked no organ");
+      Session.set("hoverOrgan", "");
     });
     
-    if (organ) {
-      console.log(organ.organ);
-      Session.set(organ.organ, !Session.get(organ.organ));
+    if (organ) {   
       redraw();
     }
   }

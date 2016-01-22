@@ -9,12 +9,8 @@
   
     <h3>{{hoverOrgan}}</h3>
   
-  
-  <ul id="organs">
-    {{#each organs}}
-      {{> organ}}
-    {{/each}}
-  </ul>
+  <!--on one line to avoid inline block spaces-->
+  <ul id="organs">{{#each organs}}{{> organ}}{{/each}}</ul>
   
   {{#contentFor "admin"}}
 

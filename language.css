@@ -12,20 +12,35 @@
 }*/
 
 html {
+/*
+  height: 100%;
+  min-height: 100% !important;
+*/
+
 }
 
 body {
 /*  margin: 0px;*/
 /*  max-width: 62.5em;*/
+/*
+  height: 100%;
+  min-height: 100% !important;
+*/
+
+  min-height: 100vh;
   max-width: 50em;
   background-color: #151515;
 /*  background-image: url("pattern.jpg");*/
   margin: 0 auto !important;
-  float: none !important;
+/*  float: none !important;*/
 }
 
 #wrapper {
-  height: 100vh;
+/*
+  height: 100%;
+  min-height: 100% !important;
+*/
+  min-height: 100vh;
   background-color: #1d1d1d;
   color: #c7c7c7;
   box-shadow: 0px 0px 1em #000000;
@@ -66,8 +81,8 @@ ul#organs {
 
 #organs li {
   
-  display: block;
-  float: left;
+  display: inline-block;
+/*  float: left;*/
   width: 33%;
   margin: 0 auto;
   padding: 0 0;
