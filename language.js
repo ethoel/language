@@ -79,6 +79,8 @@ Meteor.methods({
 //      data: [ { clickX, clickY, clickDrag }, { clickX, clickY, clickDrag } ] }
 //}
 
+
+// needed to update this
 Router.configure({
   layoutTemplate: 'layout'
 });

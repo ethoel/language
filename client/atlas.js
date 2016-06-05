@@ -372,6 +372,8 @@ Template.atlas.events({
     //loadOrgan();
     //redraw();
   },
+  
+  // TODO: when the wheel moves, we need to change this as well
   "mousemove #canvas": function (e) {
     //TODO this is real uuugly
     doInOrgan(e, function (canvas, myorgan) {
