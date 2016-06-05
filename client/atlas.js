@@ -5,21 +5,22 @@ var clickColor = 0;
 var paint = false;
 var films = [];
 var index = 0;
+var study_length = -1;
 
 var loadFilms = function () {
   
   var study = Studies.findOne({name: "Normal"});
   
-  // if there isn't any normal study in database
+  // if there is a normal study in database
+  // TODO allow other studies...
   if (study) {
-    //console.log("STUDY READY " + study.imageArray);
-    // TODO generalize this to get all images in a dir
-    // TODO make this nicer so it doesn't have to depend on 29
+    console.log("STUDY LENGTH = " + study.imageArray.length);
+    
     var loaded = 0;
-    var total = 29;
-    for (var i = 0; i < 29; i++) {
+    study_length = study.imageArray.length;
+    for (var i = 0; i < study_length; i++) {
       films.push(new Image());
-      films[i].onload = function () { if (++loaded >= total) redraw(); };
+      films[i].onload = function () { if (++loaded >= study_length) redraw(); };
       var imageFile = Images.findOne({_id: study.imageArray[i]});
       films[i].src = imageFile.url();
     }
@@ -255,8 +256,8 @@ Template.atlas.onRendered(function () {
     }
     else if (e.keyCode == '40') {
         // down arrow
-      console.log("down");
-      if ((index + 1) < 29) {
+      console.log("down. study length = " + study_length);
+      if ((index + 1) < study_length) {
         //console.log("index up");
         index = index + 1;
         loadOrgan();
@@ -330,9 +331,9 @@ Template.atlas.events({
     if (e.originalEvent.deltaY > 0) {
       // scroll down
       //alert("down " + event.deltaY);
-      
-      if ((index + 1) < 29) {
-        //console.log("index up");
+      console.log("index up. study_length = " + study_length);
+      if ((index + 1) < study_length) {
+        
         index = index + 1;
         loadOrgan();
         redraw();

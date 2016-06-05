@@ -80,7 +80,6 @@ Meteor.methods({
 //}
 
 
-// needed to update this
 Router.configure({
   layoutTemplate: 'layout'
 });
