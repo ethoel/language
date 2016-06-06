@@ -89,20 +89,28 @@ Router.route("/", function () {
 });
 
 Router.route("/atlas", function () {
+  this.redirect("/atlas/normal");
+});
+
+Router.route("/atlas/:study", function () {
   
   this.wait(Meteor.subscribe("organs"));
   this.wait(Meteor.subscribe("studies"));
   this.wait(Meteor.subscribe("images"));
   
   if (this.ready()) {
-    this.render();
+    this.render("atlas");
     
   } else {
     this.render("/loading");
   }
 });
 
-Router.route("/admin", function() {
+Router.route("/admin", function () {
+  this.redirect("/admin/normal");
+});
+
+Router.route("/admin/:study", function() {
   this.layout("layoutAdmin");
   
   this.wait(Meteor.subscribe("organs"));

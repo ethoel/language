@@ -1,6 +1,6 @@
 <template name="atlas">
   
-  <h1>Demo</h1>
+  <h1>{{title}}</h1>
   
   <div id="canvas-container">
     <canvas id="canvas" width="500" height="500"></canvas>
@@ -12,11 +12,16 @@
   <!--on one line to avoid inline block spaces-->
   <ul id="organs">{{#each organs}}{{> organ}}{{/each}}</ul>
   
+  <!-- get rid of this
+  <input type="text" id="currentStudy" value="Normal"/>
+ -->
+  
   {{#contentFor "admin"}}
 
   <p>------------Upload New Study--------</p>
   
   <input type="file" id="loadImages" multiple>
+
   
   <p>---------Organ Being Edited---------</p>
   
@@ -28,7 +33,7 @@
   <input type="text" id="colorpicker" value="5367ce"/>
   <button id="changeColor">Set Color</button>
   
-  <p>---------Save Current State---------</p>
+  <p>---------Save Current Drawing On This Film---------</p>
   
   <button id="save">Save</button>
   <button id="clear">Undo</button>

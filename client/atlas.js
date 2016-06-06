@@ -6,10 +6,11 @@ var paint = false;
 var films = [];
 var index = 0;
 var study_length = -1;
+var studyName = "";
 
 var loadFilms = function () {
-  
-  var study = Studies.findOne({name: "Normal"});
+  studyName = Router.current().params.study;
+  var study = Studies.findOne({name: studyName});
   
   // if there is a normal study in database
   // TODO allow other studies...
@@ -24,7 +25,12 @@ var loadFilms = function () {
       var imageFile = Images.findOne({_id: study.imageArray[i]});
       films[i].src = imageFile.url();
     }
-  }
+  } 
+  // will do this when i figure out a better way to load studies
+//  else {
+//    // if no study found
+//    Router.go("/");
+//  }
   // the new code
 //  var study;
 //  study = Studies.findOne({ name: "Normal" });
@@ -131,10 +137,15 @@ var redraw = function () {
   
   // TODO: right now, only one study named "Normal" 
   // images from study were preloaded into films
-  var study = Studies.findOne({ name: "Normal" });
+  var study = Studies.findOne({ name: studyName });
   var organs = study.organs;
+  var organsLength = 0;
+  if (organs) {
+    organsLength = organs.length;
+  }
+  console.log("organsLength " + organsLength);
 
-  for (var i = 0; i < organs.length; i++) {
+  for (var i = 0; i < organsLength; i++) {
     var organ = organs[i];
     
     // if organ is not checked, continue to next organ w/o drawing
@@ -170,11 +181,15 @@ var doInOrgan = function(e, doMe, elseDoMe) {
 
     // TODO: right now, only one study named "Normal" 
     // images from study were preloaded into films
-    var study = Studies.findOne({ name: "Normal" });
+    var study = Studies.findOne({ name: studyName });
     var organs = study.organs;
     
-
-    for (var k = 0; k < organs.length; k++) {
+    var organsLength = 0;
+    if (organs) {
+      organsLength = organs.length;
+    }
+    console.log("organsLength " + organsLength);
+    for (var k = 0; k < organsLength; k++) {
       var organ = organs[k];
       
       
@@ -302,6 +317,9 @@ Template.atlas.helpers({
     } else {
       return "";
     }
+  },
+  title: function () {
+    return Router.current().params.study;
   }
 });
 
@@ -445,7 +463,7 @@ Template.layoutAdmin.events({
 //      "aorta",
 //      { clickX: clickX, clickY: clickY, clickDrag: clickDrag, clickColor: clickColor }
 //    );
-    var study = Studies.findOne({ name: "Normal" }, {fields: { organs: 1, _id: 0 }});
+    var study = Studies.findOne({ name: studyName }, {fields: { organs: 1, _id: 0 }});
     
     //elemMatch not supported, { organs: { $elemMatch: { organ: "Aorta" }}});
     //so using this hack instead ughh
@@ -473,7 +491,7 @@ Template.layoutAdmin.events({
     
     
     Meteor.call("saveDrawingToOrgan",
-                "Normal",
+                studyName,
                 $("#currentOrgan").val(),
                 clickColor,
                 index,
@@ -490,7 +508,7 @@ Template.layoutAdmin.events({
   },
   "click #clearAll": function (e) {
     Meteor.call("deleteDrawing",
-                "Normal",
+                studyName,
                 $("#currentOrgan").val(),
                 index
                );
@@ -510,8 +528,10 @@ Template.layoutAdmin.events({
 //        }
 //        imageArray.push(fileObj._id);
         // now update database with new array
+        
+        //TODO other than NORMAL
         Meteor.call("addImageToStudy",
-                    "Normal",
+                    studyName,
                     fileObj._id
                    );
       });
@@ -520,7 +540,9 @@ Template.layoutAdmin.events({
   },
   "click #saveCurrentOrgan": function (e) {
     console.log("saving current organ");
-    Meteor.call("addOrganToStudy", "Normal", $("#currentOrgan").val());
+    
+    // TODO others other than "NORMAL"--though I don't think this code is active anymore
+    Meteor.call("addOrganToStudy", studyName, $("#currentOrgan").val());
     // TODO get rid of jquery
     // TODO above needs to become more than just a test button
   },
