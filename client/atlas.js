@@ -25,6 +25,8 @@ var loadFilms = function () {
       var imageFile = Images.findOne({_id: study.imageArray[i]});
       films[i].src = imageFile.url();
     }
+    
+    
   } 
   // will do this when i figure out a better way to load studies
 //  else {
@@ -121,13 +123,46 @@ var drawOrgan = function(context, x, y, continuation, color) {
 var redraw = function () {
   // draw everything on canvsas
   
+  // TODO better way to do this?
+  var studyCanvas = document.getElementById("canvas");
+  //studyCanvas.height = films[0].height;
+  //studyCanvas.width = films[0].width;
+  //studyCanvas.height = 700;
+  //studyCanvas.width = 700;
+  var studyHeightY = films[0].height;
+  var studyWidthX = films[0].width;
+  var maxHeightWidth = 700;
+  
+  if (studyHeightY > studyWidthX && studyHeightY > maxHeightWidth) {
+    studyWidthX = maxHeightWidth / studyHeightY * studyWidthX;
+    studyHeightY = maxHeightWidth;
+  } else if (studyWidthX > maxHeightWidth) {
+    studyHeightY = maxHeightWidth / studyWidthX * studyHeightY;
+    studyWidthX = maxHeightWidth;
+  }
+  
+  studyCanvas.height = studyHeightY;
+  studyCanvas.width = studyWidthX;
+  
   // set up and clear canvas
+  
   var context = document.getElementById("canvas").getContext("2d");
+  
+  // make the image fit
+  context.scale(studyCanvas.width/films[0].width, studyCanvas.height/films[0].height);
+  
   context.globalAlpha = 1;
   context.clearRect(0, 0, context.canvas.width, context.canvas.height);
  
-  // draw film
+  
+  
+  // draw film on canvas 500x500 TODO ????
+    
+  
+  
+  //context.drawImage(films[index], 0, 0, 500, 500);
   context.drawImage(films[index], 0, 0);
+
   
   // draw the current edits for organ
   drawOrgan(context, clickX, clickY, clickDrag, clickColor);
@@ -165,6 +200,10 @@ var redraw = function () {
     }
     drawOrgan(context, clickXX, clickYY, clickDragD, clickColorC);
   }
+  
+  //studyCanvas.height = 500;
+  //studyCanvas.width = 500;
+
 
 }
 
@@ -252,6 +291,8 @@ Template.atlas.onCreated(function () {
 });
 
 Template.atlas.onRendered(function () {
+  
+  
   console.log("onRendered");
   $('#colorpicker').colorpicker();
   console.log("onRendered2");
@@ -320,6 +361,26 @@ Template.atlas.helpers({
   },
   title: function () {
     return Router.current().params.study;
+  },
+  studyHeight: function () {
+//    var studyCanvas = document.getElementById("canvas");
+//    studyCanvas.height = films[0].height;
+//    studyCanvas.width = films[0].width;
+    if (films.length) {
+      return films[0].height;
+    } else {
+      return 300;
+    }
+  },
+  studyWidth: function () {
+//    var studyCanvas = document.getElementById("canvas");
+//    studyCanvas.height = films[0].height;
+//    studyCanvas.width = films[0].width;
+    if (films.length) {
+      return films[0].width;
+    } else {
+      return 300;
+    }
   }
 });
 
