@@ -16,41 +16,69 @@
   <input type="text" id="currentStudy" value="Normal"/>
  -->
   
+
+  
+<!--
   {{#contentFor "admin"}}
 
-  <p>------------Upload New Study--------</p>
-  
-  <input type="file" id="loadImages" multiple>
-
-  
-  <p>---------Organ Being Edited---------</p>
-  
-  <input type="text" id="currentOrgan" value="Aorta"/>
-  <button id="saveCurrentOrgan">Create New Organ</button>
-  
-  <p>---------Select Color for Organ---------</p>
-  
-  <input type="text" id="colorpicker" value="5367ce"/>
-  <button id="changeColor">Set Color</button>
-  
-  <p>---------Save Current Drawing On This Film---------</p>
-  
-  <button id="save">Save</button>
-  <button id="clear">Undo</button>
-  
-  <p>----------Delete Organ Drawing From This Film--------</p>
-  
-  <button id="clearAll">Delete Drawing</button>
-
-  <p>---------Test Buttons----------------</p>
-  
-  <button id="testButton">Test</button>
-  <button id="testButton2">Test2</button>  
+ 
   
   
   
   {{/contentFor}}
+-->
   
+  {{> contentFor region="admin" template="controlPanel"}}
+  
+</template>
+
+<template name="controlPanel">
+
+
+  <h2>
+  Editing
+  <select id="currentOrganDrop">
+    {{#each organs}}
+    {{> organdrop}}
+    {{/each}}
+  </select>
+  </h2>
+  
+  <p>
+  <button id="clear">Clear New Drawing</button>
+  
+  </p>
+  
+  <p>
+  <input type="text" id="colorpicker" value="{{currentOrganColor}}"/>
+  <button id="changeColor">Change Color</button>
+  <button id="resetColor">Reset Color</button>
+  </p>
+  
+  <p>
+  <button id="save" color="green">Save New Drawing and Color</button>
+  <button id="clearAll">Delete All Drawing and Save</button>
+  </p>
+
+  <br/>
+  <h4> Create new organ </h4>
+  <input type="text" id="currentOrgan" placeholder="New organ name"/>
+  <button id="saveCurrentOrgan">Create New Organ</button>
+  
+  <br/><br/>
+  <h4>
+    Upload new study </h4>
+  <input type="file" id="loadImages" multiple>
+  
+  <br/>
+  
+<!--
+  
+  
+  
+  <button id="testButton2">Test2</button> 
+  <button id="testButton">Control</button>
+-->
 </template>
 
 <template name="organ"><li>
@@ -64,3 +92,7 @@
 <!--    <input type="checkbox" {{checked}}/>{{organ}}-->
   
 </li></template>
+
+<template name="organdrop">
+  <option value="{{this.organ}}">{{this.organ}}</option>
+</template>

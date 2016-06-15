@@ -27,13 +27,13 @@ Meteor.methods({
          $set: { createdAt: new Date() }
     });
   },
-  addOrganToStudy: function(name, organ) {
-    // TODO make this function better
+  addOrganToStudy: function(name, organ, arrayN) {
+    // TODO make this function better SERIOUSLY!!!!! 29?????
     Studies.upsert({
       name: name
     }, { $push: { 
       organs: { organ: organ, color: "#FFFFFF",
-              data: new Array(29) } 
+              data: new Array(arrayN) } 
     }
     });
   },

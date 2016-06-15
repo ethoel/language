@@ -87,7 +87,7 @@ var loadOrgan = function () {
  clickX = [];
  clickY = [];
  clickDrag = [];
- clickColor = "#FFFFFF";
+ //clickColor = "#FFFFFF";
   
 }
 
@@ -292,6 +292,7 @@ Template.atlas.onCreated(function () {
 
 Template.atlas.onRendered(function () {
   
+  Session.set("currentOrgan", $("#currentOrganDrop option:selected").val());
   
   console.log("onRendered");
   $('#colorpicker').colorpicker();
@@ -347,8 +348,9 @@ Template.atlas.onRendered(function () {
 
 Template.atlas.helpers({
   organs: function () {
-    // TODO works because only one study, that is "Normal"
-    var organs = Studies.findOne({}).organs;
+    // TODO works because only one study, that is "Normal" SPOT
+    var organs = Studies.findOne({name: studyName}).organs;
+    //console.log(organs);
     return organs;
   },
   hoverOrgan: function () {
@@ -489,8 +491,48 @@ Template.atlas.events({
     }
   }
 });
+
+// Weird that helpers are under atlas but events under layout admin. Doesnt pose a problem yet
+Template.controlPanel.helpers({
+  organs: function () {
+    // TODO works because only one study, that is "Normal" SPOT
+    var organs = Studies.findOne({name: studyName}).organs;
+    //console.log(organs);
+    return organs;
+  },
+  currentOrganColor: function() {
+    console.log(Session.get("currentOrgan"));
+    
+    var current = Session.get("currentOrgan");
+    //return "#000000";
+    
+    var study = Studies.findOne({ name: studyName });
+    
+    //elemMatch not supported, { organs: { $elemMatch: { organ: "Aorta" }}});
+    
+    for (var i = 0; i < study.organs.length; i++) {
+      if (study.organs[i].organ === current) {
+        // this is the organ we are looking for
+        var organ = study.organs[i];
+        clickColor = organ.color;
+        return organ.color;
+      }
+    }
+  },
+  currentOrgan: function() {
+    return Session.get("currentOrgan");
+  }
+});
   
 Template.layoutAdmin.events({
+  "change #currentOrganDrop": function (e) {
+//    console.log($("#currentOrganDrop option:selected").val());
+    Session.set("currentOrgan", $("#currentOrganDrop option:selected").val());
+    //console.log(e);
+//    paint = true;
+//    addClick(e.pageX - e.target.offsetLeft, e.pageY - e.target.offsetTop, false);
+//    redraw();
+  },
   "mousedown #canvas": function (e) {
     //console.log(e);
     paint = true;
@@ -516,6 +558,26 @@ Template.layoutAdmin.events({
     //console.log("labelvalue " + $('#testingabc').text().trim());
     redraw();
   },
+  "click #resetColor": function (e) {
+    // TODO change JQuery to meteor
+    
+    var current = Session.get("currentOrgan");
+    //return "#000000";
+    
+    var study = Studies.findOne({ name: studyName });
+    
+    //elemMatch not supported, { organs: { $elemMatch: { organ: "Aorta" }}});
+    
+    for (var i = 0; i < study.organs.length; i++) {
+      if (study.organs[i].organ === current) {
+        // this is the organ we are looking for
+        var organ = study.organs[i];
+        clickColor = organ.color;
+        
+      }
+    }
+    redraw();
+  },
   "click #save": function (e) {
     // TODO this method works grossly but needs cleaning up
     console.log("saved " + clickColor);
@@ -531,9 +593,10 @@ Template.layoutAdmin.events({
     var clickXX =[];
     var clickYY = [];
     var clickDragD = [];
+    var current = Session.get("currentOrgan");
     //console.log(study);
     for (var i = 0; i < study.organs.length; i++) {
-      if (study.organs[i].organ === $("#currentOrgan").val()) {
+      if (study.organs[i].organ === current) {
         // this is the organ we are looking for
         var organ = study.organs[i];
         clickXX = organ.data[index] ? organ.data[index].clickX : [];
@@ -553,7 +616,8 @@ Template.layoutAdmin.events({
     
     Meteor.call("saveDrawingToOrgan",
                 studyName,
-                $("#currentOrgan").val(),
+                //$("#currentOrgan").val(),
+                Session.get("currentOrgan"),
                 clickColor,
                 index,
                 { clickX: clickXXX, clickY: clickYYY, clickDrag: clickDragDD }
@@ -570,11 +634,13 @@ Template.layoutAdmin.events({
   "click #clearAll": function (e) {
     Meteor.call("deleteDrawing",
                 studyName,
-                $("#currentOrgan").val(),
+                //$("#currentOrgan").val(),
+                Session.get("currentOrgan"),
                 index
                );
     redraw();
   },
+  // NEXT TODO I need to work on this function to create new studies without crashing
   "change #loadImages": function (e) {
     FS.Utility.eachFile(e, function(file) {
       Images.insert(file, function (err, fileObj) {
@@ -603,12 +669,22 @@ Template.layoutAdmin.events({
     console.log("saving current organ");
     
     // TODO others other than "NORMAL"--though I don't think this code is active anymore
-    Meteor.call("addOrganToStudy", studyName, $("#currentOrgan").val());
+    Meteor.call("addOrganToStudy", studyName, Session.get("currentOrgan"), study_length);
     // TODO get rid of jquery
     // TODO above needs to become more than just a test button
   },
+  "click #testButton": function (e) {
+    console.log("Test test test");
+//    Meteor.call("saveDrawingToOrgan",
+//                "Normal",
+//                "Aorta",
+//                clickColor,
+//                index,
+//                { clickX: clickX, clickY: clickY, clickDrag: clickDrag }
+//               )
+  },
   "click #testButton2": function (e) {
-    console.log("Test2");
+    console.log(Session.get("currentOrgan"));
 //    Meteor.call("saveDrawingToOrgan",
 //                "Normal",
 //                "Aorta",
