@@ -9,6 +9,7 @@ var study_length = -1;
 var studyName = "";
 
 var loadFilms = function () {
+  console.log("loading films");
   studyName = Router.current().params.study;
   var study = Studies.findOne({name: studyName});
   
@@ -27,7 +28,7 @@ var loadFilms = function () {
     }
     
     
-  } 
+  }
   // will do this when i figure out a better way to load studies
 //  else {
 //    // if no study found
@@ -292,6 +293,8 @@ Template.atlas.onCreated(function () {
 
 Template.atlas.onRendered(function () {
   
+  $("#savedFade").fadeOut(0);
+  
   Session.set("currentOrgan", $("#currentOrganDrop option:selected").val());
   
   console.log("onRendered");
@@ -348,7 +351,7 @@ Template.atlas.onRendered(function () {
 
 Template.atlas.helpers({
   organs: function () {
-    // TODO works because only one study, that is "Normal" SPOT
+    // TODO SPOT
     var organs = Studies.findOne({name: studyName}).organs;
     //console.log(organs);
     return organs;
@@ -501,6 +504,10 @@ Template.controlPanel.helpers({
     return organs;
   },
   currentOrganColor: function() {
+    if (!Session.get("currentOrgan")) {
+      return "#123456";
+    }
+    
     console.log(Session.get("currentOrgan"));
     
     var current = Session.get("currentOrgan");
@@ -559,6 +566,10 @@ Template.layoutAdmin.events({
     redraw();
   },
   "click #resetColor": function (e) {
+    //console.log(Session.get("currentOrgan"));
+    if (!Session.get("currentOrgan")) {
+      return;
+    }
     // TODO change JQuery to meteor
     
     var current = Session.get("currentOrgan");
@@ -580,7 +591,12 @@ Template.layoutAdmin.events({
   },
   "click #save": function (e) {
     // TODO this method works grossly but needs cleaning up
+    if (!Session.get("currentOrgan")) {
+      return;
+    }
+    
     console.log("saved " + clickColor);
+    $("#savedFade").fadeIn(100).fadeOut(900);
 //    Meteor.call("upsertOrgan", 
 //      films[index].src,
 //      "aorta",
@@ -632,6 +648,9 @@ Template.layoutAdmin.events({
     redraw();
   },
   "click #clearAll": function (e) {
+    if (!Session.get("currentOrgan")) {
+      return;
+    }
     Meteor.call("deleteDrawing",
                 studyName,
                 //$("#currentOrgan").val(),
@@ -642,6 +661,12 @@ Template.layoutAdmin.events({
   },
   // NEXT TODO I need to work on this function to create new studies without crashing
   "change #loadImages": function (e) {
+    // shortcircuit if images already loaded for this route TODO
+    if (study_length > 0) {
+      console.log("No images loaded");
+      return;
+    }
+    
     FS.Utility.eachFile(e, function(file) {
       Images.insert(file, function (err, fileObj) {
         console.log(fileObj._id);
@@ -659,15 +684,18 @@ Template.layoutAdmin.events({
         //TODO other than NORMAL
         Meteor.call("addImageToStudy",
                     studyName,
-                    fileObj._id
+                    fileObj._id,
+                    function () { location.reload(true); }
                    );
       });
     });
-    console.log("loadImages");
   },
   "click #saveCurrentOrgan": function (e) {
-    console.log("saving current organ");
-    
+    if ($("#currentOrgan").val() === "") {
+      return;
+    }
+    console.log("Added organ");
+    Session.set("currentOrgan", $("#currentOrgan").val());
     // TODO others other than "NORMAL"--though I don't think this code is active anymore
     Meteor.call("addOrganToStudy", studyName, Session.get("currentOrgan"), study_length);
     // TODO get rid of jquery

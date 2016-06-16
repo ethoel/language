@@ -124,6 +124,10 @@ button#clearAll {
   background-color: #ff9999;
 }
 
+#savedFade {
+  color: azure;
+}
+
 /*
 input[type="checkbox"] + label span {
     display:inline-block;
