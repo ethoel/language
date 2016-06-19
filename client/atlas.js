@@ -134,24 +134,36 @@ var redraw = function () {
   var studyWidthX = films[0].width;
   var maxHeightWidth = 700;
   
-  if (studyHeightY > studyWidthX && studyHeightY > maxHeightWidth) {
-    studyWidthX = maxHeightWidth / studyHeightY * studyWidthX;
-    studyHeightY = maxHeightWidth;
-  } else if (studyWidthX > maxHeightWidth) {
-    studyHeightY = maxHeightWidth / studyWidthX * studyHeightY;
-    studyWidthX = maxHeightWidth;
+  // TODO same hack as below
+  if (!Router.current().route.getName().includes("admin")) {
+    // only scale if not admin
+    if (studyHeightY > studyWidthX && studyHeightY > maxHeightWidth) {
+      studyWidthX = maxHeightWidth / studyHeightY * studyWidthX;
+      studyHeightY = maxHeightWidth;
+    } else if (studyWidthX > maxHeightWidth) {
+      studyHeightY = maxHeightWidth / studyWidthX * studyHeightY;
+      studyWidthX = maxHeightWidth;
+    }
   }
+  
+
   
   studyCanvas.height = studyHeightY;
   studyCanvas.width = studyWidthX;
+  document.body.style.width = studyCanvas.width;
   
   // set up and clear canvas
   
   var context = document.getElementById("canvas").getContext("2d");
   
-  // make the image fit
-  context.scale(studyCanvas.width/films[0].width, studyCanvas.height/films[0].height);
-  
+  // make the image fit if not admin
+  console.log(Router.current().route.getName().includes("admin"));
+  // TODO fix this hack--this whole program is becoming one big hack
+  if (!Router.current().route.getName().includes("admin")) {
+    // only scale if not admin
+    context.scale(studyCanvas.width/films[0].width, studyCanvas.height/films[0].height);
+  }
+    
   context.globalAlpha = 1;
   context.clearRect(0, 0, context.canvas.width, context.canvas.height);
  
@@ -163,7 +175,9 @@ var redraw = function () {
   
   //context.drawImage(films[index], 0, 0, 500, 500);
   context.drawImage(films[index], 0, 0);
-
+  // TODO this means that the drawings cannot be scaled anymore
+  // Only scale if not admin
+  // context.scale(films[0].width/studyCanvas.width, films[0].height/studyCanvas.height);
   
   // draw the current edits for organ
   drawOrgan(context, clickX, clickY, clickDrag, clickColor);
@@ -284,7 +298,8 @@ var doInOrgan = function(e, doMe, elseDoMe) {
 }
 
 Meteor.startup(function () {
-  
+//  Session.set("tracker_study_length", 0);
+  Session.set("tracker_goal", 0);
 });
 
 Template.atlas.onCreated(function () {
@@ -406,6 +421,29 @@ Tracker.autorun(function() {
 //    context = document.getElementById("scan").getContext("2d");
 //    var mimage = document.getElementById("myimage");
 //    context.drawImage(mimage, 0, 0);
+  // once images are loaded
+//  console.log("TRACKER");
+//  var study = Studies.findOne({name: studyName});
+//  if (study) {
+//    console.log("Images LOADED");
+//  }
+// TODO this code just feels horrible
+//  console.log("Tracker " + Session.get("tracker_study_length" + " goal " + Session.get("tracker_goal")));
+//  if (Session.get("tracker_goal") !== undefined && Session.get("tracker_study_length") === Session.get("tracker_goal")) {
+//    console.log("TRACKER LENGTH " + Session.get("tracker_goal"));
+//    location.reload(true);
+//  }
+  if (Session.get("tracker_goal")) {
+    var study = Studies.findOne({name: studyName});
+    if (study && study.imageArray.length === Session.get("tracker_goal")) {
+//      var imageFile = Images.findOne({_id: study.imageArray[0]});
+//      if (imageFile.hasStored("images")) {
+//        console.log(imageFile.hasStored("images") + " LOADED BAH BAH " + Session.get("tracker_goal"));
+//      }
+      console.log("Images Loaded HAHAHAHAH " + study.imageArray.length);
+      location.reload(true);
+    }
+  }
 });
 
 Template.atlas.events({
@@ -667,26 +705,61 @@ Template.layoutAdmin.events({
       return;
     }
     
+//    var loadNewImages = Meteor.wrapAsync(function (callback) {
+//  
+//  FS.Utility.eachFile(e, function(file) {
+//      Images.insert(file, function (err, fileObj) {
+//        console.log(fileObj._id);
+//        // add image id to array as they load
+////        var study, imageArray;
+////        study = Studies.findOne({name: "Normal"});
+////        if (!study) {
+////          imageArray = [];
+////        } else {
+////          imageArray = study.imageArray;
+////        }
+////        imageArray.push(fileObj._id);
+//        // now update database with new array
+//        
+//        //TODO other than NORMAL
+//        Meteor.call("addImageToStudy",
+//                    studyName,
+//                    fileObj._id/*,
+//                    function () { console.log(fileObj._id + "ADDED TO study"); }*/
+//                   );
+//      });
+//  });
+//    });
+//    var loadedNewImages = loadNewImages();
+//    console.log("IMAGES LOADED BOOYAH");
+    $("#overlay").css("display", "inline");
+    Session.set("tracker_goal", event.target.files.length);
     FS.Utility.eachFile(e, function(file) {
       Images.insert(file, function (err, fileObj) {
-        console.log(fileObj._id);
-        // add image id to array as they load
-//        var study, imageArray;
-//        study = Studies.findOne({name: "Normal"});
-//        if (!study) {
-//          imageArray = [];
-//        } else {
-//          imageArray = study.imageArray;
-//        }
-//        imageArray.push(fileObj._id);
-        // now update database with new array
-        
-        //TODO other than NORMAL
-        Meteor.call("addImageToStudy",
-                    studyName,
-                    fileObj._id,
-                    function () { location.reload(true); }
-                   );
+        if (err) {
+          console.log("Error");
+        } else {
+          console.log(fileObj._id + " being added");
+          
+          var intervalHandle = Meteor.setInterval(function () {
+            console.log("Inside interval");
+            if (fileObj.hasStored("images")) {
+              // image has been uploaded and stored, add to study
+              Meteor.call("addImageToStudy",
+                      studyName,
+                      fileObj._id
+
+
+                      //,
+  //                    function () { Session.set("tracker_study_length", Session.get("tracker_study_length") + 1); } 
+                     );
+              Meteor.clearInterval(intervalHandle);
+            }
+            
+          }, 1000);
+          
+          
+        }
       });
     });
   },
@@ -695,14 +768,21 @@ Template.layoutAdmin.events({
       return;
     }
     console.log("Added organ");
+    
     Session.set("currentOrgan", $("#currentOrgan").val());
     // TODO others other than "NORMAL"--though I don't think this code is active anymore
-    Meteor.call("addOrganToStudy", studyName, Session.get("currentOrgan"), study_length);
+    Meteor.call("addOrganToStudy", studyName, Session.get("currentOrgan"), study_length,
+               function () {
+     // set the dropdown to new organ
+      $("#currentOrganDrop").val(Session.get("currentOrgan")).change();
+      
+                           }
+               );
     // TODO get rid of jquery
     // TODO above needs to become more than just a test button
   },
   "click #testButton": function (e) {
-    console.log("Test test test");
+    $("#overlay").css("display", "inline");
 //    Meteor.call("saveDrawingToOrgan",
 //                "Normal",
 //                "Aorta",
@@ -712,7 +792,7 @@ Template.layoutAdmin.events({
 //               )
   },
   "click #testButton2": function (e) {
-    console.log(Session.get("currentOrgan"));
+    $("#overlay").css("display", "none");
 //    Meteor.call("saveDrawingToOrgan",
 //                "Normal",
 //                "Aorta",
@@ -722,4 +802,3 @@ Template.layoutAdmin.events({
 //               )
   }
 });
-

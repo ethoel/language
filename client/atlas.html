@@ -1,9 +1,15 @@
 <template name="atlas">
   
-  <h1>{{title}}</h1>
+  <div id="overlay"> <p>
+    Loading images. Please wait for page to refresh automatically...
+    </p>
+  </div>
+  
+<!--  <h1>{{title}}</h1>-->
+  <h1>Demo</h1>
   
   <div id="canvas-container">
-    <canvas id="canvas" width="500" height="500"></canvas>
+    <canvas id="canvas"></canvas>
   </div>
   
   
@@ -78,12 +84,13 @@
   
   <br/>
   
+  <button id="testButton">Test1</button>
 <!--
   
   
   
   <button id="testButton2">Test2</button> 
-  <button id="testButton">Control</button>
+  <button id="testButton">Test1</button>
 -->
 </template>
 
