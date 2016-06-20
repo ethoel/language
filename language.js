@@ -89,7 +89,7 @@ Router.route("/", function () {
 });
 
 Router.route("/atlas", function () {
-  this.redirect("/atlas/normal");
+  this.redirect("/atlas/test3");
 });
 
 Router.route("/atlas/:study", function () {
@@ -107,7 +107,7 @@ Router.route("/atlas/:study", function () {
 });
 
 Router.route("/admin", function () {
-  this.redirect("/admin/normal");
+  this.redirect("/admin/test3");
 });
 
 Router.route("/admin/:study", function() {
@@ -123,7 +123,7 @@ Router.route("/admin/:study", function() {
   } else {
     this.render("/loading");
   }
-})
+}, {name: 'admin.study'});
 
 // When log in should be required
 Router.onBeforeAction(function () {
@@ -138,4 +138,4 @@ Router.onBeforeAction(function () {
     // otherwise continue routing
     this.next();
   }
-}, { only: ['admin'] });
+}, { only: ['admin', 'admin.study'] });
