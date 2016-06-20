@@ -54,6 +54,9 @@ h1 {
   padding-top: .3em;
   background-color: #1d1d1d;
   color: #c7c7c7;
+  border-bottom-color: black;
+  border-bottom-style: solid;
+  border-bottom-width: .5em;
   
   margin: 0 auto !important;
   float: none !important;
@@ -64,6 +67,7 @@ h1 {
 h3 {
   margin: 0 auto !important;
   background-color: black;
+/*  background-color: #1d1d1d;*/
   padding-bottom: .5em;
   padding-top: .3em;
   height: 2em;
