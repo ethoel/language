@@ -22,7 +22,16 @@ var loadFilms = function () {
     study_length = study.imageArray.length;
     for (var i = 0; i < study_length; i++) {
       films.push(new Image());
-      films[i].onload = function () { if (++loaded >= study_length) redraw(); };
+      
+      // first draw is called, clear loading screen
+//        console.log("HELLO");
+//  $("#atlasOverlay").css("display", "none");
+      films[i].onload = function () { 
+        if (++loaded >= study_length) { 
+          redraw(); 
+          $("#atlasOverlay").css("display", "none");
+        }
+      };
       var imageFile = Images.findOne({_id: study.imageArray[i]});
       films[i].src = imageFile.url();
     }
@@ -312,9 +321,9 @@ Template.atlas.onRendered(function () {
   
   Session.set("currentOrgan", $("#currentOrganDrop option:selected").val());
   
-  console.log("onRendered");
+  //console.log("onRendered");
   $('#colorpicker').colorpicker();
-  console.log("onRendered2");
+  //console.log("onRendered2");
   
   $('body').on('keydown',function(e) { 
       e = e || window.event;
@@ -322,6 +331,7 @@ Template.atlas.onRendered(function () {
     if (e.keyCode == '38') {
         // up arrow
       console.log("up");
+      
       if ((index - 1) >= 0) {
         index = index - 1;
         loadOrgan();
@@ -346,7 +356,9 @@ Template.atlas.onRendered(function () {
     else if (e.keyCode == '39') {
        // right arrow
     }
-  }); 
+  });
+  
+
 });
 
 //Template.atlas.onRendered(function () {
