@@ -5,8 +5,11 @@ var clickColor = 0;
 var paint = false;
 var films = [];
 var index = 0;
-var study_length = -1;
+var study_length = 0;
 var studyName = "";
+//var filmsLoaded = false;
+
+
 
 var loadFilms = function () {
   console.log("loading films");
@@ -20,6 +23,7 @@ var loadFilms = function () {
     
     var loaded = 0;
     study_length = study.imageArray.length;
+    var load = new Load(study_length);
     for (var i = 0; i < study_length; i++) {
       films.push(new Image());
       
@@ -27,6 +31,7 @@ var loadFilms = function () {
 //        console.log("HELLO");
 //  $("#atlasOverlay").css("display", "none");
       films[i].onload = function () { 
+        Session.set("loadingText", "Loading study " + load.getProgress(1, study_length));
         if (++loaded >= study_length) { 
           redraw(); 
           $("#atlasOverlay").css("display", "none");
@@ -34,9 +39,13 @@ var loadFilms = function () {
       };
       var imageFile = Images.findOne({_id: study.imageArray[i]});
       films[i].src = imageFile.url();
-    }
+    } 
     
     
+  } else {
+    console.log("ESLE");
+    //$("#atlasOverlay").css("display", "none");
+    //setTimeout( function() {$("#atlasOverlay").css("display", "none");}, 5000);
   }
   // will do this when i figure out a better way to load studies
 //  else {
@@ -245,6 +254,7 @@ var doInOrgan = function(e, doMe, elseDoMe) {
     // TODO: right now, only one study named "Normal" 
     // images from study were preloaded into films
     var study = Studies.findOne({ name: studyName });
+    if (!study) return;
     var organs = study.organs;
     
     var organsLength = 0;
@@ -309,6 +319,7 @@ var doInOrgan = function(e, doMe, elseDoMe) {
 Meteor.startup(function () {
 //  Session.set("tracker_study_length", 0);
   Session.set("tracker_goal", 0);
+  Session.set("loadingText", "Loading study 0%");
 });
 
 Template.atlas.onCreated(function () {
@@ -358,7 +369,10 @@ Template.atlas.onRendered(function () {
     }
   });
   
-
+  //loadFilms();
+  if (study_length === 0) {
+    $("#atlasOverlay").css("display", "none");
+  }
 });
 
 //Template.atlas.onRendered(function () {
@@ -379,9 +393,19 @@ Template.atlas.onRendered(function () {
 Template.atlas.helpers({
   organs: function () {
     // TODO SPOT
-    var organs = Studies.findOne({name: studyName}).organs;
+    var study = Studies.findOne({name: studyName});
+    var organs;
+    
+    if (study) {
+      organs = study.organs;
+    } else {
+      organs = [];
+    }
     //console.log(organs);
     return organs;
+  },
+  loadingText: function() {
+    return Session.get("loadingText");
   },
   hoverOrgan: function () {
     var hoverOrgan = Session.get("hoverOrgan");
@@ -548,8 +572,15 @@ Template.atlas.events({
 // Weird that helpers are under atlas but events under layout admin. Doesnt pose a problem yet
 Template.controlPanel.helpers({
   organs: function () {
-    // TODO works because only one study, that is "Normal" SPOT
-    var organs = Studies.findOne({name: studyName}).organs;
+    // TODO SPOT
+    var study = Studies.findOne({name: studyName});
+    var organs;
+    
+    if (study) {
+      organs = study.organs;
+    } else {
+        organs = [];
+    }
     //console.log(organs);
     return organs;
   },
@@ -744,7 +775,12 @@ Template.layoutAdmin.events({
 //    });
 //    var loadedNewImages = loadNewImages();
 //    console.log("IMAGES LOADED BOOYAH");
-    $("#overlay").css("display", "inline");
+    
+    // Prepare load
+    var load = new Load(event.target.files.length);
+    Session.set("loadingText", "Uploading images " + load.getProgress(0));
+    
+    $("#atlasOverlay").css("display", "inline");
     Session.set("tracker_goal", event.target.files.length);
     FS.Utility.eachFile(e, function(file) {
       Images.insert(file, function (err, fileObj) {
@@ -752,14 +788,15 @@ Template.layoutAdmin.events({
           console.log("Error");
         } else {
           console.log(fileObj._id + " being added");
-          
+          //Session.set("loadingText", load.getProgress(1));
           var intervalHandle = Meteor.setInterval(function () {
             console.log("Inside interval");
             if (fileObj.hasStored("images")) {
               // image has been uploaded and stored, add to study
               Meteor.call("addImageToStudy",
                       studyName,
-                      fileObj._id
+                      fileObj._id,
+                          function () { Session.set("loadingText", "Uploading images " + load.getProgress(1)); }
 
 
                       //,
@@ -768,7 +805,7 @@ Template.layoutAdmin.events({
               Meteor.clearInterval(intervalHandle);
             }
             
-          }, 1000);
+          }, 200);
           
           
         }
@@ -776,7 +813,7 @@ Template.layoutAdmin.events({
     });
   },
   "click #saveCurrentOrgan": function (e) {
-    if ($("#currentOrgan").val() === "") {
+    if ($("#currentOrgan").val() === "" || study_length < 1) {
       return;
     }
     console.log("Added organ");
