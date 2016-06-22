@@ -8,7 +8,7 @@ var index = 0;
 var study_length = 0;
 var studyName = "";
 //var filmsLoaded = false;
-
+var lastY;
 
 
 var loadFilms = function () {
@@ -507,6 +507,37 @@ Template.atlas.events({
       }
     }
     //prevents default action
+    return false;
+  },
+  "touchmove #canvas": function (e) {
+    //e.preventDefault();
+    console.log("TOUCHED");
+    var currentY = e.originalEvent.touches[0].clientY;
+    //if (!lastY) lastY = currentY;
+    if (currentY > lastY){
+         // moved down
+      console.log('down');
+      
+      // scroll down
+      if ((index + 1) < study_length) {
+        
+        index = index + 1;
+        loadOrgan();
+        redraw();
+      }
+     } else if (currentY < lastY){
+         // moved up
+       console.log("up");
+       
+      if ((index - 1) >= 0) {
+        index = index - 1;
+        loadOrgan();
+        redraw();
+      }
+     }
+     lastY = currentY;
+    
+    //prevents default
     return false;
   },
   "click #organCheckBox": function (e) {
