@@ -328,6 +328,8 @@ Template.atlas.onCreated(function () {
 
 Template.atlas.onRendered(function () {
   
+  $("body").addClass("menu");
+  
   $("#savedFade").fadeOut(0);
   
   Session.set("currentOrgan", $("#currentOrganDrop option:selected").val());
@@ -597,6 +599,11 @@ Template.atlas.events({
     if (organ) {   
       redraw();
     }
+  },
+  "click .menu-toggle": function (e) {
+    console.log("click");
+    $('body').toggleClass("menu-open");
+    return false;
   }
 });
 

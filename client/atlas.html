@@ -1,4 +1,5 @@
 <template name="atlas">
+  <body class="menu"></body>
   
   <div class="overlay" id="atlasOverlay"> 
     <p>
@@ -6,7 +7,29 @@
     </p>
   </div>
   
-<!--  <h1>{{title}}</h1>-->
+<!-- ☰  <h1>{{title}}</h1>-->
+  <header>
+    <a href="#" class="menu-toggle">Toggle</a>
+    <nav class="menu-side">
+<!--      <input type="checkbox" id="navToggle"/>-->
+      
+
+      <ul class="nav-list">
+        <li><a href="">This</a></li>
+        <li><a href="">That</a></li>
+        <li><a href="">What</a></li>
+      </ul>
+    </nav>
+  </header>
+  
+  
+  
+<!--<label for="navToggle" class="toggle">☰</label>-->
+<!--
+<label for="navToggle" class="toggle">≣≡»☰«</label>
+  <label for="navToggle" class="toggle" id="navOpen">»</label>
+  <label for="navToggle" class="toggle" id="navClose">«</label>
+-->
   <h1>Demo</h1>
   
   <div id="canvas-container">
