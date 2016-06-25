@@ -1,23 +1,12 @@
 /* CSS declarations go here */
-/*
-#player {
-  width: 100%;
-  height: auto;
-}*/
-
-/** {
-  -webkit-box-sizing: border-box;
-     -moz-box-sizing: border-box;
-          box-sizing: border-box;
-}*/
-
 html {
 /*
   height: 100%;
   min-height: 100% !important;
 */
-  text-align: center;
-
+/*  text-align: center;*/
+/*  overflow-x: hidden;*/
+    background-color: indianred;
 }
 
 body {
@@ -33,61 +22,45 @@ body {
 */
 /*  width: 100%;*/
   /*max-width: 50em;*/
-  background-color: #151515;
+/*  background-color: #151515;*/
 /*  background-image: url("pattern.jpg");*/
   margin: 0 auto !important;
 /*  float: none !important;*/
 /*  text-align: left;*/
+/*  overflow-x: hidden;*/
+  background-color: azure;
+  box-shadow: 0px 0px 100px #000000;
+/*  z-index: 1500;*/
+
 }
 
-/* the nav bar */
-/*
-nav#atlasNav {
-  float: left;
-}
-*/
-
-/*
-.navList {
-  display: none;
-}
-*/
-
-/* navbar checkbox hack */
-/*
-#navToggle:checked ~ .navList {
-  display: inline-block;
-  background-color: #f00;
-}
-*/
-
-/* toggle checkbox */
-/*
-#navToggle {
-  display: none;
-}
-*/
-
-/* label for toggle checkbox */
-/*
-.toggle {
-  position: fixed;
+a.menu-toggle {
   left: 0;
+  position: fixed;
   z-index: 500;
-  font-size: 2em;
   text-decoration: none;
-  font-weight: normal;
-}
+/*  font-size: 60px;*/
+  
+  color:  #c7c7c7;
+  background-color: black;
+/*
+  line-height: 50px;
+  margin-top: 3px;
+  margin-left: 5px;
 */
-
-.menu-toggle {
-  left: 0;
-  position: fixed;
-  z-index: 500;
+  
+  -moz-transition: all 200ms ease;
+  -webkit-transition: all 200ms ease;
+  -o-transition: all 200ms ease;
+  transition: all 200ms ease;
 }
+
+
+
 
 .menu {
   overflow-x: hidden;
+  display: inline-block;
   position: relative;
   left: 0;
 }
@@ -100,8 +73,18 @@ nav#atlasNav {
   left: 0;
 }
 
+.menu-open .menu-toggle {
+  left: 400px;
+      -webkit-transform: rotate(90deg);
+    -moz-transform: rotate(90deg);
+    -o-transform: rotate(90deg);
+    -ms-transform: rotate(90deg);
+    transform: rotate(90deg);
+}
+
 .menu-side {
   background-color: #1d1d1d;
+  background-color: white;
       position: fixed;
     top: 0;
     left: -400px;
@@ -130,22 +113,24 @@ nav#atlasNav {
   }
 }
 
-#wrapper {
+/*#wrapper {*/
 /*
   height: 100%;
   min-height: 100% !important;
 */
+/*
   min-height: 100vh;
   background-color: #1d1d1d;
   color: #c7c7c7;
   box-shadow: 0px 0px 1em #000000;
 }
+*/
 
-h1 {
+.study_title {
   padding-bottom: .5em;
   padding-top: .3em;
 /*  background-color: #1d1d1d;*/
-  background-color: white;
+  background-color: black;
   color: #c7c7c7;
   border-bottom-color: black;
   border-bottom-style: solid;
@@ -157,7 +142,7 @@ h1 {
 }
 
 
-h3 {
+.organ_title {
   margin: 0 auto !important;
   background-color: black;
 /*  background-color: #1d1d1d;*/
@@ -168,25 +153,10 @@ h3 {
   color: #c7c7c7;
 }
 
-/*
-#overlay{
-    display: none;
-    opacity:0.8;
-    background-color:#111;
-    text-align: center;
-    color: white;
-    position:fixed;
-    width:100%;
-    height:100%;
-    top:0px;
-    left:0px;
-    z-index:1000;
-}
-*/
-
 .overlay{
     opacity:1;
-    background-color: #1d1d1d;
+    background-color: black;
+/*  background-color: #1d1d1d;*/
     text-align: center;
     color: #c7c7c7;
     position:fixed;
@@ -196,18 +166,7 @@ h3 {
     left:0px;
     z-index:1000;
 }
-/*
 
-.alignright {
-  text-align: right;
-  margin-left: 1em;
-}
-
-.alignleft {
-  text-align: left;
-  margin-right: 1em;
-}
-*/
 
 ul#organs {
 /*
@@ -232,7 +191,7 @@ ul#organs {
 
 
 #canvas-container {
-  width: 100%;
+/*  width: 100%;*/
   background-color: black;
   text-align: center;
 }
@@ -241,10 +200,6 @@ canvas {
   display: inline;
 }
 
-
-input[type="checkbox"] {
-/*    display:none;*/
-}
 
 span {
   display: inline-block;
@@ -267,26 +222,3 @@ button#clearAll {
 #savedFade {
   color: azure;
 }
-
-/*
-input[type="checkbox"] + label span {
-    display:inline-block;
-    width:19px;
-    height:19px;
-    margin:-1px 4px 0 0;
-    vertical-align:middle;
-    background:url(check_radio_sheet.png) left top no-repeat;
-    cursor:pointer;
-}
-input[type="checkbox"]:checked + label span {
-    background:url(check_radio_sheet.png) -19px top no-repeat;
-}
-*/
-
-/*
-#organs {
-  background-color: #f8f8f8;
-  margin: 0 auto !important;
-  float: none !important;
-}
-*/
