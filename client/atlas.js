@@ -248,8 +248,11 @@ var doInOrgan = function(e, doMe, elseDoMe) {
     // set up and clear canvas
     var canvas = document.getElementById("canvas");
     var context = document.getElementById("canvas").getContext("2d");
-    var mouseX = e.pageX - e.target.offsetLeft;
-    var mouseY = e.pageY - e.target.offsetTop;
+//    var mouseX = e.pageX - e.target.offsetLeft;
+//    var mouseY = e.pageY - e.target.offsetTop;
+  var rect = canvas.getBoundingClientRect();
+  var mouseX = e.clientX - rect.left;
+  var mouseY = e.clientY - rect.top;
 
     // TODO: right now, only one study named "Normal" 
     // images from study were preloaded into films
@@ -603,6 +606,38 @@ Template.atlas.events({
   "click .menu-toggle": function (e) {
     console.log("click");
     $('body').toggleClass("menu-open");
+    return false;
+  },
+  // TODO these links need to be dynamically generated in the future
+  // Also fix the timeout hack and use iron router for real to dynamically load study
+  "click #link1": function (e) {
+    console.log("click link 1");
+    // not sure why page is not reloaded when link is changed with ahref
+    // i think it has something to do with iron router/meteor, will use to my advantage
+    // for now and just reload the right pane
+    Router.go("/atlas/test31");
+    $('body').toggleClass("menu-open");
+    setTimeout(function () {
+      document.location.reload(true);
+    }, 200);
+    return false;
+  },
+  "click #link2": function (e) {
+    console.log("click link 2");
+    Router.go("/atlas/test32");
+    $('body').toggleClass("menu-open");
+    setTimeout(function () {
+      document.location.reload(true);
+    }, 200);
+    return false;
+  },
+  "click #link3": function (e) {
+    console.log("click link 3");
+    Router.go("/atlas/test33");
+    $('body').toggleClass("menu-open");
+    setTimeout(function () {
+      document.location.reload(true);
+    }, 200);
     return false;
   }
 });

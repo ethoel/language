@@ -6,7 +6,8 @@ html {
 */
 /*  text-align: center;*/
 /*  overflow-x: hidden;*/
-    background-color: indianred;
+/*    background-color: indianred;*/
+  background-color: black;
 }
 
 body {
@@ -29,7 +30,7 @@ body {
 /*  text-align: left;*/
 /*  overflow-x: hidden;*/
   background-color: azure;
-  box-shadow: 0px 0px 100px #000000;
+  /*box-shadow: 0px 0px 100px #000000;*/
 /*  z-index: 1500;*/
 
 }
@@ -42,21 +43,91 @@ a.menu-toggle {
 /*  font-size: 60px;*/
   
   color:  #c7c7c7;
-  background-color: black;
+/*
+  opacity: 0;
+  filter: alpha(opacity=0);  For IE8 and earlier 
+*/
+/*  background-color: black;*/
+  margin-top: .5em;
+  margin-left: .5em;
 /*
   line-height: 50px;
   margin-top: 3px;
   margin-left: 5px;
 */
   
+
   -moz-transition: all 200ms ease;
   -webkit-transition: all 200ms ease;
   -o-transition: all 200ms ease;
   transition: all 200ms ease;
+
 }
 
+/*
+.img-circle {
+  border-radius: 50%;
+}
+*/
 
+/*
+.toggle-icon {
+  opacity: 1;
+  filter: alpha(opacity=100);  For IE8 and earlier 
+}
+*/
 
+.nav-list {
+  padding: 0;
+  color: #c7c7c7;
+  background-color: #2d2d2d;
+  list-style-type: none;
+  box-shadow: 0px 0px 10px 0px #000000;
+  
+}
+
+.nav-list li {
+  color: #c7c7c7;
+  width: 100%;
+  /*background-color:bisque;*/
+  display: block;
+  
+  text-align: center;
+  padding: 0;
+  
+  border-color: #333333;
+  border-style: solid;
+  border-left-width: 0px;
+  border-top-width: 0px;
+  border-right-width: 0px;
+  border-bottom-width: 0px;
+}
+
+.nav-list li a {
+  margin: 0 0 0 0;
+  padding: .5em;
+  display: block;
+  width: 100%;
+  color: #c7c7c7;
+  font-weight: bold;
+    text-decoration: none;
+}
+
+.nav-list li a:hover {
+  color: #f1f1f1;
+  background-color: #333333;
+  text-decoration: none;
+}
+
+.nav-list li a:active {
+  color: #f1f1f1;
+  background-color: #444444;
+  text-decoration: none;
+}
+
+.nav-list li a:visited {
+  text-decoration: none;
+}
 
 .menu {
   overflow-x: hidden;
@@ -74,7 +145,7 @@ a.menu-toggle {
 }
 
 .menu-open .menu-toggle {
-  left: 400px;
+/*  left: 400px;*/
       -webkit-transform: rotate(90deg);
     -moz-transform: rotate(90deg);
     -o-transform: rotate(90deg);
@@ -83,15 +154,36 @@ a.menu-toggle {
 }
 
 .menu-side {
+  /*padding-left: .5em;*/
+ /* padding-top: .5em; */
   background-color: #1d1d1d;
-  background-color: white;
+  /*background-color: white;*/
       position: fixed;
     top: 0;
     left: -400px;
     width: 400px;
     height: 100%;
   z-index: 400;
+
 /*  box-shadow: 0px 0px 10px #000000;*/
+/*
+  border-right-width: 1px;
+  border-right-style: solid;
+  border-right-color: #333333;
+*/
+  
+ /* border-width: 0 7px 0 0;
+    border-style: solid;
+    -webkit-border-image: 
+      -webkit-gradient(linear, 0 0, 100% 0, from(#0a0a0a), to(#1d1d1d)) 1 100%;
+    -webkit-border-image: 
+      -webkit-linear-gradient(left, #0a0a0a, #1d1d1d) 1 100%;
+    -moz-border-image:
+      -moz-linear-gradient(left, #0a0a0a, #1d1d1d) 1 100%; 
+    -o-border-image:
+      -o-linear-gradient(left, #0a0a0a, #1d1d1d) 1 100%;
+    border-image:
+      linear-gradient(to left, #0a0a0a, #1d1d1d) 1 100%;  */
 }
 
 .menu-side,
@@ -103,14 +195,16 @@ a.menu-toggle {
 
 
 /* adjust for screen size */
-@media screen and (max-width: 445px) {
+@media screen and (max-width: 400px) {
   .menu-side {
-    left: -90%;
-    width: 90%;
+    left: -100%;
+    width: 100%;
   }
+/*
   .menu-open {
-    right: 90%;
+    max-width: 100%;
   }
+*/
 }
 
 /*#wrapper {*/
@@ -125,6 +219,28 @@ a.menu-toggle {
   box-shadow: 0px 0px 1em #000000;
 }
 */
+
+.nav_title {
+
+  padding-bottom: .3em;
+
+ 
+
+/*  background-color: #1d1d1d;*/
+  background-color: #2d2d2d;
+  color: #c7c7c7;
+  text-align: center;
+/*
+  border-bottom-color: #333333;
+  border-bottom-style: solid;
+  border-bottom-width: 1px;
+*/
+  
+  margin: 0 auto !important;
+  float: none !important;
+  visibility: hidden;
+}
+
 
 .study_title {
   padding-bottom: .5em;
@@ -178,13 +294,15 @@ ul#organs {
   margin: 0 auto;
   padding: 0;
   display: block;
+  
 }
 
 #organs li {
   
+  color: #c7c7c7;
   display: inline-block;
-/*  float: left;*/
-  width: 33%;
+/*  in case this is broken, used to be just width */
+  min-width: 33%;
   margin: 0 auto;
   padding: 0 0;
 }

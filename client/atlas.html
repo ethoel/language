@@ -8,18 +8,26 @@
   
 <!-- ☰  <h1>{{title}}</h1>-->
 
-    <a href="#" class="menu-toggle">
-    ≡
+  <a href="#" class="menu-toggle">
+      <img class="toggle-icon" src="/menu_c7c7c7.png" alt="menu" height="20em" width="20em">
   </a>
+  
+  
     <nav class="menu-side">
 <!--      <input type="checkbox" id="navToggle"/>-->
       
 
+      
       <ul class="nav-list">
-        <li><a href="test1">Test1</a></li>
-        <li><a href="test2">Test2</a></li>
-        <li><a href="test3">Test3</a></li>
+        <h3 class="nav_title">Atlas</h3>
+        <li><a href="/atlas/test31" id="link1">Abdomen Axial</a></li>
+        <li><a href="/atlas/test32" id="link2">Abdomen Coronal</a></li>
+        <li><a href="/atlas/test33" id="link3">Abdomen Sagittal</a></li>
       </ul>
+      
+<!--      <h3 class="nav_title">Findings</h3>-->
+      <!--on one line to avoid inline block spaces-->
+  <ul id="organs">{{#each organs}}{{> organ}}{{/each}}</ul>
     </nav>
 
   
@@ -40,8 +48,7 @@
   
     <h3 class="organ_title">{{hoverOrgan}}</h3>
   
-  <!--on one line to avoid inline block spaces-->
-  <ul id="organs">{{#each organs}}{{> organ}}{{/each}}</ul>
+  
   
   <!-- get rid of this
   <input type="text" id="currentStudy" value="Normal"/>
@@ -120,9 +127,9 @@
 </template>
 
 <template name="organ"><li>
-<label>
-<span style="background-color:{{color}}">
-  <input id="organCheckBox" type="checkbox" value="{{this.organ}}" {{checked this.organ}}/>
+<label  style="cursor: pointer">
+<span style="cursor: pointer; background-color:{{color}}">
+  <input style="cursor: pointer" id="organCheckBox" type="checkbox" value="{{this.organ}}" {{checked this.organ}}/>
 </span>
   {{this.organ}}
   </label>
