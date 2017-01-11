@@ -83,6 +83,8 @@ a.menu-toggle {
   background-color: #2d2d2d;
   list-style-type: none;
   box-shadow: 0px 0px 10px 0px #000000;
+  margin-bottom: 0px;
+  z-index: 402;
   
 }
 
@@ -184,6 +186,9 @@ a.menu-toggle {
       -o-linear-gradient(left, #0a0a0a, #1d1d1d) 1 100%;
     border-image:
       linear-gradient(to left, #0a0a0a, #1d1d1d) 1 100%;  */
+  display: flex;
+  flex-direction: column;
+
 }
 
 .menu-side,
@@ -293,8 +298,12 @@ ul#organs {
 /*  overflow: hidden;*/
   margin: 0 auto;
   padding: 0;
-  display: block;
-  
+/*  padding-top: 10px;*/
+/*  display: block;*/
+
+  overflow: auto;
+  flex-grow: 1;
+  width: inherit;
 }
 
 #organs li {
@@ -306,8 +315,27 @@ ul#organs {
 /*  min-width: 33%;*/
   margin: 0 auto;
   padding: 0 0;
+  white-space: nowrap;
 }
 
+::-webkit-scrollbar {
+    width: 0.5em;
+    height: 0.5em;
+}
+
+::-webkit-scrollbar-track {
+    -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.3);
+}
+
+::-webkit-scrollbar-thumb {
+  background-color: #c7c7c7;
+  outline: 1px solid slategrey;
+}
+
+::-webkit-scrollbar-corner {
+  background-color: #c7c7c7;
+  outline: 1px solid slategrey;
+}
 
 #canvas-container {
 /*  width: 100%;*/
