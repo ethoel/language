@@ -150,22 +150,45 @@ var redraw = function () {
   //studyCanvas.width = 700;
   var studyHeightY = films[0].height;
   var studyWidthX = films[0].width;
-  var maxHeightWidth = 700;
+  //var maxHeightWidth = 700; // why did I choose 700?
   
-  // TODO same hack as below
+  // max dimension is set to the size of the viewport
+  // TODO: still need to take into account height of other elements
+  var maxHeight = window.innerHeight;
+  var maxWidth = window.innerWidth;
+  
+  // TODO same hack as below re admin
   if (!Router.current().route.getName().includes("admin")) {
     // only scale if not admin
-    if (studyHeightY > studyWidthX && studyHeightY > maxHeightWidth) {
-      studyWidthX = maxHeightWidth / studyHeightY * studyWidthX;
-      studyHeightY = maxHeightWidth;
-    } else if (studyWidthX > maxHeightWidth) {
-      studyHeightY = maxHeightWidth / studyWidthX * studyHeightY;
-      studyWidthX = maxHeightWidth;
+    // find the largest dimension, set it to the max dimension
+    // scale the other dimension to size
+    
+//    if (studyHeightY > studyWidthX && studyHeightY > maxHeightWidth) {
+//      // so, if the image is tall and skinny, h>w, then
+//      studyWidthX = maxHeightWidth / studyHeightY * studyWidthX;
+//      studyHeightY = maxHeightWidth;
+//    } else if (studyWidthX > maxHeightWidth) {
+//      // so, if the image is wide and fat, w>=h, then
+//      studyHeightY = maxHeightWidth / studyWidthX * studyHeightY;
+//      studyWidthX = maxHeightWidth;
+//    }
+    
+    
+    // if the study is bigger than the viewport in one of the dimensions
+    // calc dimensions to scale the study to fit
+    if (studyHeightY > maxHeight && (studyHeightY - maxHeight) > (studyWidthX - maxWidth)) {
+      // if study is taller than viewport and more tall than it is wide
+      studyWidthX = maxHeight / studyHeightY * studyWidthX;
+      studyHeightY = maxHeight;
+    } else if (studyWidthX > maxWidth) {
+      // else if study is wider than viewport
+      studyHeightY = maxWidth / studyWidthX * studyHeightY;
+      studyWidthX = maxWidth;
     }
   }
   
 
-  
+  // set the size of the canvas to draw the image on to the size of the scaled image
   studyCanvas.height = studyHeightY;
   studyCanvas.width = studyWidthX;
   document.body.style.width = studyCanvas.width;
