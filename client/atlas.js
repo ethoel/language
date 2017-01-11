@@ -153,9 +153,14 @@ var redraw = function () {
   //var maxHeightWidth = 700; // why did I choose 700?
   
   // max dimension is set to the size of the viewport
-  // TODO: still need to take into account height of other elements
   var maxHeight = window.innerHeight;
   var maxWidth = window.innerWidth;
+  
+  // need to take into account height of other elements
+  maxHeight = maxHeight - document.getElementById("study_title_id").offsetHeight;
+  maxHeight = maxHeight - document.getElementById("organ_title_id").offsetHeight;
+  // and when descriptions are added TODO
+  //maxHeight = maxHeight - document.getElementById("description_id").offsetHeight;
   
   // TODO same hack as below re admin
   if (!Router.current().route.getName().includes("admin")) {
@@ -271,11 +276,21 @@ var doInOrgan = function(e, doMe, elseDoMe) {
     // set up and clear canvas
     var canvas = document.getElementById("canvas");
     var context = document.getElementById("canvas").getContext("2d");
-//    var mouseX = e.pageX - e.target.offsetLeft;
-//    var mouseY = e.pageY - e.target.offsetTop;
-  var rect = canvas.getBoundingClientRect();
-  var mouseX = e.clientX - rect.left;
-  var mouseY = e.clientY - rect.top;
+    var mouseX = e.pageX - e.target.offsetLeft;
+    var mouseY = e.pageY - e.target.offsetTop;
+  // is the menu open? need to accomodate for that
+  if ($('body').hasClass('menu-open')) {
+    console.log("adding to mouseX menu open");
+    mouseX = mouseX - document.getElementById("menu-side-id").offsetWidth;
+  }
+  
+//    var mouseX = e.clientX - e.target.offsetLeft;
+//    var mouseY = e.clientY - e.target.offsetTop;
+  
+  // works on everything but the ipad for some reason!! does not need to adjust for open menu
+//  var rect = canvas.getBoundingClientRect();
+//  var mouseX = e.clientX - rect.left;
+//  var mouseY = e.clientY - rect.top;
 
     // TODO: right now, only one study named "Normal" 
     // images from study were preloaded into films
