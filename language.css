@@ -300,9 +300,10 @@ ul#organs {
 #organs li {
   
   color: #c7c7c7;
-  display: inline-block;
+  display: block;
+/*  display: inline-block;*/
 /*  in case this is broken, used to be just width */
-  min-width: 33%;
+/*  min-width: 33%;*/
   margin: 0 auto;
   padding: 0 0;
 }
