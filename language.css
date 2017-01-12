@@ -23,6 +23,7 @@ html {
 /*  overflow-x: hidden;*/
 /*    background-color: indianred;*/
   background-color: black;
+  font-family: Georgia, Helvetica, Arial, sans-serif;
 }
 
 body {
@@ -44,7 +45,7 @@ body {
 /*  float: none !important;*/
 /*  text-align: left;*/
 /*  overflow-x: hidden;*/
-  background-color: azure;
+  background-color: black;
   /*box-shadow: 0px 0px 100px #000000;*/
 /*  z-index: 1500;*/
 
@@ -101,7 +102,7 @@ a.menu-toggle {
   list-style-type: none;
   box-shadow: 0px 0px 10px 0px #000000;
   margin-bottom: 0px;
-  z-index: 402;
+  z-index: 450;
   
 }
 
@@ -129,7 +130,7 @@ a.menu-toggle {
   width: 100%;
   color: #c7c7c7;
   font-weight: bold;
-    text-decoration: none;
+  text-decoration: none;
 }
 
 .nav-list li a:hover {
@@ -179,9 +180,15 @@ a.menu-toggle {
   /*background-color: white;*/
       position: fixed;
     top: 0;
+/*
     left: -400px;
     width: 400px;
-    height: 100%;
+*/
+  left: -100vw;
+  width: 100vw;
+  max-width: 400px;
+  
+  height: 100%;
   z-index: 400;
 
 /*  box-shadow: 0px 0px 10px #000000;*/
@@ -217,17 +224,17 @@ a.menu-toggle {
 
 
 /* adjust for screen size */
+/*
 @media only screen and (max-width: 400px) {
   .menu-side {
     left: -100%;
     width: 100%;
   }
-/*
   .menu-open {
     max-width: 100%;
   }
-*/
 }
+*/
 
 /*#wrapper {*/
 /*
@@ -265,6 +272,9 @@ a.menu-toggle {
 
 
 .study_title {
+  
+
+
   padding-bottom: .5em;
   padding-top: .3em;
 /*  background-color: #1d1d1d;*/
@@ -321,6 +331,7 @@ ul#organs {
   overflow: auto;
   flex-grow: 1;
   width: inherit;
+  max-width: inherit;
 }
 
 #organs li {
