@@ -276,21 +276,22 @@ var doInOrgan = function(e, doMe, elseDoMe) {
     // set up and clear canvas
     var canvas = document.getElementById("canvas");
     var context = document.getElementById("canvas").getContext("2d");
-    var mouseX = e.pageX - e.target.offsetLeft;
-    var mouseY = e.pageY - e.target.offsetTop;
-  // is the menu open? need to accomodate for that
-  if ($('body').hasClass('menu-open')) {
-    console.log("adding to mouseX menu open");
-    mouseX = mouseX - document.getElementById("menu-side-id").offsetWidth;
-  }
+//    var mouseX = e.pageX - e.target.offsetLeft;
+//    var mouseY = e.pageY - e.target.offsetTop;
+//  // is the menu open? need to accomodate for that
+//  if ($('body').hasClass('menu-open')) {
+//    console.log("adding to mouseX menu open");
+//    mouseX = mouseX - document.getElementById("menu-side-id").offsetWidth;
+//  }
   
 //    var mouseX = e.clientX - e.target.offsetLeft;
 //    var mouseY = e.clientY - e.target.offsetTop;
   
   // works on everything but the ipad for some reason!! does not need to adjust for open menu
-//  var rect = canvas.getBoundingClientRect();
-//  var mouseX = e.clientX - rect.left;
-//  var mouseY = e.clientY - rect.top;
+  var rect = canvas.getBoundingClientRect();
+  var mouseX = e.clientX - rect.left;
+  var mouseY = e.clientY - rect.top;
+  
 
     // TODO: right now, only one study named "Normal" 
     // images from study were preloaded into films
@@ -624,6 +625,7 @@ Template.atlas.events({
   },
   "click #canvas": function (e) {
     // TODO this is way too convuluted man
+    console.log("CLICKED CANVAS");
     var organ = doInOrgan(e, function (canvas, myorgan) {
       console.log("clicked organ");
       Session.set(myorgan.organ, !Session.get(myorgan.organ));
