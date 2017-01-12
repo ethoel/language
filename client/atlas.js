@@ -157,8 +157,9 @@ var redraw = function () {
   var maxWidth = window.innerWidth;
   
   // need to take into account height of other elements
-  maxHeight = maxHeight - document.getElementById("study_title_id").offsetHeight;
+//  maxHeight = maxHeight - document.getElementById("study_title_id").offsetHeight;
   maxHeight = maxHeight - document.getElementById("organ_title_id").offsetHeight;
+  console.log(document.getElementById("organ_title_id").offsetHeight + " IS ORGAN TITLE H");
   // and when descriptions are added TODO
   //maxHeight = maxHeight - document.getElementById("description_id").offsetHeight;
   
@@ -419,20 +420,22 @@ Template.atlas.onRendered(function () {
   }
 });
 
-//Template.atlas.onRendered(function () {
+Template.atlas.onRendered(function () {
 //  context = document.getElementById("scan").getContext("2d");
 //  var mimage = document.getElementById("myimage");
 //  context.drawImage(mimage, 0, 0);
 //  context.fillStyle = "#ff0000";
 //  context.fillRect(0,0,150,75);
-//});
-//
-//Template.atlas.onDestroyed(function () {
-////  Session.set("questionRendered", false);
-////  Session.set("playerReady", false);
-////  // destroy player if it has been created
-////  player && player.destroy();
-//});
+  $(window).on("resize", function (e) { console.log("RESIZED ON"); redraw() });
+});
+
+Template.atlas.onDestroyed(function () {
+  $(window).off("resize");
+//  Session.set("questionRendered", false);
+//  Session.set("playerReady", false);
+//  // destroy player if it has been created
+//  player && player.destroy();
+});
 
 Template.atlas.helpers({
   organs: function () {
