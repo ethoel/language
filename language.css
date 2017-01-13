@@ -112,6 +112,8 @@ a.menu-toggle {
   margin-bottom: 0px;
   z-index: 450;
   
+  display: block;
+  
 }
 
 .nav-list li {
@@ -160,7 +162,7 @@ a.menu-toggle {
 
 .menu {
   overflow-x: hidden;
-  display: inline-block;
+  display: block;
   position: relative;
   left: 0;
 }
@@ -198,9 +200,12 @@ a.menu-toggle {
   width: 100vw;
   max-width: 400px;
   
-  height: 100%;
+  height: 80vh;
   z-index: 400;
+  
+  display: block;
 
+  overflow: hidden;
 /*  box-shadow: 0px 0px 10px #000000;*/
 /*
   border-right-width: 1px;
@@ -220,6 +225,7 @@ a.menu-toggle {
       -o-linear-gradient(left, #0a0a0a, #1d1d1d) 1 100%;
     border-image:
       linear-gradient(to left, #0a0a0a, #1d1d1d) 1 100%;  */
+/*
   display: flex;
   display: -webkit-box;
   display: -ms-flexbox;
@@ -227,6 +233,7 @@ a.menu-toggle {
   -webkit-box-direction: normal;
   -ms-flex-direction: column;
   flex-direction: column;
+*/
 
 }
 
@@ -284,9 +291,10 @@ a.menu-toggle {
 */
 /*  box-shadow: 0px 0px 5px 0px #000000;*/
   margin: 0 auto !important;
-  float: none !important;
+/*  float: none !important;*/
 /*  visibility: hidden;*/
   
+  display: block;
 }
 
 #study_title_id::before {
@@ -367,10 +375,17 @@ ul#organs {
 /*  display: block;*/
 
   overflow: auto;
+  
+  display: block;
    
+/*
   -webkit-box-flex: 1;
   -ms-flex-positive: 1;
   flex-grow: 1;
+*/
+  position: absolute;
+  top: 50px;
+  bottom: 0px;
   
   width: inherit;
   max-width: inherit;

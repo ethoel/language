@@ -427,6 +427,12 @@ Template.atlas.onRendered(function () {
 //  context.fillStyle = "#ff0000";
 //  context.fillRect(0,0,150,75);
   $(window).on("resize", function (e) { console.log("RESIZED ON"); redraw() });
+  
+  // if flexbox exsited, wouldnt have to do this
+  var navlistHeight = $("#nav-list-id").innerHeight();
+  console.log("NAVLIST HEIGHT " + navlistHeight);
+  
+  $("#organs").css("top", navlistHeight + "px");
 });
 
 Template.atlas.onDestroyed(function () {
