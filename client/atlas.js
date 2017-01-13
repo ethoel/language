@@ -672,7 +672,7 @@ Template.atlas.events({
     // not sure why page is not reloaded when link is changed with ahref
     // i think it has something to do with iron router/meteor, will use to my advantage
     // for now and just reload the right pane
-    Router.go("/atlas/axialnormal");
+    Router.go("/atlas/normalaxial");
     $('body').toggleClass("menu-open");
     setTimeout(function () {
       document.location.reload(true);
@@ -690,7 +690,7 @@ Template.atlas.events({
   },
   "click #link3": function (e) {
     console.log("click link 3");
-    Router.go("/atlas/sagittalnormal");
+    Router.go("/atlas/normalsagittal");
     $('body').toggleClass("menu-open");
     setTimeout(function () {
       document.location.reload(true);
