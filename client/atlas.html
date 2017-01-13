@@ -1,5 +1,5 @@
 <template name="atlas">
-  
+  <div id="main_id">
   <div class="overlay" id="atlasOverlay"> 
     <p>
     {{loadingText}}
@@ -41,7 +41,7 @@
   <label for="navToggle" class="toggle" id="navOpen">»</label>
   <label for="navToggle" class="toggle" id="navClose">«</label>
 -->
-<!--  <h1 id="study_title_id" class="study_title">Change me</h1>-->
+  <h3 id="study_title_id" class="study_title">{{studyTitle}}</h3>
   
   <div id="canvas-container">
     <canvas id="canvas" onclick=""></canvas>
@@ -68,12 +68,27 @@
   {{/contentFor}}
 -->
   
-  {{> contentFor region="admin" template="controlPanel"}}
-  
+<!--  {{> contentFor region="admin" template="controlPanel"}}-->
+    {{> contentFor region="admin" template="controlPanel"}}
+
+  </div>
 </template>
 
 <template name="controlPanel">
+  
+  <head>
+    <style type="text/css">
+    #main_id {
+  position: static !important;
+  bottom: auto !important;
+  overflow: auto !important;
+}
 
+#menu-side-id {
+}
+    
+    </style>
+  </head>
 
   <h2>
   Editing

@@ -89,7 +89,7 @@ Router.route("/", function () {
 });
 
 Router.route("/atlas", function () {
-  this.redirect("/atlas/test3");
+  this.redirect("/atlas/test4");
 });
 
 Router.route("/atlas/:study", function () {
@@ -107,7 +107,7 @@ Router.route("/atlas/:study", function () {
 });
 
 Router.route("/admin", function () {
-  this.redirect("/admin/test3");
+  this.redirect("/admin/test4");
 });
 
 Router.route("/admin/:study", function() {

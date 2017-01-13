@@ -157,7 +157,7 @@ var redraw = function () {
   var maxWidth = window.innerWidth;
   
   // need to take into account height of other elements
-//  maxHeight = maxHeight - document.getElementById("study_title_id").offsetHeight;
+  maxHeight = maxHeight - document.getElementById("study_title_id").offsetHeight;
   maxHeight = maxHeight - document.getElementById("organ_title_id").offsetHeight;
   console.log(document.getElementById("organ_title_id").offsetHeight + " IS ORGAN TITLE H");
   // and when descriptions are added TODO
@@ -464,6 +464,20 @@ Template.atlas.helpers({
   },
   title: function () {
     return Router.current().params.study;
+  },
+  studyTitle: function () {
+    var studyTitle = Router.current().params.study;
+    // TODO this needs to be not hard-coded
+    if (studyTitle === "normalaxial") {
+      studyTitle = "Abdomen Axial";
+    } else if (studyTitle === "test4") {
+      studyTitle = "Abdomen Coronal";
+    } else if (studyTitle === "normalsagittal") {
+      studyTitle = "Abdomen Sagittal";
+    } else if (studyTitle === "test32") {
+      studyTitle = "Test Axial 32";
+    }
+    return studyTitle;
   },
   studyHeight: function () {
 //    var studyCanvas = document.getElementById("canvas");
