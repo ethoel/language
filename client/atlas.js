@@ -426,14 +426,43 @@ Template.atlas.onRendered(function () {
 //  context.drawImage(mimage, 0, 0);
 //  context.fillStyle = "#ff0000";
 //  context.fillRect(0,0,150,75);
-  $(window).on("resize", function (e) { console.log("RESIZED ON"); redraw() });
+  
+  $(window).on("resize", function (e) { 
+    console.log("RESIZED ON");
+    setMenuWidth(400, .80);
+    redraw()});
+  
+  // set the max width of the menu
+  setMenuWidth(400, .80);
   
   // if flexbox exsited, wouldnt have to do this
   var navlistHeight = $("#nav-list-id").innerHeight();
-  console.log("NAVLIST HEIGHT " + navlistHeight);
   
   $("#organs").css("top", navlistHeight + "px");
 });
+
+
+
+var setMenuWidth = function (menuWidth, percentOfWindowWidth) {
+  // if the menu covers pretty much the whole screen, just cover the whole screen
+  // increase width of menu to full screen if greater than % screen size
+  console.log("WINDOW W " + window.innerWidth + "px");
+  if (menuWidth > percentOfWindowWidth * window.innerWidth) {
+    menuWidth = "100vw";
+  } else {
+    menuWidth = menuWidth + "px";
+  }
+  $(".menu-side").css("max-width", menuWidth);
+  
+  var menuIsOpen = ($(".menu-side").css("left") === "0px");
+  if (menuIsOpen) {
+    // menu is open, left of body needs adjustment
+    $("body").css("left", menuWidth);
+  } else {
+    // menu is closed, left of menu needs adjustment
+    $(".menu-side").css("left", "-" + menuWidth);
+  }
+}
 
 Template.atlas.onDestroyed(function () {
   $(window).off("resize");
@@ -668,7 +697,33 @@ Template.atlas.events({
   },
   "click .menu-toggle": function (e) {
     console.log("click");
+    // this is kept to rotate the menu toggle button
     $('body').toggleClass("menu-open");
+    
+//    var menuWidth = 400;
+//    if (menuWidth > .75 * window.innerWidth) {
+//      menuWidth = "100%";
+//    } else {
+//      menuWidth = menuWidth + "px";
+//    }
+    
+    // get the width of the menu as designated in css
+    var menuWidth = $(".menu-side").css("max-width");
+    console.log("MENU SIDE width " + menuWidth);
+    
+    // check to see if menu is currently open
+    var menuIsOpen = ($(".menu-side").css("left") === "0px");
+    
+    // animate menu opening or closing
+    if (menuIsOpen) {
+      $(".menu-side").animate({left: "-" + menuWidth }, 200, "swing");
+      $("body").animate({left: "0px"}, 200, "swing");
+    } else {
+      $(".menu-side").animate({left: "0px"}, 200, "swing");
+      $("body").animate({left: menuWidth }, 200, "swing");
+    }
+    
+    // prevent default action
     return false;
   },
   // TODO these links need to be dynamically generated in the future
