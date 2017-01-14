@@ -159,6 +159,7 @@ var redraw = function () {
   // need to take into account height of other elements
   maxHeight = maxHeight - document.getElementById("study_title_id").offsetHeight;
   maxHeight = maxHeight - document.getElementById("organ_title_id").offsetHeight;
+  maxHeight = maxHeight - 100; // pixel padding at bottom of #study-description
   console.log(document.getElementById("organ_title_id").offsetHeight + " IS ORGAN TITLE H");
   // and when descriptions are added TODO
   //maxHeight = maxHeight - document.getElementById("description_id").offsetHeight;
@@ -197,7 +198,8 @@ var redraw = function () {
   // set the size of the canvas to draw the image on to the size of the scaled image
   studyCanvas.height = studyHeightY;
   studyCanvas.width = studyWidthX;
-  document.body.style.width = studyCanvas.width;
+//  document.body.style.width = studyCanvas.width;
+  $("#canvas-container").css("width", studyWidthX + "px");
   
   // set up and clear canvas
   
