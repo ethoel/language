@@ -385,6 +385,7 @@ ul#organs {
   margin: 0 auto;
   padding: 0;
   padding-bottom: 100px;
+  
 /*  padding-top: 10px;*/
 /*  display: block;*/
 
@@ -403,6 +404,11 @@ ul#organs {
   
   width: inherit;
   max-width: inherit;
+  
+  background-image: url("/favicon-96.png");
+  background-repeat: no-repeat;
+  background-position: bottom right;
+  background-attachment: local;
 }
 
 #study-description::before {
@@ -410,7 +416,12 @@ ul#organs {
 }
 
 #study-description {
+  color: #c7c7c7;
+  padding-left: 2rem;
+  padding-right: 2rem;
   padding-bottom: 100px;
+  text-align: justify;
+    text-justify: inter-word;
 }
 
 #organs li {
@@ -422,6 +433,7 @@ ul#organs {
 /*  min-width: 33%;*/
   margin: 0 auto;
   padding: 0 0;
+  
   white-space: nowrap;
 }
 
@@ -477,6 +489,9 @@ span {
 
 label {
   font-weight: normal;
+  max-width: none;
+  width: auto;
+    padding-right: 2rem;
   margin: 0 auto;
 }
 

@@ -365,6 +365,7 @@ Meteor.startup(function () {
 //  Session.set("tracker_study_length", 0);
   Session.set("tracker_goal", 0);
   Session.set("loadingText", "Loading study 0%");
+  Session.setDefault("hoverOrgan", "Welcome to Catlas");
 });
 
 Template.atlas.onCreated(function () {
@@ -669,11 +670,11 @@ Template.atlas.events({
         console.log(myorgan.organ);
         Session.set("hoverOrgan", myorgan.organ);
       } else {
-        Session.set("hoverOrgan", "");
+//        Session.set("hoverOrgan", "");
       }
     }, function (canvas) {
       canvas.style.cursor = "default";
-      Session.set("hoverOrgan", "");
+//      Session.set("hoverOrgan", "");
     });
   },
   "click #canvas": function (e) {
