@@ -41,6 +41,7 @@
   <label for="navToggle" class="toggle" id="navOpen">»</label>
   <label for="navToggle" class="toggle" id="navClose">«</label>
 -->
+    <div id="study-pane">
   <h3 id="study_title_id" class="study_title">{{studyTitle}}</h3>
   
 
@@ -52,7 +53,7 @@
   
     <h3 id="organ_title_id" class="organ_title">{{hoverOrgan}}</h3>
   
-  
+  </div>
   
   <!-- get rid of this
   <input type="text" id="currentStudy" value="Normal"/>
@@ -86,9 +87,11 @@
   overflow: auto !important;
 }
 
-#menu-side-id {
-}
-    
+#study-pane {
+  position: static !important;
+  bottom: auto !important;
+  overflow: auto !important;
+} 
     </style>
   </head>
 

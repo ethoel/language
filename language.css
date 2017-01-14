@@ -299,6 +299,15 @@ a.menu-toggle {
   display: block;
 }
 
+#study-pane {
+  overflow-x: hidden;
+  display: block;
+  position: fixed;
+  left: 0;
+  top: 0;
+  bottom: 0;
+}
+
 #study_title_id::before {
   content: "\200B";
 }

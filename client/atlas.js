@@ -441,8 +441,6 @@ Template.atlas.onRendered(function () {
   $("#organs").css("top", navlistHeight + "px");
 });
 
-
-
 var setMenuWidth = function (menuWidth, percentOfWindowWidth) {
   // if the menu covers pretty much the whole screen, just cover the whole screen
   // increase width of menu to full screen if greater than % screen size
@@ -454,10 +452,11 @@ var setMenuWidth = function (menuWidth, percentOfWindowWidth) {
   }
   $(".menu-side").css("max-width", menuWidth);
   
+  // TODO make this into a function
   var menuIsOpen = ($(".menu-side").css("left") === "0px");
   if (menuIsOpen) {
     // menu is open, left of body needs adjustment
-    $("body").css("left", menuWidth);
+    $("#study-pane").css("left", menuWidth);
   } else {
     // menu is closed, left of menu needs adjustment
     $(".menu-side").css("left", "-" + menuWidth);
@@ -717,10 +716,10 @@ Template.atlas.events({
     // animate menu opening or closing
     if (menuIsOpen) {
       $(".menu-side").animate({left: "-" + menuWidth }, 200, "swing");
-      $("body").animate({left: "0px"}, 200, "swing");
+      $("#study-pane").animate({left: "0px"}, 200, "swing");
     } else {
       $(".menu-side").animate({left: "0px"}, 200, "swing");
-      $("body").animate({left: menuWidth }, 200, "swing");
+      $("#study-pane").animate({left: menuWidth }, 200, "swing");
     }
     
     // prevent default action
