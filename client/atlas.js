@@ -1,3 +1,7 @@
+const CATLAS_INSTRUCTIONS = "Etiam nec nisi a nunc finibus porta a sit amet massa. Donec id volutpat mauris. Phasellus sed tincidunt sapien. Integer risus sem, iaculis sit amet tellus volutpat, aliquet mattis felis. Ut fermentum ipsum ex, vel gravida justo ornare at. Etiam lacinia sit amet lectus quis ullamcorper. Cras elit risus, viverra commodo aliquam sed, euismod ac velit. Ut tristique nibh nunc, non feugiat quam eleifend sit amet. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. In id enim eu orci tristique interdum finibus ut tortor. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aliquam condimentum eros ut dolor viverra, eget hendrerit velit rutrum. Etiam eu vestibulum lectus. Donec fringilla quis lacus tristique aliquam. Cras purus mi, euismod sed massa ut, lobortis viverra mi. Integer efficitur sapien sit amet condimentum accumsan. Duis euismod, elit at ornare lacinia, mi enim convallis sapien, ac fringilla ex mauris ac diam. Donec in odio at odio iaculis accumsan. Etiam sollicitudin imperdiet egestas. Cras auctor a est non pretium. Maecenas mattis neque sed porttitor luctus."
+
+
+
 var clickX = [];
 var clickY = [];
 var clickDrag = [];
@@ -366,6 +370,7 @@ Meteor.startup(function () {
   Session.set("tracker_goal", 0);
   Session.set("loadingText", "Loading study 0%");
   Session.setDefault("hoverOrgan", "Welcome to Catlas");
+  Session.setDefault("studyDescription", CATLAS_INSTRUCTIONS);
 });
 
 Template.atlas.onCreated(function () {
@@ -499,7 +504,16 @@ Template.atlas.helpers({
       return "";
     }
   },
+  studyDescription: function () {
+    var studyDescription = Session.get("studyDescription");
+    if (studyDescription) {
+      return studyDescription;
+    } else {
+      return "";
+    }
+  },
   title: function () {
+    // depreciated
     return Router.current().params.study;
   },
   studyTitle: function () {
@@ -669,6 +683,7 @@ Template.atlas.events({
       if (Session.get(myorgan.organ)) {
         console.log(myorgan.organ);
         Session.set("hoverOrgan", myorgan.organ);
+        Session.set("studyDescription", ""); // TODO myorgan.description
       } else {
 //        Session.set("hoverOrgan", "");
       }
@@ -685,12 +700,15 @@ Template.atlas.events({
       Session.set(myorgan.organ, !Session.get(myorgan.organ));
       if (Session.get(myorgan.organ)) {
         Session.set("hoverOrgan", myorgan.organ);
+        Session.set("studyDescription", ""); // TODO myorgan.description
       } else {
         Session.set("hoverOrgan", "");
+        Session.set("studyDescription", "");
       }
     }, function (canvas) {
       console.log("clicked no organ");
       Session.set("hoverOrgan", "");
+      Session.set("studyDescription", "");
     });
     
     if (organ) {   
