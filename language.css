@@ -469,6 +469,7 @@ ul#organs {
   background-color: black;
   display: block;
   text-align: center;
+  padding-right: 1rem;
   width: 100vw;
 }
 
