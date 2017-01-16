@@ -487,6 +487,10 @@ Template.atlas.helpers({
     
     if (study) {
       organs = study.organs;
+      console.log("ORGANS UNSORTED " + organs[0].organ);
+      organs.sort(function (a, b) {
+        return a.organ.localeCompare(b.organ);
+      }); // sort organs alphabetically
     } else {
       organs = [];
     }
@@ -661,6 +665,15 @@ Template.atlas.events({
     //console.log(e.target.checked);
     //console.log(e.target.getAttribute("value"));
     Session.set(e.target.getAttribute("value"), e.target.checked);
+    
+    // update the descriptors
+    if (Session.get(e.target.getAttribute("value"))) {
+      Session.set("hoverOrgan", e.target.getAttribute("value"));
+      Session.set("studyDescription", ""); // TODO myorgan.description
+    } else {
+      Session.set("hoverOrgan", "");
+      Session.set("studyDescription", "");
+    }
     
     redraw();
     
