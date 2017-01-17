@@ -1,6 +1,4 @@
-const CATLAS_INSTRUCTIONS = "Etiam nec nisi a nunc finibus porta a sit amet massa. Donec id volutpat mauris. Phasellus sed tincidunt sapien. Integer risus sem, iaculis sit amet tellus volutpat, aliquet mattis felis. Ut fermentum ipsum ex, vel gravida justo ornare at. Etiam lacinia sit amet lectus quis ullamcorper. Cras elit risus, viverra commodo aliquam sed, euismod ac velit. Ut tristique nibh nunc, non feugiat quam eleifend sit amet. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. In id enim eu orci tristique interdum finibus ut tortor. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aliquam condimentum eros ut dolor viverra, eget hendrerit velit rutrum. Etiam eu vestibulum lectus. Donec fringilla quis lacus tristique aliquam. Cras purus mi, euismod sed massa ut, lobortis viverra mi. Integer efficitur sapien sit amet condimentum accumsan. Duis euismod, elit at ornare lacinia, mi enim convallis sapien, ac fringilla ex mauris ac diam. Donec in odio at odio iaculis accumsan. Etiam sollicitudin imperdiet egestas. Cras auctor a est non pretium. Maecenas mattis neque sed porttitor luctus."
-
-
+const CATLAS_INSTRUCTIONS = "Thanks for visiting us. To get started, feel free to scroll through the study loaded above using your mouse, the up and down arrow keys on your keyboard, or, if you have a touchscreen, your finger. Click on a structure within the study to highlight and identify the structure. Open and close the side menu with the button on the upper left to access the list of structures. Also access different studies from the side menu. We hope you find our site helpful."
 
 var clickX = [];
 var clickY = [];
@@ -1053,6 +1051,30 @@ Template.layoutAdmin.events({
                );
     // TODO get rid of jquery
     // TODO above needs to become more than just a test button
+  },
+  "click #renameCurrentOrgan": function (e) {
+    if ($("#currentOrgan").val() === "" || study_length < 1 || !Session.get("currentOrgan")) {
+      console.log("Aborted");
+      return;
+    }
+    console.log("Renaming organ");
+    
+    // TODO hoverOrgan does not update, but do not want to bother right now
+    
+    
+    Meteor.call("renameOrgan", studyName, $("#currentOrganDrop option:selected").val(), $("#currentOrgan").val(),
+               function () {
+      // call back function
+      // rename the organ pointer
+      Session.set("currentOrgan", $("#currentOrgan").val());
+     // set the dropdown to new organ
+      $("#currentOrganDrop").val(Session.get("currentOrgan")).change();
+      
+                           }
+               );
+    
+    
+    
   },
   "click #testButton": function (e) {
     $("#overlay").css("display", "inline");

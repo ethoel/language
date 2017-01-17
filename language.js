@@ -28,7 +28,7 @@ Meteor.methods({
     });
   },
   addOrganToStudy: function(name, organ, arrayN) {
-    // TODO make this function better SERIOUSLY!!!!! 29?????
+  
     Studies.upsert({
       name: name
     }, { $push: { 
@@ -36,6 +36,13 @@ Meteor.methods({
               data: new Array(arrayN) } 
     }
     });
+  },
+  renameOrgan: function(studyName, oldOrganName, newOrganName) {
+    // find the organ named oldOrganName in the study named studyName
+    // rename THAT organ ($ is index into organs array) to newOrganName
+    Studies.update({ name: studyName, "organs.organ": oldOrganName 
+    }, { $set: { "organs.$.organ": newOrganName }});
+    console.log("Renamed " + oldOrganName + " organ " + newOrganName);
   },
   deleteDrawing: function(name, organ, index) {
     // prepare key for drawing index b/c mongodb cannot handle $$
