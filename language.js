@@ -44,6 +44,13 @@ Meteor.methods({
     }, { $set: { "organs.$.organ": newOrganName }});
     console.log("Renamed " + oldOrganName + " organ " + newOrganName);
   },
+  deleteOrgan: function(studyName, organName) {
+    // find the organ named organName in the study named studyName
+    // remove that organ from the organs array
+    Studies.update({ name: studyName 
+    }, { $pull: { "organs": { "organ": organName} }});
+    console.log("Deleted " + organName );
+  },
   deleteDrawing: function(name, organ, index) {
     // prepare key for drawing index b/c mongodb cannot handle $$
     var key = "organs.$.data." + index;

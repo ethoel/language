@@ -504,6 +504,10 @@ button#clearAll {
   background-color: #ff9999;
 }
 
+button#deleteCurrentOrgan {
+  background-color: #ff2222;
+}
+
 #savedFade {
   color: azure;
 }

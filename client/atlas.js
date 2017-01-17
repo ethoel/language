@@ -1076,6 +1076,42 @@ Template.layoutAdmin.events({
     
     
   },
+  "click #deleteCurrentOrgan": function (e) {
+    if (study_length < 1 || !Session.get("currentOrgan")) {
+      console.log("Aborted deletion");
+      return;
+    }
+    
+    if ($("#currentOrgan").val() !== "DELETE") {
+      console.log("Aborted");
+      alert('You must type in "DELETE" in the field to the left to delete organ permanently')
+      return;
+    }
+    $("#currentOrgan").val("");
+    console.log("Deleting organ");
+    
+    // TODO hoverOrgan does not update, but do not want to bother right now, drawings don't update, but they are gone gone gone
+    
+    
+    Meteor.call("deleteOrgan", studyName, $("#currentOrganDrop option:selected").val(),
+               function () {
+      // call back function
+      // if there are still options
+      if ($("#currentOrganDrop option").length > 0) {
+      // rename the organ pointer
+      Session.set("currentOrgan", $("#currentOrganDrop option").eq(0).val());
+     // set the dropdown to new organ
+      $("#currentOrganDrop").val(Session.get("currentOrgan")).change();
+      } else {
+        Session.set("currentOrgan", "");
+      }
+      
+                           }
+               );
+    
+    
+    
+  },
   "click #testButton": function (e) {
     $("#overlay").css("display", "inline");
 //    Meteor.call("saveDrawingToOrgan",
