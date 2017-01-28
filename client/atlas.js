@@ -667,7 +667,7 @@ Template.atlas.events({
     // update the descriptors
     if (Session.get(e.target.getAttribute("value"))) {
       Session.set("hoverOrgan", e.target.getAttribute("value"));
-      Session.set("studyDescription", ""); // TODO myorgan.description
+      Session.set("studyDescription", myorgan.description);
     } else {
       Session.set("hoverOrgan", "");
       Session.set("studyDescription", "");
@@ -694,7 +694,7 @@ Template.atlas.events({
       if (Session.get(myorgan.organ)) {
         console.log(myorgan.organ);
         Session.set("hoverOrgan", myorgan.organ);
-        Session.set("studyDescription", ""); // TODO myorgan.description
+        Session.set("studyDescription", myorgan.description);
       } else {
 //        Session.set("hoverOrgan", "");
       }
@@ -711,7 +711,7 @@ Template.atlas.events({
       Session.set(myorgan.organ, !Session.get(myorgan.organ));
       if (Session.get(myorgan.organ)) {
         Session.set("hoverOrgan", myorgan.organ);
-        Session.set("studyDescription", ""); // TODO myorgan.description
+        Session.set("studyDescription", myorgan.description);
       } else {
         Session.set("hoverOrgan", "");
         Session.set("studyDescription", "");
@@ -969,6 +969,26 @@ Template.layoutAdmin.events({
                 index
                );
     redraw();
+  },
+  "click #saveOrganDescription": function (e) {
+    if (!Session.get("currentOrgan")) {
+      return;
+    }
+    var description = $("#organ-description").val();
+    console.log("clicked save description " + description);
+    
+    Meteor.call("saveDescription",
+                studyName,
+                Session.get("currentOrgan"),
+                description
+               );
+  },
+  "click #loadCurrentDescription": function (e) {
+    var studyDescription = Session.get("studyDescription");
+    console.log("clicked load description " + studyDescription);
+    if (studyDescription) {
+      $("#organ-description").val(studyDescription);
+    }
   },
   // NEXT TODO I need to work on this function to create new studies without crashing
   "change #loadImages": function (e) {

@@ -44,6 +44,13 @@ Meteor.methods({
     }, { $set: { "organs.$.organ": newOrganName }});
     console.log("Renamed " + oldOrganName + " organ " + newOrganName);
   },
+  saveDescription: function(studyName, organName, newDescription) {
+    // find the organ named oldOrganName in the study named studyName
+    // rename THAT organ ($ is index into organs array) to newOrganName
+    Studies.update({ name: studyName, "organs.organ": organName 
+    }, { $set: { "organs.$.description": newDescription }});
+    console.log("Added " + newDescription + " to organ " + organName);
+  },
   deleteOrgan: function(studyName, organName) {
     // find the organ named organName in the study named studyName
     // remove that organ from the organs array
