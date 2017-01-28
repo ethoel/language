@@ -59,6 +59,38 @@ body {
 /*  overflow: hidden;*/
 }
 
+a.help-button {
+position: absolute;
+  left: 0;
+  z-index: 499;
+  text-decoration: none;
+  
+/*  font-size: 60px;*/
+  
+  color:  #c7c7c7;
+/*
+  opacity: 0;
+  filter: alpha(opacity=0);  For IE8 and earlier 
+*/
+/*  background-color: black;*/
+  padding-top: .5rem;
+  padding-left: .5rem;
+/*
+  line-height: 50px;
+  margin-top: 3px;
+  margin-left: 5px;
+*/
+  
+
+/*
+  -moz-transition: all 200ms ease;
+  -webkit-transition: all 200ms ease;
+  -o-transition: all 200ms ease;
+  transition: all 200ms ease;
+*/
+
+}
+
 
 
 a.menu-toggle {

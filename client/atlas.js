@@ -1,4 +1,4 @@
-const CATLAS_INSTRUCTIONS = "Thanks for visiting us. To get started, feel free to scroll through the study loaded above using your mouse, the up and down arrow keys on your keyboard, or, if you have a touchscreen, your finger. Click on a structure within the study to highlight and identify the structure. Open and close the side menu with the button on the upper left to access the list of structures. Also access different studies from the side menu. We hope you find our site helpful."
+const CATLAS_INSTRUCTIONS = "Thanks for visiting us. Feel free to click the help button on the left to view this message again at any time. To get started, scroll through the study loaded above using your mouse wheel, the up and down arrow keys on your keyboard, or, if you have a touchscreen, your finger. Click on a structure within the study to highlight and identify the structure; click on it again to remove the highlighting. Open and close the side menu with the menu button on the upper left to access the full list of structures. Also access different studies from the side menu. We hope you find our site helpful."
 
 var clickX = [];
 var clickY = [];
