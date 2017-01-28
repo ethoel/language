@@ -543,3 +543,7 @@ button#deleteCurrentOrgan {
 #savedFade {
   color: azure;
 }
+
+button.saveButton {
+  background-color: #99ff99;
+}
