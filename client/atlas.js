@@ -757,6 +757,14 @@ Template.atlas.events({
     // prevent default action
     return false;
   },
+  "click .help-button": function (e) {
+    console.log("clicked help button");
+    Session.set("hoverOrgan", "Welcome to Catlas");
+    Session.set("studyDescription", CATLAS_INSTRUCTIONS);
+    // do I need to clear currentOrgan TODO
+    // prevent default action
+    return false;
+  },
   // TODO these links need to be dynamically generated in the future
   // Also fix the timeout hack and use iron router for real to dynamically load study
   "click #link1": function (e) {
