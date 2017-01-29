@@ -667,7 +667,32 @@ Template.atlas.events({
     // update the descriptors
     if (Session.get(e.target.getAttribute("value"))) {
       Session.set("hoverOrgan", e.target.getAttribute("value"));
-      Session.set("studyDescription", myorgan.description);
+      
+      // find organ description
+      var myOrganName = e.target.getAttribute("value");
+      
+      //begin find organ description--these need to become functions eventually
+      var study = Studies.findOne({ name: studyName });
+      var organs = study.organs;
+      var organsLength = 0;
+      if (organs) {
+        organsLength = organs.length;
+      }
+      console.log("organsLength " + organsLength);
+
+      var organ;
+      var myorgan;
+      for (var i = 0; i < organsLength; i++) {
+        organ = organs[i];
+
+        // if organ is not checked, continue to next organ w/o drawing
+        //console.log(organ.organ + Session.get(organ.organ));
+        if (organ.organ === myOrganName) { myorgan = organ; break; };
+
+      }
+      //end new code that should be a function
+      
+      if (myorgan) { Session.set("studyDescription", myorgan.description); }
     } else {
       Session.set("hoverOrgan", "");
       Session.set("studyDescription", "");
