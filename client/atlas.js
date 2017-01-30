@@ -463,7 +463,7 @@ Template.atlas.onRendered(function () {
   $("#organs").css("top", navlistHeight + "px");
   
   // for safari 10 on iphone
-  document.getElementById("canvas").addEventListener('touchforcechange', function (e) { return false; });
+  document.getElementById("canvas").addEventListener('touchforcechange', function (e) { e.preventDefault(); });
 });
 
 var setMenuWidth = function (menuWidth, percentOfWindowWidth) {
