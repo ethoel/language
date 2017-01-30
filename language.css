@@ -60,8 +60,11 @@ body {
 }
 
 a.help-button {
+/*
 position: absolute;
   left: 0;
+*/
+  float: left;
   z-index: 499;
   text-decoration: none;
   
