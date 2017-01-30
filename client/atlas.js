@@ -294,8 +294,24 @@ var doInOrgan = function(e, doMe, elseDoMe) {
   
   // works on everything but the ipad for some reason!! does not need to adjust for open menu
   var rect = canvas.getBoundingClientRect();
-  var mouseX = e.clientX - rect.left;
-  var mouseY = e.clientY - rect.top;
+  //console.log("clientX = " + e.clientX);
+ // console.log("touchX = " + e.originalEvent.touches[0].clientX);
+  
+  var myclientX;
+  var myclientY;
+  
+  if (e.clientX) {
+    // click event
+    myclientX = e.clientX;
+    myclientY = e.clientY;
+  } else {
+    // touchend event
+    myclientX = e.originalEvent.changedTouches[0].clientX;
+    myclientY = e.originalEvent.changedTouches[0].clientY;
+  }
+  
+  var mouseX = myclientX - rect.left;
+  var mouseY = myclientY - rect.top;
   
 
     // TODO: right now, only one study named "Normal" 
@@ -731,8 +747,15 @@ Template.atlas.events({
 //      Session.set("hoverOrgan", "");
     });
   },
-  "touchstart, click #canvas": function (e) {
+  "touchend #canvas, click #canvas": function (e) {
     // TODO this is way too convuluted man
+    
+    if (lastY) {
+      // was a touchmove event
+      lastY = "";
+      return false;
+    }
+    
     console.log("CLICKED CANVAS");
     var organ = doInOrgan(e, function (canvas, myorgan) {
       console.log("clicked organ");
