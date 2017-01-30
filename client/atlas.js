@@ -1,4 +1,4 @@
-const CATLAS_INSTRUCTIONS = "Thanks for visiting us. Feel free to click the help button on the left to view this message again at any time.<p>We are still developing our site and its contents, so please excuse any hiccups.<p>To get started, scroll through the study loaded above using your mouse wheel, the up and down arrow keys on your keyboard, or, if you have a touchscreen, your finger. Click on a structure within the study to highlight and identify the structure; click on it again to remove the highlighting. Open and close the side menu with the menu button on the upper left to access the full list of structures. Also access different studies from the side menu. We hope you find our site helpful."
+const CATLAS_INSTRUCTIONS = "<p>Thanks for visiting us. Feel free to click the help button on the left to view this message again at any time. We are still developing our site and its contents, so please excuse any hiccups. To get started, scroll through the study loaded above using your mouse wheel, the up and down arrow keys on your keyboard, or, if you have a touchscreen, your finger. Click on a structure within the study to highlight and identify the structure; click on it again to remove the highlighting. Open and close the side menu with the menu button on the upper left to access the full list of structures. Also access different studies from the side menu. We hope you find our site helpful.</p>"
 
 var clickX = [];
 var clickY = [];
@@ -445,6 +445,9 @@ Template.atlas.onRendered(function () {
   var navlistHeight = $("#nav-list-id").innerHeight();
   
   $("#organs").css("top", navlistHeight + "px");
+  
+  // for safari 10 on iphone
+  document.getElementById("canvas").addEventListener('touchforcechange', function (e) { e.preventDefault(); });
 });
 
 var setMenuWidth = function (menuWidth, percentOfWindowWidth) {
@@ -624,7 +627,7 @@ Template.atlas.events({
     return false;
   },
   "touchmove #canvas": function (e) {
-    e.preventDefault();
+    //e.preventDefault();
     console.log("TOUCHED");
     var currentY = e.originalEvent.touches[0].clientY;
     //if (!lastY) lastY = currentY;
