@@ -447,7 +447,7 @@ Template.atlas.onRendered(function () {
   $("#organs").css("top", navlistHeight + "px");
   
   // for safari 10 on iphone
-  document.getElementById("canvas").addEventListener('touchforcechange', function (e) { e.stopPropagation(); });
+  document.getElementById("canvas").addEventListener('touchforcechange', function (e) { return false; });
 });
 
 var setMenuWidth = function (menuWidth, percentOfWindowWidth) {
@@ -731,7 +731,7 @@ Template.atlas.events({
 //      Session.set("hoverOrgan", "");
     });
   },
-  "click #canvas": function (e) {
+  "touchstart, click #canvas": function (e) {
     // TODO this is way too convuluted man
     console.log("CLICKED CANVAS");
     var organ = doInOrgan(e, function (canvas, myorgan) {
@@ -753,6 +753,8 @@ Template.atlas.events({
     if (organ) {   
       redraw();
     }
+    
+    return false;
   },
   "click .menu-toggle": function (e) {
     console.log("click");
