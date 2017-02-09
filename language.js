@@ -58,6 +58,20 @@ Meteor.methods({
     }, { $pull: { "organs": { "organ": organName} }});
     console.log("Deleted " + organName );
   },
+  retitleStudy: function(studyName, newStudyTitle) {
+    // find the organ named organName in the study named studyName
+    // remove that organ from the organs array
+    Studies.update({ name: studyName 
+    }, { $set: { "title": newStudyTitle }});
+    console.log("Retitling " + newStudyTitle );
+  },
+  renameStudy: function(studyName, newStudyName) {
+    // find the organ named organName in the study named studyName
+    // remove that organ from the organs array
+    Studies.update({ name: studyName 
+    }, { $set: { "name": newStudyName }});
+    console.log("Retitling " + newStudyName );
+  },
   deleteStudy: function(studyName) {
     // delete images
     // find study

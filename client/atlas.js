@@ -1215,6 +1215,53 @@ Template.layoutAdmin.events({
       document.location.reload(true);
     });
   },
+  "click #renameStudy": function (e) {
+    
+    if (study_length < 1) {
+      console.log("Aborted retitle");
+      return;
+    }
+    
+    var newStudyTitle = $("#currentStudyName").val();
+    
+    if (!newStudyTitle) { 
+      console.log("Name must be filled out");
+      return;
+    };
+    
+    console.log("retitling STUDY");
+    Meteor.call("retitleStudy", studyName, newStudyTitle, function () {
+      console.log("Study retitled callback");
+    });
+  },
+  "click #changeAddress": function (e) {
+    
+    if (study_length < 1) {
+      console.log("Aborted address change");
+      return;
+    }
+    
+    var newStudyName = $("#currentStudyAddress").val();
+    
+    if (!newStudyName) { 
+      console.log("Adress must be filled out");
+      return;
+    };
+    
+    // cannot have duplicate name
+    var duplicateStudyName = Studies.findOne({name: newStudyName});
+    if (duplicateStudyName) {
+      alert("Address taken. Please choose unique address");
+      return;
+    }
+    
+    console.log("changing address STUDY");
+    Meteor.call("renameStudy", studyName, newStudyName, function () {
+      console.log("Study renamed callback");
+      Router.go("/admin/" + newStudyName);
+      document.location.reload();
+    });
+  },
   "click #testButton": function (e) {
     $("#overlay").css("display", "inline");
 //    Meteor.call("saveDrawingToOrgan",
