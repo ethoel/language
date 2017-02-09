@@ -73,8 +73,15 @@ Meteor.methods({
       if (imageFile) {
         console.log("Should have deleted " + imagesToDelete[i]);
         // delete file
-        // TODO what if this does not remove it properly?
+        
+        //var errorRemoving = 
         imageFile.remove();
+        
+        //console.log("errorRemoving=" + errorRemoving + "=errorRemoving")
+        
+        // TODO what if this does not remove it properly? -the following not work
+        // if (errorRemoving) { console.log("No success in removing " + imageFile._id); }
+       
         // not sure why the following code does not work
 //        Images.remove(imageFile, function (err, file) {
 //          if (err) {
