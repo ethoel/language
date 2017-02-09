@@ -502,7 +502,7 @@ Template.atlas.helpers({
     var study = Studies.findOne({name: studyName});
     var organs;
     
-    if (study) {
+    if (study && study.organs) {
       organs = study.organs;
       console.log("ORGANS UNSORTED " + organs[0].organ);
       organs.sort(function (a, b) {
