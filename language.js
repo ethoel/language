@@ -58,6 +58,45 @@ Meteor.methods({
     }, { $pull: { "organs": { "organ": organName} }});
     console.log("Deleted " + organName );
   },
+  deleteStudy: function(studyName) {
+    // delete images
+    // find study
+    var studyToDelete = Studies.findOne({name: studyName});
+    if (!studyToDelete) { console.log("DELETE aborted"); return; }
+    
+    // remove studyName and associated imaging
+    var imagesToDelete = studyToDelete.imageArray;
+    var deleteError = 0;
+    for (var i = 0; i < imagesToDelete.length; i++) {
+      // find imageFile to delete by _id
+      var imageFile = Images.findOne(imagesToDelete[i]);
+      if (imageFile) {
+        console.log("Should have deleted " + imagesToDelete[i]);
+        // delete file
+        // TODO what if this does not remove it properly?
+        imageFile.remove();
+        // not sure why the following code does not work
+//        Images.remove(imageFile, function (err, file) {
+//          if (err) {
+//            console.log("Error deleting image " + err);
+//            deleteError = 1;
+//          } else {
+//            console.log("Deleted " + imageFile._id);
+//          }
+//        });
+      } else {
+        // _id does not exist
+        console.log("Could not find " + imagesToDelete[i]);
+      }
+    }
+    
+    if (deleteError) {
+      console.log("Study delete aborted, not all images deleted properly");
+      return;
+    }
+    Studies.remove({name: studyName});
+    console.log("Deleted " + studyName );
+  },
   deleteDrawing: function(name, organ, index) {
     // prepare key for drawing index b/c mongodb cannot handle $$
     var key = "organs.$.data." + index;

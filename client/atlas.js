@@ -1193,6 +1193,28 @@ Template.layoutAdmin.events({
     
     
   },
+  "click #permDeleteStudy": function (e) {
+    if (study_length < 1) {
+      console.log("Aborted deletion");
+      return;
+    }
+    
+    if ($("#currentStudyName").val() !== "DELETE" || 
+       $("#currentStudyAddress").val() !== "DELETE") {
+      console.log("Aborted");
+      alert('You must type in "DELETE" in both fields to the left to delete study permanently')
+      return;
+    }
+    
+    
+
+    
+    console.log("DELETING STUDY");
+    Meteor.call("deleteStudy", studyName, function () {
+      console.log("Study deleted callback");
+      document.location.reload(true);
+    });
+  },
   "click #testButton": function (e) {
     $("#overlay").css("display", "inline");
 //    Meteor.call("saveDrawingToOrgan",
