@@ -1,0 +1,61 @@
+<template name="edit">
+  <h1>Edit</h1>
+  {{> loginButtons}}
+  
+  <div>
+    <h3>Upload new study</h3>
+    
+    <h3>Edit existing study</h3>
+    
+    <p>
+      <select id="studiesDropDown">
+        {{#each studies}}
+        {{> studiesDropDownItem}}
+        {{/each}}
+      </select>
+      <button id="editStudy" class="editButton">Edit</button>
+      <button id="cancelStudy" class="cancelButton">Cancel</button>
+      <button id="saveStudy" class="saveButton">Save</button>
+    </p>
+  
+    <p>
+      <input type="text" id="currentStudyAddress" placeholder="Study address" value="{{studyAddress}}" readonly>
+    </p>
+    
+    <p>
+      <input type="text" id="currentStudyTitle" placeholder="Study title" value="{{studyTitle}}" readonly>
+    </p>
+    
+    <p>
+      {{#each images}}
+      {{> imageItem}}
+      {{/each}}
+    </p>
+<!--
+  <h4>Upload new study</h4>
+  <input type="file" id="loadImages" multiple>
+  <br/><br/>
+  <input type="text" id="currentStudyAddress" placeholder="Study address">
+  <button id="changeAddress">Change Study Address</button>
+  <br/><br/>
+  <input type="text" id="currentStudyName" placeholder="Study name">
+  <button id="renameStudy">Rename Current Study</button>
+  <button id="permDeleteStudy" class="deleteButton">DELETE Current Study</button>
+  <br/>
+-->
+    
+  </div>
+</template>
+
+<template name="studiesDropDownItem">
+  <option value="{{this.name}}">{{this.title}}</option>
+</template>
+
+<template name="imageItem">
+  <!--delete by clicking on image-->
+  <img src="{{this}}" height="100">
+  <span>
+    <button id="swapImage" class="imageButton">&lt;&gt;</button>
+    <button id="insertImage" class="imageButton">i</button>
+  </span>
+</template>

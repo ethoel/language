@@ -1,0 +1,11 @@
+button#cancelStudy {
+  display: none;
+}
+
+button#saveStudy {
+  display: none;
+}
+
+button.imageButton {
+  display: block;
+}

@@ -219,4 +219,17 @@ Router.onBeforeAction(function () {
     // otherwise continue routing
     this.next();
   }
-}, { only: ['admin', 'admin.study'] });
+}, { only: ['admin', 'admin.study', 'edit'] });
+
+Router.route("/edit", function () {
+  
+  this.wait(Meteor.subscribe("studies"));
+  this.wait(Meteor.subscribe("images"));
+  
+  if (this.ready()) {
+    this.render("edit");
+    
+  } else {
+    this.render("/loading");
+  }
+});
