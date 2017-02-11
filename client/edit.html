@@ -13,17 +13,71 @@
         {{> studiesDropDownItem}}
         {{/each}}
       </select>
-      <button id="editStudy" class="editButton">Edit</button>
-      <button id="cancelStudy" class="cancelButton">Cancel</button>
-      <button id="saveStudy" class="saveButton">Save</button>
-    </p>
-  
-    <p>
-      <input type="text" id="currentStudyAddress" placeholder="Study address" value="{{studyAddress}}" readonly>
+      <button id="editStudy">Edit</button>
+      <button id="cancelStudy" class="hiddenFirst">Cancel</button>
+      <button id="saveStudy" class="hiddenFirst">Save</button>
     </p>
     
     <p>
-      <input type="text" id="currentStudyTitle" placeholder="Study title" value="{{studyTitle}}" readonly>
+      <select id="publishDropDown" class="studyEditField" >
+        <option value="private">Private</option>
+        <option value="link only">Unlisted</option>
+        <option value="public" selected>Public</option>
+      </select>
+      <input type="checkbox" id="verifiedCheckbox" class="studyEditField"  {{verified}}>
+      <label for="verifiedCheckbox">Verified</label>
+    </p>
+    
+<!--
+    <p>
+      <select id="normalAbnormalDropDown" class="studyEditField" >
+        <option value="normal">Normal</option>
+        <option value="abnormal">Abnormal</option>
+      </select>
+    </p>
+    
+    <p>
+      <select id="imageTypeDropDown" class="studyEditField" >
+        <option value="CT">Computed tomography (CT)</option>
+        <option value="MRI">Magnetic resonance imaging (MRI)</option>
+        <option value="US">Ultrasound</option>
+      </select>
+    </p>
+-->
+    <p>
+      <select id="allTagsDropDown" class="studyEditField" >
+        {{#each allTags}}
+        {{> allTagsDropDownItem}}
+        {{/each}}
+      </select>
+      <input type="text" id="addStudyTagField" class="studyEditField hiddenFirst" placeholder="Study tag" >
+      <button id="addStudyTagButton" class="studyEditField" >Add</button>
+    </p>
+    
+    <p>
+      {{#each studyTags}}
+      {{> studyTag}}
+      {{/each}}
+    </p>
+    
+    <p>
+      <input type="text" id="currentStudyOwner" class="studyEditField" placeholder="Study owner" value="{{studyOwner}}" >
+    </p>
+  
+    <p>
+      <input type="text" id="currentStudyAddress" class="studyEditField" placeholder="Study address" value="{{studyAddress}}" >
+    </p>
+    
+    <p>
+      <input type="text" id="currentStudyTitle" class="studyEditField" placeholder="Study title" value="{{studyTitle}}" >
+    </p>
+    
+    <p>
+      <input type="text" id="currentStudyCredit" class="studyEditField" placeholder="Study credit" value="{{studyCredit}}" >
+    </p>
+    
+    <p>
+      <textarea id="currentStudyDescription" placeholder="Study description" cols="30" rows="3" value="{{studyDescription}}" ></textarea>
     </p>
     
     <p>
@@ -51,11 +105,20 @@
   <option value="{{this.name}}">{{this.title}}</option>
 </template>
 
+<template name="allTagsDropDownItem">
+  <option value="{{this}}">{{this}}</option>
+</template>
+
+<template name="studyTag">
+  <button class="studyTagButton" value="{{this}}">{{this}}</button>
+</template>
+
 <template name="imageItem">
   <!--delete by clicking on image-->
-  <img src="{{this}}" height="100">
+  <img src="{{this.url}}" height="100">
   <span>
-    <button id="swapImage" class="imageButton">&lt;&gt;</button>
-    <button id="insertImage" class="imageButton">i</button>
+    {{this.index}}
+    <button class="swapImage imageButton studyEditField" value="{{this.index}}">&lt;&gt;</button>
+    <button class="insertImage imageButton studyEditField">i</button>
   </span>
 </template>

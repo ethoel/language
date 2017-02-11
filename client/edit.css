@@ -1,11 +1,12 @@
-button#cancelStudy {
-  display: none;
-}
-
-button#saveStudy {
-  display: none;
-}
-
-button.imageButton {
+.imageButton {
   display: block;
+}
+
+.hiddenFirst {
+  display: none;
+}
+
+.editStudyField:disabled {
+/*  TODO get rid of bootstrap*/
+  color: darkslategray;
 }
