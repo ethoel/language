@@ -551,6 +551,12 @@ Template.atlas.helpers({
     }
     return studyTitle;
   },
+  filteredStudies: function () {
+    var filteredStudies = Studies.find({});
+    return filteredStudies;
+    
+    //return ["banana"];
+  },
   studyHeight: function () {
 //    var studyCanvas = document.getElementById("canvas");
 //    studyCanvas.height = films[0].height;
@@ -849,6 +855,13 @@ Template.atlas.events({
       document.location.reload(true);
     }, 200);
     return false;
+  },
+  "click #normalCheckbox": function (e) {
+    if (e.target.checked) {
+      console.log("checked normal filter");
+      filterTags = ["normal"];
+      Session.set("filterUpdated", filterTags);
+    }
   }
 });
 

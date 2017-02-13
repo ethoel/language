@@ -18,13 +18,23 @@
     <nav id="menu-side-id" class="menu-side">
 <!--      <input type="checkbox" id="navToggle"/>-->
       
+      <h3 class="nav_title">Catlas</h3>
+      
+      <div id="filterDiv">
+        <input type="checkbox" id="normalCheckbox" class="filterCheckbox">
+        <label for="normalCheckbox">Normal</label>
+        <input type="checkbox" id="abnormalCheckbox" class="filterCheckbox">
+        <label for="abnormalCheckbox">Abnormal</label>
+      </div>
 
       
       <ul id="nav-list-id" class="nav-list">
-        <h3 class="nav_title">Catlas</h3>
         <li><a href="/atlas/normalaxial" id="link1">Abdomen Axial</a></li>
         <li><a href="/atlas/test4" id="link2">Abdomen Coronal</a></li>
         <li><a href="/atlas/normalsagittal" id="link3">Abdomen Sagittal</a></li>
+        {{#each filteredStudies}}
+        {{> filteredStudy}}
+        {{/each}}
       </ul>
       
 <!--      <h3 class="nav_title">Findings</h3>-->
@@ -187,4 +197,8 @@
 
 <template name="organdrop">
   <option value="{{this.organ}}">{{this.organ}}</option>
+</template>
+
+<template name="filteredStudy">
+  <li>{{this.title}}</li>
 </template>
