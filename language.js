@@ -145,6 +145,13 @@ Meteor.methods({
       "name": name,
       "organs.organ": organ
     }, { $set: drawData });
+  },
+  saveStudyTags: function(studyName, studyTagsArray) {
+    var studyTags = [];
+    for (var i = 0; i < studyTagsArray.length; i++) {
+      studyTags.push({ tag: studyTagsArray[i] });
+    }
+    Studies.update({ "name": studyName }, { $set: { "tags": studyTags }});
   }
 });
 
@@ -177,6 +184,7 @@ Router.route("/atlas/:study", function () {
   
   this.wait(Meteor.subscribe("organs"));
   this.wait(Meteor.subscribe("studies"));
+  this.wait(Meteor.subscribe("tags"));
   this.wait(Meteor.subscribe("images"));
   
   if (this.ready()) {
@@ -196,6 +204,7 @@ Router.route("/admin/:study", function() {
   
   this.wait(Meteor.subscribe("organs"));
   this.wait(Meteor.subscribe("studies"));
+  this.wait(Meteor.subscribe("tags"));
   this.wait(Meteor.subscribe("images"));
   
   if (this.ready()) {
@@ -224,6 +233,7 @@ Router.onBeforeAction(function () {
 Router.route("/edit", function () {
   
   this.wait(Meteor.subscribe("studies"));
+  this.wait(Meteor.subscribe("tags"));
   this.wait(Meteor.subscribe("images"));
   
   if (this.ready()) {

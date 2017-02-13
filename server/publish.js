@@ -8,5 +8,9 @@ Meteor.startup(function () {
     return Studies.find();
   });
   
+  Meteor.publish("tags", function () {
+    return Tags.find();
+  });
+  
   Meteor.publish("images", function(){ return Images.find(); });
 });

@@ -77,7 +77,7 @@
     </p>
     
     <p>
-      <textarea id="currentStudyDescription" placeholder="Study description" cols="30" rows="3" value="{{studyDescription}}" ></textarea>
+      <textarea id="currentStudyDescription" class="studyEditField" placeholder="Study description" cols="30" rows="3" value="{{studyDescription}}" ></textarea>
     </p>
     
     <p>
@@ -110,7 +110,7 @@
 </template>
 
 <template name="studyTag">
-  <button class="studyTagButton" value="{{this}}">{{this}}</button>
+  <button class="studyTagButton studyEditField" value="{{this}}" disabled>{{this}}</button>
 </template>
 
 <template name="imageItem">
@@ -118,7 +118,7 @@
   <img src="{{this.url}}" height="100">
   <span>
     {{this.index}}
-    <button class="swapImage imageButton studyEditField" value="{{this.index}}">&lt;&gt;</button>
-    <button class="insertImage imageButton studyEditField">i</button>
+    <button class="swapImage imageButton studyEditField" value="{{this.index}}" disabled>&lt;&gt;</button>
+    <button class="insertImage imageButton studyEditField" disabled>i</button>
   </span>
 </template>

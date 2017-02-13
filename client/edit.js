@@ -5,9 +5,21 @@ var editStudyTags = [];
 var setCurrentStudy = function (studyName) {
   var study = Studies.findOne({ name: studyName });
   editImageArray = study.imageArray;
+  resetEditStudyTags(study.tags);
   Session.set("currentStudy", studyName);
   Session.set("updateReactive", editImageArray[0]);
   setFieldsDisabled(true);
+}
+
+var resetEditStudyTags = function (studyTags) {
+  if (studyTags) {
+    for (var i = 0; i < studyTags.length; i++) {
+      editStudyTags[i] = studyTags[i].tag;
+    }
+  } else {
+    editStudyTags = [];
+  }
+  
 }
 
 var displayCancelSaveButton = function () {
@@ -23,15 +35,19 @@ var displayEditButton = function () {
 };
 
 var setFieldsDisabled = function (disabled) {
-  $("#currentStudyAddress").attr("disabled", disabled);
-  $("#currentStudyTitle").attr("disabled", disabled);
-  $("#allTagsDropDown").attr("disabled", disabled);
-  $("#addStudyTagButton").attr("disabled", disabled);
-  $(".studyTagButton").attr("disabled", disabled);
+  $(".studyEditField").attr("disabled", disabled);
+  if (Meteor.user().username !== "admin") {
+    // the following fields are always disabled for non-admin
+    $("#verifiedCheckBox").attr("disabled", true);
+    $("#currentStudyOwner").attr("disabled", true);
+  }
 };
 
 var resetAllFields = function () {
+  // hitting cancel all fields must be reset
   var study = Studies.findOne({ name: Session.get("currentStudy") });
+  resetEditStudyTags(study.tags);
+  Session.set("updateReactive", "Changes canceled");
   $("#currentStudyAddress").val(study.name);
   $("#currentStudyTitle").val(study.title);
 };
@@ -66,6 +82,13 @@ var saveAllFields = function () {
 
   Meteor.call("renameStudy", Session.get("currentStudy"), newStudyName, function () {
     console.log("Study renamed callback");
+  });
+  
+  // save new tags to Tags database
+  
+  // save tags to Study
+  Meteor.call("saveStudyTags", Session.get("currentStudy"), editStudyTags, function () {
+    console.log("Study tags saved");
   });
   
   // success
