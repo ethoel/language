@@ -7,29 +7,32 @@ var setCurrentStudy = function (studyName) {
   editImageArray = study.imageArray;
   resetEditStudyTags(study.tags);
   Session.set("currentStudy", studyName);
-  Session.set("updateReactive", editImageArray[0]);
+  Session.set("updateReactive", studyName);
   setFieldsDisabled(true);
 }
 
 var resetEditStudyTags = function (studyTags) {
+  editStudyTags = [];
   if (studyTags) {
     for (var i = 0; i < studyTags.length; i++) {
       editStudyTags[i] = studyTags[i].tag;
     }
-  } else {
-    editStudyTags = [];
   }
-  
+  console.log(editStudyTags);
 }
 
 var displayCancelSaveButton = function () {
   $("#editStudy").css({"display": "none"});
+  // while editing cant change study
+  $("#studiesDropDown").attr("disabled", true);
   $("#cancelStudy").css({"display": "inline"});
   $("#saveStudy").css({"display": "inline"});
 };
 
 var displayEditButton = function () {
   $("#editStudy").css({"display": "inline"});
+  // enable changing study to edit
+  $("#studiesDropDown").attr("disabled", false);
   $("#cancelStudy").css({"display": "none"});
   $("#saveStudy").css({"display": "none"});
 };

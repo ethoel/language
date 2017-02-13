@@ -552,7 +552,7 @@ Template.atlas.helpers({
     return studyTitle;
   },
   filteredStudies: function () {
-    var filteredStudies = Studies.find({});
+    var filteredStudies = Studies.find({ $or : [{ "tags.tag": "Normal" }, { "tags.tag": "Abnormal" }]});
     return filteredStudies;
     
     //return ["banana"];
@@ -826,34 +826,13 @@ Template.atlas.events({
   },
   // TODO these links need to be dynamically generated in the future
   // Also fix the timeout hack and use iron router for real to dynamically load study
-  "click #link1": function (e) {
-    console.log("click link 1");
+  "click .filteredStudyLink": function (e) {
+    console.log("clicked filtered study " + e.target);
     // not sure why page is not reloaded when link is changed with ahref
     // i think it has something to do with iron router/meteor, will use to my advantage
     // for now and just reload the right pane
-    Router.go("/atlas/normalaxial");
-    $('body').toggleClass("menu-open");
-    setTimeout(function () {
-      document.location.reload(true);
-    }, 200);
-    return false;
-  },
-  "click #link2": function (e) {
-    console.log("click link 2");
-    Router.go("/atlas/test4");
-    $('body').toggleClass("menu-open");
-    setTimeout(function () {
-      document.location.reload(true);
-    }, 200);
-    return false;
-  },
-  "click #link3": function (e) {
-    console.log("click link 3");
-    Router.go("/atlas/normalsagittal");
-    $('body').toggleClass("menu-open");
-    setTimeout(function () {
-      document.location.reload(true);
-    }, 200);
+    Router.go(e.target.href);
+    document.location.reload(true);
     return false;
   },
   "click #normalCheckbox": function (e) {

@@ -29,9 +29,6 @@
 
       
       <ul id="nav-list-id" class="nav-list">
-        <li><a href="/atlas/normalaxial" id="link1">Abdomen Axial</a></li>
-        <li><a href="/atlas/test4" id="link2">Abdomen Coronal</a></li>
-        <li><a href="/atlas/normalsagittal" id="link3">Abdomen Sagittal</a></li>
         {{#each filteredStudies}}
         {{> filteredStudy}}
         {{/each}}
@@ -200,5 +197,5 @@
 </template>
 
 <template name="filteredStudy">
-  <li>{{this.title}}</li>
+  <li><a class="filteredStudyLink" href="{{this.name}}">{{this.title}}</a></li>
 </template>
