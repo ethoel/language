@@ -16,40 +16,39 @@
   
   
     <nav id="menu-side-id" class="menu-side">
-<!--      <input type="checkbox" id="navToggle"/>-->
-      
-      <h3 class="nav_title">Catlas</h3>
-      
-      <div id="filterDiv">
-        <input type="checkbox" id="normalCheckbox" class="filterCheckbox">
-        <label for="normalCheckbox">Normal</label>
-        <input type="checkbox" id="abnormalCheckbox" class="filterCheckbox">
-        <label for="abnormalCheckbox">Abnormal</label>
-      </div>
+      <!-- title, admin links, list of studies with filters -->
+      <div id="filterStudyList">
+        <h3 class="nav_title">Catlas</h3>
+        
+        <div id="adminDiv">
+          {{> loginButtons}}
+        </div>
+        
+        <div id="filterDiv"><p>
+          <input type="checkbox" id="normalCheckbox" class="filterCheckbox" checked>
+          <label for="normalCheckbox">Normal</label>
+          <input type="checkbox" id="abnormalCheckbox" class="filterCheckbox" checked>
+          <label for="abnormalCheckbox">Abnormal</label>
+          <a href="#" id="moreFilters">More filters...</a>
+          </p>
+        </div>
 
+        <div id="currentStudiesList">
+          <ul id="nav-list-id" class="nav-list">
+            {{#each filteredStudies}}
+            {{> filteredStudy}}
+            {{/each}}
+          </ul>
+        </div>
+      </div>
       
-      <ul id="nav-list-id" class="nav-list">
-        {{#each filteredStudies}}
-        {{> filteredStudy}}
-        {{/each}}
-      </ul>
-      
-<!--      <h3 class="nav_title">Findings</h3>-->
-      <!--on one line to avoid inline block spaces-->
-<!--      <div id="organ-list">-->
-  <ul id="organs">{{#each organs}}{{> organ}}{{/each}}</ul>
-<!--        </div>-->
+      <!-- list of organs -->
+      <div id="currentOrganList">
+        <ul id="organs">{{#each organs}}{{> organ}}{{/each}}</ul>
+      </div>
     </nav>
 
   
-  
-  
-<!--<label for="navToggle" class="toggle">☰</label>-->
-<!--
-<label for="navToggle" class="toggle">≣≡»☰«</label>
-  <label for="navToggle" class="toggle" id="navOpen">»</label>
-  <label for="navToggle" class="toggle" id="navClose">«</label>
--->
     <div id="study-pane">
   
   

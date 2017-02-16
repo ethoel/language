@@ -552,7 +552,35 @@ Template.atlas.helpers({
     return studyTitle;
   },
   filteredStudies: function () {
-    var filteredStudies = Studies.find({ $or : [{ "tags.tag": "Normal" }, { "tags.tag": "Abnormal" }]});
+    console.log("FILTERED STUDIES");
+    var filterUpdated = Session.get("filterUpdated");
+    
+    // There must be a better way!
+    // Also, there is this problem where this function is called before
+    // the checked properties are set...
+    var normalFilter = [];
+    if ($("#normalCheckbox").prop("checked") === undefined) {
+      // default filter
+      normalFilter = [{ "tags.tag": "Normal" }, { "tags.tag": "Abnormal" }];
+    } else {
+    
+
+      if ($("#normalCheckbox").prop("checked")) {
+        normalFilter.push({ "tags.tag": "Normal" });
+      } else {
+        normalFilter.push({ "tags.tag": "" });
+      }
+      if ($("#abnormalCheckbox").prop("checked")) {
+        normalFilter.push({ "tags.tag": "Abnormal" });
+      } else {
+        normalFilter.push({ "tags.tag": "" });
+      }
+    }
+    var filter = { $or : normalFilter };
+    
+    console.log(filter);
+    
+    var filteredStudies = Studies.find(filter);
     return filteredStudies;
     
     //return ["banana"];
@@ -835,11 +863,11 @@ Template.atlas.events({
     document.location.reload(true);
     return false;
   },
-  "click #normalCheckbox": function (e) {
-    if (e.target.checked) {
-      console.log("checked normal filter");
-      filterTags = ["normal"];
-      Session.set("filterUpdated", filterTags);
+  "change .filterCheckbox": function (e) {
+    if (Session.get("filterUpdated")) {
+      Session.set("filterUpdated", (Session.get("filterUpdated") + 1) % 10);
+    } else {
+      Session.set("filterUpdated", 1);
     }
   }
 });

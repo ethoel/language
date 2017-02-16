@@ -7,6 +7,5 @@
 }
 
 .editStudyField:disabled {
-/*  TODO get rid of bootstrap*/
-  color: darkslategray;
+  background-color: red;
 }

@@ -1,0 +1,90 @@
+.nav_title {
+  padding-bottom: .5rem;
+  padding-top: .5rem;
+  font-weight: bold;
+  font-size: 26px;
+  background-color: #2d2d2d;
+  color: #c7c7c7;
+  text-align: center;
+  margin: 0;
+}
+
+#filterStudyList {
+  height: 40%;
+  width: 100%;
+  overflow: auto;
+  z-index: 450;
+  box-shadow: 0px 0px 10px 0px #000000;
+  background-color: #2d2d2d;
+  color: #c7c7c7;
+}
+
+#adminDiv {
+  padding-left: 0.5rem;
+  text-align: left;
+}
+
+#filterDiv {
+  text-align: center;
+}
+
+#currentStudiesList {
+
+}
+
+.nav-list {
+  padding: 0;
+  margin: 0;
+  list-style-type: none;
+  box-shadow: 0px 2px 4px 0px #111111;
+}
+
+.nav-list li {
+  text-align: center;
+  padding: 0;
+  border-width: 1px 0 0 0;
+  border-style: solid;
+  border-color: #1d1d1d;
+}
+
+.nav-list li a {
+  margin: 0;
+  padding: .5rem;
+  color: #c7c7c7;
+  text-decoration: none;
+  display: block;
+}
+
+.nav-list li a:hover {
+  color: #f1f1f1;
+  background-color: #333333;
+  text-decoration: none;
+}
+
+.nav-list li a:active {
+  color: #f1f1f1;
+  background-color: #444444;
+  text-decoration: none;
+}
+
+.nav-list li a:visited {
+  text-decoration: none;
+}
+
+#currentOrganList {
+  height: 60%;
+  width: 100%;
+  overflow: auto;
+  
+    
+  background-image: url("/favicon-96.png");
+  background-repeat: no-repeat;
+  background-position: bottom right;
+  background-attachment: local;
+}
+
+ul#organs {
+  margin: 0;
+  padding: 0;
+  padding-bottom: 100px;
+}
