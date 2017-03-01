@@ -60,10 +60,39 @@ Meteor.methods({
   },
   retitleStudy: function(studyName, newStudyTitle) {
     // find the organ named organName in the study named studyName
-    // remove that organ from the organs array
     Studies.update({ name: studyName 
     }, { $set: { "title": newStudyTitle }});
     console.log("Retitling " + newStudyTitle );
+  },
+  setStudyVisibility: function(studyName, newVisibility) {
+    // find the organ named organName in the study named studyName
+    Studies.update({ name: studyName 
+    }, { $set: { "public": newVisibility }});
+    console.log("Setting public to " + newVisibility );
+  },
+  setStudyVerified: function(studyName, newVerified) {
+    // find the organ named organName in the study named studyName
+    Studies.update({ name: studyName 
+    }, { $set: { "verified": newVerified }});
+    console.log("Setting verified to " + newVerified );
+  },
+  setStudyOwner: function(studyName, newOwner) {
+    // find the organ named organName in the study named studyName
+    Studies.update({ name: studyName 
+    }, { $set: { "owner": newOwner }});
+    console.log("Setting owner to " + newOwner );
+  },
+  setStudyCredit: function(studyName, newCredit) {
+    // find the organ named organName in the study named studyName
+    Studies.update({ name: studyName 
+    }, { $set: { "credit": newCredit }});
+    console.log("Setting credit to " + newCredit );
+  },
+  setStudyDescription: function(studyName, newDescription) {
+    // find the organ named organName in the study named studyName
+    Studies.update({ name: studyName 
+    }, { $set: { "description": newDescription }});
+    console.log("Setting description to " + newDescription );
   },
   renameStudy: function(studyName, newStudyName) {
     // find the organ named organName in the study named studyName

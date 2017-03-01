@@ -8,6 +8,7 @@ var setCurrentStudy = function (studyName) {
   resetEditStudyTags(study.tags);
   Session.set("currentStudy", studyName);
   Session.set("updateReactive", studyName);
+  $("#publishDropDown").val(study.public).change();
   setFieldsDisabled(true);
 }
 
@@ -53,12 +54,20 @@ var resetAllFields = function () {
   Session.set("updateReactive", "Changes canceled");
   $("#currentStudyAddress").val(study.name);
   $("#currentStudyTitle").val(study.title);
+  $("#publishDropDown").val(study.public).change();
+  $("#verifiedCheckbox").prop("checked", study.verified);
+  $("#currentStudyOwner").val(study.owner);
+  $("#currentStudyCredit").val(study.credit);
+  $("#currentStudyDescription").val(study.description);
 };
 
 var saveAllFields = function () {
   // get all the entered values
   var newStudyName = $("#currentStudyAddress").val();
   var newStudyTitle = $("#currentStudyTitle").val();
+  var newStudyOwner = $("#currentStudyOwner").val();
+  var newStudyCredit = $("#currentStudyCredit").val();
+  var newStudyDescription = $("#currentStudyDescription").val();
   
   
   // check all the values, return false if not correct
@@ -78,7 +87,17 @@ var saveAllFields = function () {
     return false;
   };
   
+  if (!newStudyOwner) {
+    // TODO search for valid owner
+    console.log("Owner must be filled out");
+    return false;
+  }
+  
   // save all fields
+  Meteor.call("setStudyVisibility", Session.get("currentStudy"), $("#publishDropDown option:selected").val(), function () { console.log("Study visibility callback"); });
+  
+  Meteor.call("setStudyVerified", Session.get("currentStudy"), $("#verifiedCheckbox").prop("checked"), function () { console.log("Study set verified callback"); });
+  
   Meteor.call("retitleStudy", Session.get("currentStudy"), newStudyTitle, function () {
     console.log("Study retitled callback");
   });
@@ -86,6 +105,12 @@ var saveAllFields = function () {
   Meteor.call("renameStudy", Session.get("currentStudy"), newStudyName, function () {
     console.log("Study renamed callback");
   });
+  
+  Meteor.call("setStudyOwner", Session.get("currentStudy"), newStudyOwner, function () { console.log("Study set owner callback"); });
+  
+  Meteor.call("setStudyCredit", Session.get("currentStudy"), newStudyCredit, function () { console.log("Study set credit callback"); });
+  
+  Meteor.call("setStudyDescription", Session.get("currentStudy"), newStudyDescription, function () { console.log("Study set description callback"); });
   
   // save new tags to Tags database
   
@@ -143,8 +168,12 @@ Template.edit.helpers({
     return studyTags;
   },
   verified: function () {
-    // TODO
-    return "checked";
+    var study = Studies.findOne({ name: Session.get("currentStudy") });
+    if (study && study.verified) {
+      return "checked";
+    } else {
+      return "";
+    }
   },
   studyOwner: function () {
     var study = Studies.findOne({ name: Session.get("currentStudy") });
@@ -155,6 +184,26 @@ Template.edit.helpers({
       studyOwner = "";
     }
     return studyOwner;
+  },
+  studyCredit: function () {
+    var study = Studies.findOne({ name: Session.get("currentStudy") });
+    var studyCredit;
+    if (study) {
+      studyCredit = study.credit;
+    } else {
+      studyCredit = "";
+    }
+    return studyCredit;
+  },
+  studyDescription: function () {
+    var study = Studies.findOne({ name: Session.get("currentStudy") });
+    var studyDescription;
+    if (study) {
+      studyDescription = study.description;
+    } else {
+      studyDescription = "";
+    }
+    return studyDescription;
   },
   studyTitle: function () {
     var study = Studies.findOne({ name: Session.get("currentStudy") });

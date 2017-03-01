@@ -17,20 +17,25 @@
   
     <nav id="menu-side-id" class="menu-side">
       <!-- title, admin links, list of studies with filters -->
+      
+        
+      
       <div id="filterStudyList">
         <h3 class="nav_title">Catlas</h3>
-        
         <div id="adminDiv">
           {{> loginButtons}}
         </div>
         
-        <div id="filterDiv"><p>
-          <input type="checkbox" id="normalCheckbox" class="filterCheckbox" checked>
-          <label for="normalCheckbox">Normal</label>
-          <input type="checkbox" id="abnormalCheckbox" class="filterCheckbox" checked>
-          <label for="abnormalCheckbox">Abnormal</label>
-          <a href="#" id="moreFilters">More filters...</a>
-          </p>
+        <div id="filterDiv">
+          <div class="filterCheckboxSetDiv">
+            
+            <input type="checkbox" id="normalCheckbox" class="filterCheckbox" checked>
+            <label for="normalCheckbox">Normal</label>
+
+            <input type="checkbox" id="abnormalCheckbox" class="filterCheckbox" checked>
+            <label for="abnormalCheckbox">Abnormal</label>
+            <a href="#" id="moreFilters">More filters...</a>
+          </div>
         </div>
 
         <div id="currentStudiesList">
@@ -41,6 +46,8 @@
           </ul>
         </div>
       </div>
+      
+
       
       <!-- list of organs -->
       <div id="currentOrganList">

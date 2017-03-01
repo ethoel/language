@@ -1,31 +1,60 @@
+
+
+.nav_title, #adminDiv, #filterDiv {
+  background-color: #444444;
+  color: #c7c7c7;
+}
+
 .nav_title {
   padding-bottom: .5rem;
   padding-top: .5rem;
   font-weight: bold;
   font-size: 26px;
-  background-color: #2d2d2d;
-  color: #c7c7c7;
+/*  background-color: #2d2d2d;*/
+/*  color: #c7c7c7;*/
   text-align: center;
   margin: 0;
 }
 
 #filterStudyList {
-  height: 40%;
+/*
+  border-width: 1px 0 0 0;
+  border-style: solid;
+  border-color: #1d1d1d;
+*/
+  height: 30%;
   width: 100%;
   overflow: auto;
   z-index: 450;
-  box-shadow: 0px 0px 10px 0px #000000;
-  background-color: #2d2d2d;
+  box-shadow: 0px 2px 4px 0px #111111;
+  background-color: #1d1d1d;
   color: #c7c7c7;
+  
+  background-image: url("/nami.png");
+  background-repeat: repeat;
 }
 
 #adminDiv {
+  display: none;
   padding-left: 0.5rem;
+  padding-bottom: 0.5rem;
   text-align: left;
 }
 
+#moreFilters {
+  display: none;
+}
+
 #filterDiv {
+  font-style: italic;
+/*  font-size: .75rem;*/
   text-align: center;
+  padding-top: .5rem;
+  padding-bottom: .5rem;
+  box-shadow: 0px 2px 4px 0px #111111;
+  border-width: 1px 0 0 0;
+  border-style: solid;
+  border-color: #1d1d1d;
 }
 
 #currentStudiesList {
@@ -33,6 +62,7 @@
 }
 
 .nav-list {
+  background-color: #1d1d1d;
   padding: 0;
   margin: 0;
   list-style-type: none;
@@ -42,9 +72,11 @@
 .nav-list li {
   text-align: center;
   padding: 0;
+  margin: 0;
   border-width: 1px 0 0 0;
   border-style: solid;
   border-color: #1d1d1d;
+  background-color: #2d2d2d;
 }
 
 .nav-list li a {
@@ -72,7 +104,7 @@
 }
 
 #currentOrganList {
-  height: 60%;
+  height: 70%;
   width: 100%;
   overflow: auto;
   
