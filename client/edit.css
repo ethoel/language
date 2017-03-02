@@ -6,5 +6,11 @@
   display: none;
 }
 
-.editStudyField:disabled {
+.studyEditField:disabled {
+  color: #6d6d6d;
+  background-color: #c7c7c7;
+}
+
+#currentStudyOwner {
+/*  background-color: red;*/
 }

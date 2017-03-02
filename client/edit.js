@@ -87,9 +87,22 @@ var saveAllFields = function () {
     return false;
   };
   
+  // USER COLLECTION TEST
+  var usernamesTest = Meteor.users.find({});
+  console.log("USERS");
+  usernamesTest.forEach(function (user) {
+    console.log("Username " + user.username);
+  });
+  var userExists = Meteor.users.findOne({username: newStudyOwner});
+  console.log("Exists " + userExists);
+  //USER COLLECTION TEST
+  
   if (!newStudyOwner) {
     // TODO search for valid owner
     console.log("Owner must be filled out");
+    return false;
+  } else if (!Meteor.users.findOne({ username: newStudyOwner })) {
+    console.log("Owner must be valid");
     return false;
   }
   

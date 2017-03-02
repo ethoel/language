@@ -264,6 +264,7 @@ Router.route("/edit", function () {
   this.wait(Meteor.subscribe("studies"));
   this.wait(Meteor.subscribe("tags"));
   this.wait(Meteor.subscribe("images"));
+  this.wait(Meteor.subscribe("usernames"));
   
   if (this.ready()) {
     this.render("edit");
