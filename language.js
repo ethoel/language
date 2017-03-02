@@ -257,11 +257,25 @@ Router.onBeforeAction(function () {
     // otherwise continue routing
     this.next();
   }
-}, { only: ['admin', 'admin.study', 'edit'] });
+}, { only: ['admin', 'admin.study'] });
+
+// When log in should be required
+Router.onBeforeAction(function () {
+  if (!Meteor.userId()) {
+    // user is not logged in, force log in
+    this.layout("");
+    this.render("login");
+//  } else if (Meteor.user() && (Meteor.user().username !== "admin")) {
+//    this.layout("");
+//    this.render("unauthorized");
+  } else {
+    // otherwise continue routing
+    this.next();
+  }
+}, { only: ['edit'] });
 
 Router.route("/edit", function () {
-  
-  this.wait(Meteor.subscribe("studies"));
+  this.wait(Meteor.subscribe("studies", "edit"));
   this.wait(Meteor.subscribe("tags"));
   this.wait(Meteor.subscribe("images"));
   this.wait(Meteor.subscribe("usernames"));

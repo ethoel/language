@@ -19,6 +19,7 @@
     </p>
     
     <p>
+      <span class="editLabel">Visibility</span>
       <select id="publishDropDown" class="studyEditField" >
         <option value="private">Private</option>
         <option value="link only">Unlisted</option>
@@ -45,6 +46,7 @@
     </p>
 -->
     <p>
+      <span class="editLabel">Tags</span>
       <select id="allTagsDropDown" class="studyEditField" >
         {{#each allTags}}
         {{> allTagsDropDownItem}}
@@ -61,22 +63,27 @@
     </p>
     
     <p>
+      <span class="editLabel">Owner</span>
       <input type="text" id="currentStudyOwner" class="studyEditField" placeholder="Study owner" value="{{studyOwner}}" >
     </p>
   
     <p>
+      <span class="editLabel">Address</span>
       <input type="text" id="currentStudyAddress" class="studyEditField" placeholder="Study address" value="{{studyAddress}}" >
     </p>
     
     <p>
+      <span class="editLabel">Title</span>
       <input type="text" id="currentStudyTitle" class="studyEditField" placeholder="Study title" value="{{studyTitle}}" >
     </p>
     
     <p>
+      <span class="editLabel">Credit</span>
       <input type="text" id="currentStudyCredit" class="studyEditField" placeholder="Study credit" value="{{studyCredit}}" >
     </p>
     
     <p>
+      <span class="editLabel">Description</span>
       <textarea id="currentStudyDescription" class="studyEditField" placeholder="Study description" cols="30" rows="3" value="{{studyDescription}}" ></textarea>
     </p>
     

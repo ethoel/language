@@ -4,8 +4,14 @@ Meteor.startup(function () {
     return Organs.find();
   });
   
-  Meteor.publish("studies", function () {
-    return Studies.find();
+  Meteor.publish("studies", function (context) {
+    if (context === "edit" && Meteor.users.findOne(this.userId).username !== "admin") {
+//      console.log("TEST PUB " + this.userId);
+//      console.log("TEST PUB 2 " + Meteor.users.findOne(this.userId).username);
+      return Studies.find({ owner: Meteor.users.findOne(this.userId).username });
+    } else {
+      return Studies.find();
+    }
   });
   
   Meteor.publish("tags", function () {

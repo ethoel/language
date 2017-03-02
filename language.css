@@ -406,7 +406,7 @@ canvas {
 }
 
 
-span {
+span.organLabel {
   display: inline-block;
   width: 2rem;
   text-align: center;

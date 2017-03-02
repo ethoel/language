@@ -555,6 +555,18 @@ Template.atlas.helpers({
     console.log("FILTERED STUDIES");
     var filterUpdated = Session.get("filterUpdated");
     
+    // sample filter
+    // { $and: [{verified: true}, {public: "public"}, { $or: [{tags.tag: "tag1"}, {tags.tag: "tag2" } ]}]}
+    
+    var finalAndFilter = [];
+    
+    // only verified studies
+    finalAndFilter.push({ verified: true });
+    
+    // only public studies
+    finalAndFilter.push({ public: "public" });
+    
+    
     // There must be a better way!
     // Also, there is this problem where this function is called before
     // the checked properties are set...
@@ -576,7 +588,12 @@ Template.atlas.helpers({
         normalFilter.push({ "tags.tag": "" });
       }
     }
-    var filter = { $or : normalFilter };
+    var tagFilter = { $or : normalFilter };
+    
+    // add the tags
+    finalAndFilter.push(tagFilter);
+    
+    var filter = { $and: finalAndFilter };
     
     console.log(filter);
     
