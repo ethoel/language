@@ -60,7 +60,13 @@ var setFieldsDisabled = function (disabled) {
 };
 
 var clearAllFields = function () {
-  $(".studyEditField").val("");
+  $("#publishDropDown").val("Public");
+  $("#allTagsDropDown").val("Abnormal");
+  $("#currentStudyOwner").val("");
+  $("#currentStudyAddress").val("");
+  $("#currentStudyTitle").val("");
+  $("#currentStudyCredit").val("");
+  $("#currentStudyDescription").val("");
   $("#studiesDropDown").val("Untitled");
   editImageArray = [];
   editStudyTags = [];
@@ -105,6 +111,7 @@ var resetAllFields = function () {
   var study = Studies.findOne({ name: Session.get("currentStudy") });
   
   // this is hitting cancel on a new study
+  // TODO should delete unsaved studies here
   if (!study) { return; }
   
   resetEditStudyTags(study.tags);
@@ -382,8 +389,14 @@ Template.edit.events({
   "click #newStudyButton": function (e) {
     setEditFieldsForNewStudy();
   },
-  "change .fileLoadButton": function(e) {
-    console.log("File Load Button");
-    loadNewImagesAt(e, 0, e.target.files.length);
+  "click .insertImagesButton": function (e) {
+    console.log("Clicked insert images button with index " + $(e.target).val());
+    $("#loadImagesForNewStudy").data("imageArrayIndex", $(e.target).val() * 1 + 1);
+    $("#loadImagesForNewStudy").click();
+  },
+  "change #loadImagesForNewStudy": function(e) {
+    console.log("At index " + $("#loadImagesForNewStudy").data("imageArrayIndex"));
+    loadNewImagesAt(e, $("#loadImagesForNewStudy").data("imageArrayIndex"), e.target.files.length);
+    $("#loadImagesForNewStudy").val("");
   }
 });
