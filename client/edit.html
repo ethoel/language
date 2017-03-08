@@ -4,6 +4,9 @@
   
   <div>
     <h3>Upload new study</h3>
+    <button id="newStudyButton">New study</button>
+    
+<!--    <input type="file" id="loadImagesForNewStudy" class="fileLoadButton" multiple>-->
     
     <h3>Edit existing study</h3>
     
@@ -12,10 +15,20 @@
         {{#each studies}}
         {{> studiesDropDownItem}}
         {{/each}}
+        <option value="Untitled" hidden disabled>New study</option>
       </select>
       <button id="editStudy">Edit</button>
       <button id="cancelStudy" class="hiddenFirst">Cancel</button>
       <button id="saveStudy" class="hiddenFirst">Save</button>
+    </p>
+    
+    <p>
+      <button id="currentStudyDeleteButton" class="studyEditField">Delete</button>
+    </p>
+    
+    <p>
+<!--      <a href="{{adminLink}}" class="catlasLink">Edit structures</a>-->
+     {{{adminLink}}}
     </p>
     
     <p>
@@ -26,7 +39,7 @@
         <option value="public" selected>Public</option>
       </select>
       <input type="checkbox" id="verifiedCheckbox" class="studyEditField"  {{verified}}>
-      <label for="verifiedCheckbox">Verified</label>
+      <label for="verifiedCheckbox" class="verifiedLabel">Verified</label>
     </p>
     
 <!--
@@ -68,7 +81,7 @@
     </p>
   
     <p>
-      <span class="editLabel">Address</span>
+      <span class="editLabel">Unique name</span>
       <input type="text" id="currentStudyAddress" class="studyEditField" placeholder="Study address" value="{{studyAddress}}" >
     </p>
     
@@ -88,6 +101,8 @@
     </p>
     
     <p>
+      <input type="file" id="loadImagesForNewStudy" class="fileLoadButton" multiple>
+      <button id="insertImagesButton" onclick="document.getElementById('loadImagesForNewStudy').click()">Insert images</button>
       {{#each images}}
       {{> imageItem}}
       {{/each}}

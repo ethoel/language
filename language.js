@@ -147,6 +147,34 @@ Meteor.methods({
     Studies.remove({name: studyName});
     console.log("Deleted " + studyName );
   },
+  deleteImage: function(imageId) {
+    var imageFile = Images.findOne(imageId);
+    if (imageFile) {
+      console.log("Deleted " + imageId);
+      // delete file
+
+      //var errorRemoving = 
+      imageFile.remove();
+
+      //console.log("errorRemoving=" + errorRemoving + "=errorRemoving")
+
+      // TODO what if this does not remove it properly? -the following not work
+      // if (errorRemoving) { console.log("No success in removing " + imageFile._id); }
+
+      // not sure why the following code does not work
+//        Images.remove(imageFile, function (err, file) {
+//          if (err) {
+//            console.log("Error deleting image " + err);
+//            deleteError = 1;
+//          } else {
+//            console.log("Deleted " + imageFile._id);
+//          }
+//        });
+    } else {
+      // _id does not exist
+      console.log("Could not find " + imageId);
+    }
+  },
   deleteDrawing: function(name, organ, index) {
     // prepare key for drawing index b/c mongodb cannot handle $$
     var key = "organs.$.data." + index;

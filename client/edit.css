@@ -19,3 +19,12 @@
   font-size: 0.8rem;
   display: block;
 }
+
+.verifiedLabel {
+  font-size: 0.8rem;
+/*  vertical-align: text-bottom;*/
+}
+
+.fileLoadButton {
+/*  display: none;*/
+}

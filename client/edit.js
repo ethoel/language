@@ -1,8 +1,20 @@
 // local copy of study's image array and tag arrays
 var editImageArray = [];
 var editStudyTags = [];
+var unsavedImages = [];
+
+var deleteUnsavedImages = function () {
+  for (var i = 0; i < unsavedImages.length; i++) {
+    Meteor.call("deleteImage", unsavedImages[i]);
+  }
+  unsavedImages = [];
+}
 
 var setCurrentStudy = function (studyName) {
+  // clean up unsaved images
+  deleteUnsavedImages();
+  
+  // set current study
   var study = Studies.findOne({ name: studyName });
   editImageArray = study.imageArray;
   resetEditStudyTags(study.tags);
@@ -47,9 +59,54 @@ var setFieldsDisabled = function (disabled) {
   }
 };
 
+var clearAllFields = function () {
+  $(".studyEditField").val("");
+  $("#studiesDropDown").val("Untitled");
+  editImageArray = [];
+  editStudyTags = [];
+};
+
+var setEditFieldsForNewStudy = function () {
+  clearAllFields();
+  displayCancelSaveButton();
+  setFieldsDisabled(false);
+  $("#currentStudyDeleteButton").prop("disabled", true);
+  Session.set("updateReactive", "Untitled");
+  Session.set("currentStudy", "Untitled");
+};
+
+var loadNewImagesAt = function (e, index, number) {
+  FS.Utility.eachFile(e, function(file) {
+    Images.insert(file, function (err, fileObj) {
+      if (err) {
+        console.log("Error uploading images to edit");
+      } else {
+        console.log(fileObj._id + " being added");
+        editImageArray.splice(index, 0, fileObj._id);
+        
+        var intervalHandle = Meteor.setInterval(function () {
+          console.log("Inside interval");
+          if (fileObj.hasStored("images")) {
+            console.log(fileObj._id + " successfully added");
+            unsavedImages.push(fileObj._id);
+            Session.set("updateReactive", fileObj._id + "uploaded");
+            Meteor.clearInterval(intervalHandle);
+          }
+        }, 200);
+      }
+    });
+  });
+};
+
+
+
 var resetAllFields = function () {
   // hitting cancel all fields must be reset
   var study = Studies.findOne({ name: Session.get("currentStudy") });
+  
+  // this is hitting cancel on a new study
+  if (!study) { return; }
+  
   resetEditStudyTags(study.tags);
   Session.set("updateReactive", "Changes canceled");
   $("#currentStudyAddress").val(study.name);
@@ -82,7 +139,7 @@ var saveAllFields = function () {
     return false;
   }
   
-  if (!newStudyTitle) {
+  if (!newStudyTitle || newStudyTitle === "Untitled") {
     console.log("Title must be filled out");
     return false;
   };
@@ -168,6 +225,14 @@ Template.edit.helpers({
       studies = Studies.find({ owner: owner });
     }
     return studies;
+  },
+  adminLink: function () {
+    var study = Studies.findOne({ name: Session.get("currentStudy") });
+    if (study) {
+      return '<a class="catlasLink" href=' + '"/admin/' + study.name + '">Edit structures</a>';
+    } else {
+      return '<span class="catlasLinkDead">Edit structures</span>';
+    }
   },
   allTags: function () {
     var addedStudyTag = Session.get("updateReactive");
@@ -299,5 +364,26 @@ Template.edit.events({
     var index = event.target.value * 1;
     Session.set("updateReactive", swapImageWithNextImage(index));
     console.log(index);
+  },
+  "click #currentStudyDeleteButton": function () {
+    var currentStudyName = Session.get("currentStudy");
+    var deleteStudy = confirm('Delete "' + currentStudyName + '" permanently?');
+    if (deleteStudy) {
+      console.log("deleting study");
+      Meteor.call("deleteStudy", currentStudyName, function () {
+        setCurrentStudy($("#studiesDropDown option:selected").val());
+        displayEditButton();
+        console.log("Study deleted callback");
+      });
+    } else {
+      console.log("not deleting study");
+    }
+  },
+  "click #newStudyButton": function (e) {
+    setEditFieldsForNewStudy();
+  },
+  "change .fileLoadButton": function(e) {
+    console.log("File Load Button");
+    loadNewImagesAt(e, 0, e.target.files.length);
   }
 });
