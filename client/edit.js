@@ -11,8 +11,7 @@ var deleteUnsavedImages = function () {
 }
 
 var setCurrentStudy = function (studyName) {
-  // clean up unsaved images
-  deleteUnsavedImages();
+
   
   // set current study
   var study = Studies.findOne({ name: studyName });
@@ -107,13 +106,20 @@ var loadNewImagesAt = function (e, index, number) {
 
 
 var resetAllFields = function () {
+  // clean up unsaved images
+  deleteUnsavedImages();
+  
   // hitting cancel all fields must be reset
   var study = Studies.findOne({ name: Session.get("currentStudy") });
   
   // this is hitting cancel on a new study
-  // TODO should delete unsaved studies here
-  if (!study) { return; }
+  if (!study) {
+    $("#studiesDropDown").val($("#studiesDropDown option:first").val());
+    setCurrentStudy($("#studiesDropDown option:first").val());
+    return; 
+  }
   
+  editImageArray = study.imageArray;
   resetEditStudyTags(study.tags);
   Session.set("updateReactive", "Changes canceled");
   $("#currentStudyAddress").val(study.name);
@@ -311,8 +317,8 @@ Template.edit.helpers({
     return studyAddress;
   },
   images: function () {
-    // not using imageZero, but makes this responsive
-    var swappedImageID = Session.get("updateReactive");
+    // makes this responsive
+    var getImageURLs = Session.get("updateReactive");
     var imageURLs = [];
     for (var i = 0; i < editImageArray.length; i++) {
       var imageFile = Images.findOne({_id: editImageArray[i]});
