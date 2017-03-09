@@ -99,7 +99,11 @@ Meteor.methods({
     // remove that organ from the organs array
     Studies.update({ name: studyName 
     }, { $set: { "name": newStudyName }});
-    console.log("Retitling " + newStudyName );
+    console.log("Renaming " + newStudyName );
+  },
+  createNewStudy: function(newStudyName) {
+    Studies.insert({ name: newStudyName, createdAt: new Date() });
+    console.log("Creating new study " + newStudyName );
   },
   deleteStudy: function(studyName) {
     // delete images

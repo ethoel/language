@@ -11,11 +11,9 @@ var deleteUnsavedImages = function () {
 }
 
 var setCurrentStudy = function (studyName) {
-
-  
   // set current study
   var study = Studies.findOne({ name: studyName });
-  editImageArray = study.imageArray;
+  editImageArray = study.imageArray || [];
   resetEditStudyTags(study.tags);
   Session.set("currentStudy", studyName);
   Session.set("updateReactive", studyName);
@@ -177,36 +175,56 @@ var saveAllFields = function () {
   }
   
   // save all fields
-  Meteor.call("setStudyVisibility", Session.get("currentStudy"), $("#publishDropDown option:selected").val(), function () { console.log("Study visibility callback"); });
+  // if new study, create new study
+  var currentStudy = Session.get("currentStudy");
+  if (currentStudy === "Untitled") {
+    Meteor.call("createNewStudy", newStudyName, function () {
+      console.log("Study created callback");
+      completeSaveOf(newStudyName, newStudyTitle, newStudyOwner, newStudyCredit, newStudyDescription);
+      $("#currentOrganDrop").val(newStudyName).change();
+      Session.set("currentStudy", newStudyName);
+    });
+  } else {
+    Meteor.call("renameStudy", currentStudy, newStudyName, function () {
+      console.log("Study renamed callback");
+      completeSaveOf(newStudyName, newStudyTitle, newStudyOwner, newStudyCredit, newStudyDescription);
+      $("#currentOrganDrop").val(newStudyName).change();
+      Session.set("currentStudy", newStudyName);
+    });
+  }
   
-  Meteor.call("setStudyVerified", Session.get("currentStudy"), $("#verifiedCheckbox").prop("checked"), function () { console.log("Study set verified callback"); });
+  // should have attempted save, so should be a success 
+  return true;
+};
+
+var completeSaveOf = function (currentStudy, newStudyTitle, newStudyOwner, newStudyCredit, newStudyDescription) {
+  Meteor.call("setStudyVisibility", currentStudy, $("#publishDropDown option:selected").val(), function () { console.log("Study visibility callback"); });
   
-  Meteor.call("retitleStudy", Session.get("currentStudy"), newStudyTitle, function () {
+  Meteor.call("setStudyVerified", currentStudy, $("#verifiedCheckbox").prop("checked"), function () { console.log("Study set verified callback"); });
+  
+  Meteor.call("retitleStudy", currentStudy, newStudyTitle, function () {
     console.log("Study retitled callback");
   });
 
-  Meteor.call("renameStudy", Session.get("currentStudy"), newStudyName, function () {
-    console.log("Study renamed callback");
-  });
   
-  Meteor.call("setStudyOwner", Session.get("currentStudy"), newStudyOwner, function () { console.log("Study set owner callback"); });
+  Meteor.call("setStudyOwner", currentStudy, newStudyOwner, function () { console.log("Study set owner callback"); });
   
-  Meteor.call("setStudyCredit", Session.get("currentStudy"), newStudyCredit, function () { console.log("Study set credit callback"); });
+  Meteor.call("setStudyCredit", currentStudy, newStudyCredit, function () { console.log("Study set credit callback"); });
   
-  Meteor.call("setStudyDescription", Session.get("currentStudy"), newStudyDescription, function () { console.log("Study set description callback"); });
+  Meteor.call("setStudyDescription", currentStudy, newStudyDescription, function () { console.log("Study set description callback"); });
   
   // save new tags to Tags database
   
   // save tags to Study
-  Meteor.call("saveStudyTags", Session.get("currentStudy"), editStudyTags, function () {
+  Meteor.call("saveStudyTags", currentStudy, editStudyTags, function () {
     console.log("Study tags saved");
   });
   
-  // success
-  $("#currentOrganDrop").val(newStudyName).change();
-  Session.set("currentStudy", newStudyName);
-  return true;
-};
+  // save images to Study
+//  Meteor.call("saveStudyImagesArray", currentStudy, editImageArray, function () {
+//    console.log("Image array saved");
+//  });
+}
 
 var swapImageWithNextImage = function (indexA) {
   var indexB = indexA + 1;
