@@ -221,9 +221,9 @@ var completeSaveOf = function (currentStudy, newStudyTitle, newStudyOwner, newSt
   });
   
   // save images to Study
-//  Meteor.call("saveStudyImagesArray", currentStudy, editImageArray, function () {
-//    console.log("Image array saved");
-//  });
+  Meteor.call("saveStudyImagesArray", currentStudy, editImageArray, function () {
+    console.log("Image array saved");
+  });
 }
 
 var swapImageWithNextImage = function (indexA) {

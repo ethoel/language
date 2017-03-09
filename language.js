@@ -105,6 +105,13 @@ Meteor.methods({
     Studies.insert({ name: newStudyName, createdAt: new Date() });
     console.log("Creating new study " + newStudyName );
   },
+  saveStudyImagesArray: function(studyName, newImageArray) {
+    // find the organ named organName in the study named studyName
+    // remove that organ from the organs array
+    Studies.update({ name: studyName 
+    }, { $set: { "imageArray": newImageArray }});
+    console.log("New array " + newImageArray );
+  },
   deleteStudy: function(studyName) {
     // delete images
     // find study
