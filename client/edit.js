@@ -294,7 +294,7 @@ Template.edit.helpers({
   adminLink: function () {
     var study = Studies.findOne({ name: Session.get("currentStudy") });
     if (study) {
-      return '<a class="catlasLink" href=' + '"/admin/' + study.name + '">Edit structures</a>';
+      return '<a class="catlasLink" href=' + '"/edit/' + study.owner + "/" + study.name + '">Edit structures</a>';
     } else {
       return '<span class="catlasLinkDead">Edit structures</span>';
     }

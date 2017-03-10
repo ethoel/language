@@ -300,13 +300,28 @@ Router.onBeforeAction(function () {
 
 // When log in should be required
 Router.onBeforeAction(function () {
+  var owner = this.params.owner;
+  
   if (!Meteor.userId()) {
     // user is not logged in, force log in
     this.layout("");
     this.render("login");
-//  } else if (Meteor.user() && (Meteor.user().username !== "admin")) {
-//    this.layout("");
-//    this.render("unauthorized");
+  } else if (Meteor.user() && (Meteor.user().username !== owner) && (Meteor.user().username !== "admin")) {
+    this.layout("");
+    this.render("unauthorized");
+  } else {
+    // otherwise continue routing
+    this.next();
+  }
+}, { only: ['edit.owner', 'edit.owner.study'] });
+
+Router.onBeforeAction(function () {
+  var owner = this.params.owner;
+  
+  if (!Meteor.userId()) {
+    // user is not logged in, force log in
+    this.layout("");
+    this.render("login");
   } else {
     // otherwise continue routing
     this.next();
@@ -314,8 +329,19 @@ Router.onBeforeAction(function () {
 }, { only: ['edit'] });
 
 Router.route("/edit", function () {
-  this.wait(Meteor.subscribe("studies", "edit"));
-  this.wait(Meteor.subscribe("tags"));
+  if (Meteor.user()) {
+    this.redirect("/edit/" + Meteor.user().username);
+  } else {
+    // TODO understand better how iron router works
+    this.render("/loading");
+  }
+});
+
+Router.route("/edit/:owner", function () {
+  var owner = this.params.owner;
+  
+  this.wait(Meteor.subscribe("studies", owner));
+  //this.wait(Meteor.subscribe("tags"));
   this.wait(Meteor.subscribe("images"));
   this.wait(Meteor.subscribe("usernames"));
   
@@ -325,4 +351,23 @@ Router.route("/edit", function () {
   } else {
     this.render("/loading");
   }
-});
+}, { name: "edit.owner" });
+
+Router.route("/edit/:owner/:study", function () {
+  // TODO, delete this, render an editStudy page
+  this.layout("layoutAdmin");
+  
+  var owner = this.params.owner;
+  var study = this.params.study;
+  
+  this.wait(Meteor.subscribe("studies"));
+  this.wait(Meteor.subscribe("images"));
+  
+  if (this.ready()) {
+    // render editStudy
+    this.render("atlas");
+    
+  } else {
+    this.render("/loading");
+  }
+}, {name: 'edit.owner.study'});
