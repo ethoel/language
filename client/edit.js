@@ -2,12 +2,29 @@
 var editImageArray = [];
 var editStudyTags = [];
 var unsavedImages = [];
+var toDeleteImages = [];
 
 var deleteUnsavedImages = function () {
   for (var i = 0; i < unsavedImages.length; i++) {
     Meteor.call("deleteImage", unsavedImages[i]);
   }
   unsavedImages = [];
+}
+
+var prepareImageForDeletion = function (index) {
+  var imageToDelete = editImageArray[index];
+  console.log("Preparing image for deletion " + imageToDelete);
+  // remove image from working image array and add to delete queue
+  toDeleteImages.push(imageToDelete);
+  editImageArray.splice(jQuery.inArray(imageToDelete, editImageArray), 1);
+  Session.set("updateReactive", "Added for deletion " + imageToDelete);
+}
+
+var deleteImagesPreparedForDeletion = function () {
+  for (var i = 0; i < toDeleteImages.length; i++) {
+    Meteor.call("deleteImage", toDeleteImages[i]);
+  }
+  toDeleteImages = [];
 }
 
 var setCurrentStudy = function (studyName) {
@@ -104,8 +121,9 @@ var loadNewImagesAt = function (e, index, number) {
 
 
 var resetAllFields = function () {
-  // clean up unsaved images
+  // clean up unsaved images and cancel images to delete
   deleteUnsavedImages();
+  toDeleteImages = [];
   
   // hitting cancel all fields must be reset
   var study = Studies.findOne({ name: Session.get("currentStudy") });
@@ -224,6 +242,11 @@ var completeSaveOf = function (currentStudy, newStudyTitle, newStudyOwner, newSt
   Meteor.call("saveStudyImagesArray", currentStudy, editImageArray, function () {
     console.log("Image array saved");
   });
+  
+  // delete images that have been deleted
+  deleteImagesPreparedForDeletion();
+  // clear unsaved images, they have now been saved
+  unsavedImages = [];
 }
 
 var swapImageWithNextImage = function (indexA) {
@@ -401,6 +424,11 @@ Template.edit.events({
     var deleteStudy = confirm('Delete "' + currentStudyName + '" permanently?');
     if (deleteStudy) {
       console.log("deleting study");
+      // delete images that have been added but are not in study.imageArray
+      deleteUnsavedImages();
+      // the images prepared for deletion will be deleted when the study is deleted
+      toDeleteImages = [];
+      // delete study and associated images
       Meteor.call("deleteStudy", currentStudyName, function () {
         setCurrentStudy($("#studiesDropDown option:selected").val());
         displayEditButton();
@@ -417,6 +445,10 @@ Template.edit.events({
     console.log("Clicked insert images button with index " + $(e.target).val());
     $("#loadImagesForNewStudy").data("imageArrayIndex", $(e.target).val() * 1 + 1);
     $("#loadImagesForNewStudy").click();
+  },
+  "click .deleteImageButton": function (e) {
+    console.log("Clicked delete image button with index " + $(e.target).val());
+    prepareImageForDeletion($(e.target).val());
   },
   "change #loadImagesForNewStudy": function(e) {
     console.log("At index " + $("#loadImagesForNewStudy").data("imageArrayIndex"));

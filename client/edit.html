@@ -102,7 +102,7 @@
     
     <p>
       <input type="file" id="loadImagesForNewStudy" class="fileLoadButton" multiple>
-      <button class="insertImagesButton studyEditField" value="-1">Insert images</button>
+      <button class="insertImagesButton imageButton studyEditField" value="-1">Insert images</button>
       {{#each images}}
       {{> imageItem}}
       {{/each}}
@@ -141,6 +141,7 @@
   <span>
     {{this.index}}
     <button class="swapImage imageButton studyEditField" value="{{this.index}}" disabled>&lt;&gt;</button>
-    <button class="insertImagesButton imageButton studyEditField" value="{{this.index}}" disabled>i</button>
+    <button class="deleteImageButton imageButton studyEditField" value="{{this.index}}" disabled>Delete</button>
+    <button class="insertImagesButton imageButton studyEditField" value="{{this.index}}" disabled>Insert images</button>
   </span>
 </template>
