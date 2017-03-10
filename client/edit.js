@@ -265,6 +265,17 @@ Template.edit.onRendered(function () {
   setCurrentStudy($("#studiesDropDown option:selected").val());
 });
 
+Template.imageItem.helpers({
+  display: function () {
+    if (this.index === (editImageArray.length - 1)) {
+      // if last image, don't display swap button
+      return "display:none";
+    } else {
+      return "";
+    }
+  }
+});
+
 Template.edit.helpers({
   studies: function () {
     // log in first
