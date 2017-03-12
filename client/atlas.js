@@ -40,6 +40,9 @@ var loadFilms = function () {
         }
       };
       var imageFile = Images.findOne({_id: study.imageArray[i]});
+      // TODO make this a loading image
+      if (!imageFile) { imageFile = { url: function () { return "/favicon-57.png"; } }; }
+      
       films[i].src = imageFile.url();
     } 
     
@@ -167,7 +170,8 @@ var redraw = function () {
   //maxHeight = maxHeight - document.getElementById("description_id").offsetHeight;
   
   // TODO same hack as below re admin
-  if (!Router.current().route.getName().includes("admin")) {
+  if (!Router.current().route.getName().includes("admin") &&
+     !Router.current().route.getName().includes("edit")) {
     // only scale if not admin
     // find the largest dimension, set it to the max dimension
     // scale the other dimension to size
@@ -210,7 +214,8 @@ var redraw = function () {
   // make the image fit if not admin
   console.log(Router.current().route.getName().includes("admin"));
   // TODO fix this hack--this whole program is becoming one big hack
-  if (!Router.current().route.getName().includes("admin")) {
+  if (!Router.current().route.getName().includes("admin") &&
+     !Router.current().route.getName().includes("edit")) {
     // only scale if not admin
     context.scale(studyCanvas.width/films[0].width, studyCanvas.height/films[0].height);
   }

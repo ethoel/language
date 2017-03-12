@@ -239,7 +239,7 @@ var completeSaveOf = function (currentStudy, newStudyTitle, newStudyOwner, newSt
   });
   
   // save images to Study
-  Meteor.call("saveStudyImagesArray", currentStudy, editImageArray, function () {
+  Meteor.call("saveStudyImagesArray", currentStudy, editImageArray, unsavedImages, toDeleteImages, function () {
     console.log("Image array saved");
   });
   
@@ -374,6 +374,8 @@ Template.edit.helpers({
     var imageURLs = [];
     for (var i = 0; i < editImageArray.length; i++) {
       var imageFile = Images.findOne({_id: editImageArray[i]});
+      // TODO make into loading image
+      if (!imageFile) { imageFile = { url: function () { return "/favicon-57.png"; } }; }
       imageURLs[i] = { url: imageFile.url(), index: i };
     }
     return imageURLs;
