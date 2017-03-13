@@ -18,8 +18,7 @@ var loadFilms = function () {
   studyName = Router.current().params.study;
   var study = Studies.findOne({name: studyName});
   
-  // if there is a normal study in database
-  // TODO allow other studies...
+  // if there is a study in database
   if (study) {
     console.log("STUDY LENGTH = " + study.imageArray.length);
     
@@ -40,8 +39,8 @@ var loadFilms = function () {
         }
       };
       var imageFile = Images.findOne({_id: study.imageArray[i]});
-      // TODO make this a loading image
-      if (!imageFile) { imageFile = { url: function () { return "/favicon-57.png"; } }; }
+      // TODO make this a loading image--acutally, this should be a broken image
+      if (!imageFile) { imageFile = { url: function () { return "/loadingArial12.png"; } }; }
       
       films[i].src = imageFile.url();
     } 

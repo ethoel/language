@@ -375,7 +375,11 @@ Template.edit.helpers({
     for (var i = 0; i < editImageArray.length; i++) {
       var imageFile = Images.findOne({_id: editImageArray[i]});
       // TODO make into loading image
-      if (!imageFile) { imageFile = { url: function () { return "/favicon-57.png"; } }; }
+      if (!imageFile) {
+        // TODO: this is not the issue!
+        console.log("not imageFile " + editImageArray[i]);
+        imageFile = { url: function () { return "/loadingArial12.png"; } }; 
+      }
       imageURLs[i] = { url: imageFile.url(), index: i };
     }
     return imageURLs;

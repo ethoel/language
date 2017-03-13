@@ -1,0 +1,82 @@
+<template name="editstudy">
+  <div id="main_id">
+  
+<!--
+    <div class="overlay" id="atlasOverlay"> 
+      <p>
+        {{loadingText}}
+      </p>
+    </div>
+-->
+
+
+    <div id="study-pane">
+      <div id="canvas-container">
+        <h3 id="study_title_id" class="study_title">{{studyTitle}}</h3>
+        <canvas id="canvas" onclick=""></canvas>
+        <a href="#" class="help-button">
+          <img class="help-icon" src="/help_c7c7c7_round.png" alt="help" height="26" width="26">
+        </a>
+        <h3 id="organ_title_id" class="organ_title">{{hoverOrgan}}</h3>
+        <div id="study-description">{{{studyDescription}}}</div>
+      </div>
+    </div>
+    
+    <h2>
+      Editing
+      <select id="currentOrganDrop">
+        {{#each organs}}
+        {{> organDropDownItem}}
+        {{/each}}
+      </select>
+    </h2>
+  
+    <p>
+      <button id="clear">Clear New Drawing</button>
+    </p>
+  
+    <p>
+      <input type="text" id="colorpicker" value="{{currentOrganColor}}"/>
+      <button id="changeColor">Change Color</button>
+      <button id="resetColor">Reset Color</button>
+    </p>
+  
+    <p>
+      <button id="save" color="green">Save New Drawing and Color</button>
+      <button id="clearAll">Delete All Drawing and Save</button>
+      <span id="savedFade">
+        Saved
+      </span>
+    </p>
+
+    <br/>
+    <h4> Create new organ </h4>
+    <input type="text" id="currentOrgan" placeholder="New organ name"/>
+    <button id="saveCurrentOrgan">Create New Organ</button>
+    <button id="renameCurrentOrgan">Rename Current Organ</button>
+    <button id="deleteCurrentOrgan">DELETE Current Organ</button>
+    <br/><br/>
+    <textarea id="organ-description" placeholder="Organ description" cols="100" rows="10"></textarea>
+    <br/>
+    <button id="saveOrganDescription" class="saveButton">Save Description</button>
+    <button id="loadCurrentDescription">Load Current Description</button>
+    <br/><br/>
+    <h4>
+      Upload new study
+    </h4>
+    <input type="file" id="loadImages" multiple>
+    <br/><br/>
+    <input type="text" id="currentStudyAddress" placeholder="Study address">
+    <button id="changeAddress">Change Study Address</button>
+    <br/><br/>
+    <input type="text" id="currentStudyName" placeholder="Study name">
+    <button id="renameStudy">Rename Current Study</button>
+    <button id="permDeleteStudy" class="deleteButton">DELETE Current Study</button>
+    <br/>
+    
+  </div>
+</template>
+
+<template name="organDropDownItem">
+  <option value="{{this.organ}}">{{this.organ}}</option>
+</template>

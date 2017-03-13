@@ -332,6 +332,7 @@ a.menu-toggle {
 }
 
 .overlay{
+  display: none;
     opacity:1;
     background-color: black;
 /*  background-color: #1d1d1d;*/

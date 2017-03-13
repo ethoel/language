@@ -177,7 +177,7 @@ Meteor.methods({
       var oldImageArray = study.imageArray;
       var organs = study.organs;
       
-      for (var k = 0; k < organs.length; k++) {
+      for (var k = 0; organs && k < organs.length; k++) {
         // update the data array for each organ
         var newDataArray = [];
         var oldDataArray = organs[k].data;
@@ -386,7 +386,7 @@ Router.onBeforeAction(function () {
     // otherwise continue routing
     this.next();
   }
-}, { only: ['admin', 'admin.study'] });
+}, { only: ['admin', 'admin.study', 'admincheck'] });
 
 // When log in should be required
 Router.onBeforeAction(function () {
@@ -460,3 +460,15 @@ Router.route("/edit/:owner/:study", function () {
     this.render("/loading");
   }
 }, {name: 'edit.owner.study'});
+
+Router.route("/admincheck", function () {
+  this.wait(Meteor.subscribe("studies"));
+  this.wait(Meteor.subscribe("images"));
+  
+  if (this.ready()) {
+    this.render("admin");
+    
+  } else {
+    this.render("/loading");
+  }
+}, { name: 'admincheck' });
