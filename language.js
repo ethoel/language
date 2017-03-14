@@ -197,6 +197,12 @@ Meteor.methods({
       }
     }
     
+    // for each image, link with studyName so that not all images need to be
+    // loaded when studyName is loaded, only associated images. improve speed
+    for (var i = 0; i < newImageArray.length; i++) {
+      Images.update({ _id: newImageArray[i] }, {$set: { "metadata.studyName": studyName } });
+    }
+    
     // update the array
     Studies.update({ name: studyName }, { $set: { "imageArray": newImageArray }});
     //console.log("New array " + newImageArray );
@@ -343,10 +349,11 @@ Router.route("/atlas", function () {
 
 Router.route("/atlas/:study", function () {
   
-  this.wait(Meteor.subscribe("organs"));
+  var study = this.params.study;
+  //this.wait(Meteor.subscribe("organs"));
   this.wait(Meteor.subscribe("studies"));
-  this.wait(Meteor.subscribe("tags"));
-  this.wait(Meteor.subscribe("images"));
+  //this.wait(Meteor.subscribe("tags"));
+  this.wait(Meteor.subscribe("images", "", study));
   
   if (this.ready()) {
     this.render("atlas");
@@ -454,7 +461,7 @@ Router.route("/edit/:owner/:study", function () {
   var study = this.params.study;
   
   this.wait(Meteor.subscribe("studies"));
-  this.wait(Meteor.subscribe("images"));
+  this.wait(Meteor.subscribe("images", owner, study));
   
   if (this.ready()) {
     this.render("atlas");

@@ -1,23 +1,14 @@
 <template name="atlas">
   <div id="main_id">
-<!--
-  <div class="overlay" id="atlasOverlay"> 
-    <p>
-    {{loadingText}}
-    </p>
-  </div>
--->
-  
-<!-- ☰  <h1>{{title}}</h1>-->
 
-  <a href="#" class="menu-toggle">
+  <a href="#" class="menu-toggle notadmin">
       <img class="toggle-icon" src="/menu_c7c7c7_round.png" alt="menu" height="26" width="26">
   </a>
     
 
   
   
-    <nav id="menu-side-id" class="menu-side">
+    <nav id="menu-side-id" class="menu-side notadmin">
       <!-- title, admin links, list of studies with filters -->
       
         
@@ -71,12 +62,12 @@
     <h3 id="study_title_id" class="study_title">{{studyTitle}}</h3>
     <canvas id="canvas" onclick=""></canvas>
     
-        <a href="#" class="help-button">
+        <a href="#" class="help-button notadmin">
       <img class="help-icon" src="/help_c7c7c7_round.png" alt="help" height="26" width="26">
   </a>
         <h3 id="organ_title_id" class="organ_title">{{hoverOrgan}}</h3>
   
-      <div id="study-description">{{{studyDescription}}}</div>
+      <div id="study-description" class="notadmin">{{{studyDescription}}}</div>
   </div>
   
   
@@ -120,6 +111,10 @@
   bottom: auto !important;
   overflow: auto !important;
 } 
+      
+.notadmin {
+  display: none;
+} 
     </style>
   </head>
 
@@ -138,6 +133,9 @@
   </p>
   
   <p>
+    
+  <input type="color" id="colorpickerbutton" value="{{currentEditingColorNoAlpha}}"/>
+  <input type="range" id="transparencyPicker" value="{{currentEditingColorAlpha}}"/>
   <input type="text" id="colorpicker" value="{{currentOrganColor}}"/>
   <button id="changeColor">Change Color</button>
   <button id="resetColor">Reset Color</button>
@@ -166,6 +164,7 @@
   <button id="saveOrganDescription" class="saveButton">Save Description</button>
   <button id="loadCurrentDescription">Load Current Description</button>
   <br/><br/>
+<!--
   <h4>
     Upload new study </h4>
   <input type="file" id="loadImages" multiple>
@@ -177,6 +176,7 @@
   <button id="renameStudy">Rename Current Study</button>
   <button id="permDeleteStudy" class="deleteButton">DELETE Current Study</button>
   <br/>
+-->
   
 <!--  <button id="testButton">Test1</button>-->
 <!--

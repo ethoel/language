@@ -1,3 +1,68 @@
+var hexToRgb = function (hex) {
+    // Expand shorthand form (e.g. "03F") to full form (e.g. "0033FF")
+    var shorthandRegex = /^#?([a-f\d])([a-f\d])([a-f\d])$/i;
+    hex = hex.replace(shorthandRegex, function(m, r, g, b) {
+        return r + r + g + g + b + b;
+    });
+
+    var result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
+    return result ? {
+        r: parseInt(result[1], 16),
+        g: parseInt(result[2], 16),
+        b: parseInt(result[3], 16)
+    } : null;
+};
+
+var componentToHex = function (c) {
+    var hex = parseInt(c).toString(16);
+    //console.log("HEX " + hex);
+    return hex.length == 1 ? "0" + hex : hex;
+};
+
+var rgbToHex = function (rgbString) {
+    var rgb = rgbString.match(/[\d\.]+/g);
+    return "#" + componentToHex(rgb[0]) + componentToHex(rgb[1]) + componentToHex(rgb[2]);
+};
+
+var rgbaAlpha = function (rgbaString) {
+  var rgba = rgbaString.match(/[\d\.]+/g);
+  return rgba[3];
+};
+
+var verifyColorRgba = function (colorString) {
+  var matchArray = colorString.match(/^rgba\(\d+,\d+,\d+,(\d*\.*\d*)\)$/);
+  for (var i = 0; matchArray && i < matchArray.length; i++) {
+    console.log("matchArray " + matchArray[i]);
+  }
+  if (matchArray && matchArray[1] && matchArray[1].length) {
+    console.log("MATCH!");
+    return true;
+  } else {
+    return false;
+  }
+};
+
+var verifyHex = function (colorHex) {
+  return colorHex.match(/^#?([a-f\d]{6}|[a-f\d]{3})$/) ? true : false;
+}
+
+var processOrganColor = function (organColor) {
+  organColor = organColor.toLowerCase();
+  console.log("LOWERCASE " + organColor);
+  // some old colors may not be in rgba
+  if (verifyColorRgba(organColor)) {
+    // already in rgba
+    return organColor;
+  } else if (verifyHex(organColor)) {
+    // in hex
+    var rgb = hexToRgb(organColor);
+    return "rgba(" + rgb.r + "," + rgb.g + "," + rgb.b + ",1)";
+  } else {
+    // not sure....
+    return "rgba(1,2,3,0.4)";
+  }
+};
+
 const CATLAS_INSTRUCTIONS = "<p>To get started, scroll through the study loaded above using your mouse wheel, the up and down arrow keys on your keyboard, or, if you have a touchscreen, your finger. Click on a structure within the study to highlight and identify the structure; click on it again to remove the highlighting. Alternatively, use the menu button in the upper left to access the full list of structures and available studies.</p>"
 
 var clickX = [];
@@ -378,7 +443,7 @@ Template.atlas.onRendered(function () {
   Session.set("currentOrgan", $("#currentOrganDrop option:selected").val());
   
   //console.log("onRendered");
-  $('#colorpicker').colorpicker();
+  //$('#colorpicker').colorpicker();
   //console.log("onRendered2");
   
   $('body').on('keydown',function(e) { 
@@ -891,27 +956,53 @@ Template.controlPanel.helpers({
     //console.log(organs);
     return organs;
   },
-  currentOrganColor: function() {
-    if (!Session.get("currentOrgan")) {
-      return "#123456";
+  currentEditingColorNoAlpha: function () {
+//    console.log(Session.get("currentEditingColor") + "---->");
+//    console.log(rgbToHex(Session.get("currentEditingColor"))); 
+    if (Session.get("currentEditingColor")) {
+      return rgbToHex(Session.get("currentEditingColor"));
+    } else {
+      return "rgba(4,3,2,0.1)";
     }
-    
-    console.log(Session.get("currentOrgan"));
-    
-    var current = Session.get("currentOrgan");
-    //return "#000000";
-    
-    var study = Studies.findOne({ name: studyName });
-    
-    //elemMatch not supported, { organs: { $elemMatch: { organ: "Aorta" }}});
-    
-    for (var i = 0; i < study.organs.length; i++) {
-      if (study.organs[i].organ === current) {
-        // this is the organ we are looking for
-        var organ = study.organs[i];
-        clickColor = organ.color;
-        return organ.color;
+  },
+  currentEditingColorAlpha: function () {
+//    console.log("ALPHA" + rgbaAlpha(Session.get("currentEditingColor")));
+    if (Session.get("currentEditingColor")) {
+      return rgbaAlpha(Session.get("currentEditingColor")) * 100;
+    } else {
+      return 50;
+    }
+  },
+  currentOrganColor: function() {
+    if (!Session.get("currentEditingColor")) {
+      if (!Session.get("currentOrgan")) {
+        return "rgba(18,52,86,0.53)";
       }
+
+      console.log(Session.get("currentOrgan"));
+
+      var current = Session.get("currentOrgan");
+      //return "#000000";
+
+      var study = Studies.findOne({ name: studyName });
+
+      //elemMatch not supported, { organs: { $elemMatch: { organ: "Aorta" }}});
+
+      for (var i = 0; i < study.organs.length; i++) {
+        if (study.organs[i].organ === current) {
+          // this is the organ we are looking for
+          var organ = study.organs[i];
+          
+          
+          var currentEditingColorForOrgan = processOrganColor(organ.color);
+          clickColor = currentEditingColorForOrgan;
+          Session.set("currentEditingColor", currentEditingColorForOrgan);
+          return currentEditingColorForOrgan;
+        }
+      }
+    } else {
+      clickColor = Session.get("currentEditingColor");
+      return Session.get("currentEditingColor");
     }
   },
   currentOrgan: function() {
@@ -946,9 +1037,34 @@ Template.layoutAdmin.events({
   "mouseleave #canvas": function (e) {
     paint = false;
   },
+  "change #colorpickerbutton": function (e) {
+    console.log("colorpickerbutton changed " + e.target.value);
+    
+    var rgb = hexToRgb(e.target.value);
+    
+    console.log("rgba(" + rgb.r + "," + rgb.g + "," + rgb.b + "," + rgbaAlpha(Session.get("currentEditingColor")) + ")");
+    
+    Session.set("currentEditingColor", "rgba(" + rgb.r + "," + rgb.g + "," + rgb.b + "," + rgbaAlpha(Session.get("currentEditingColor")) + ")");
+  },
+  "change #transparencyPicker": function (e) {
+    console.log("transparencyPicker changed");
+    
+    var colorString = Session.get("currentEditingColor");
+    var rgba = colorString.match(/[\d\.]+/g);
+    
+    Session.set("currentEditingColor", "rgba(" + rgba[0] + "," + rgba[1] + "," + rgba[2] + "," + e.target.value / 100. + ")");
+  },
   "click #changeColor": function (e) {
-    // TODO change JQuery to meteor
-    clickColor = $("#colorpicker").val();
+    var newEditingColor = $("#colorpicker").val().toLowerCase();
+    if (verifyHex(newEditingColor)) {
+      newEditingColor = processOrganColor(newEditingColor);
+    }
+    
+    if (verifyColorRgba(newEditingColor)) {
+      Session.set("currentEditingColor", newEditingColor);
+    } else {
+      $("#colorpicker").val(Session.get("currentEditingColor"));
+    }
     console.log("clickColor " + clickColor);
     //console.log("labelvalue " + $('#testingabc').text().trim());
     redraw();
@@ -958,7 +1074,7 @@ Template.layoutAdmin.events({
     if (!Session.get("currentOrgan")) {
       return;
     }
-    // TODO change JQuery to meteor
+
     
     var current = Session.get("currentOrgan");
     //return "#000000";
@@ -971,8 +1087,7 @@ Template.layoutAdmin.events({
       if (study.organs[i].organ === current) {
         // this is the organ we are looking for
         var organ = study.organs[i];
-        clickColor = organ.color;
-        
+        Session.set("currentEditingColor", processOrganColor(organ.color));
       }
     }
     redraw();

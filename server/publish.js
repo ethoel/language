@@ -25,5 +25,11 @@ Meteor.startup(function () {
     return Meteor.users.find({}, {fields: {username: 1}});
   });
   
-  Meteor.publish("images", function(){ return Images.find(); });
+  Meteor.publish("images", function(owner, study){ 
+    if (study) {
+      return Images.find({ "metadata.studyName": study });
+    } else {
+      return Images.find();
+    }
+  });
 });
