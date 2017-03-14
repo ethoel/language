@@ -13,72 +13,25 @@ var studyName = "";
 var lastY;
 
 
-var loadFilms = function () {
-  console.log("loading films");
+var initializePageVariables = function () {
   studyName = Router.current().params.study;
-  var study = Studies.findOne({name: studyName});
   
-  // if there is a study in database
-  if (study) {
-    
-    console.log("STUDY LENGTH = " + study.imageArray.length);
-    
-    var loaded = 0;
+  var study = Studies.findOne({name: studyName});
+  if (study && study.imageArray) {
     study_length = study.imageArray.length;
-    var load = new Load(study_length);
-    
-//    function iteration() {
-//      
-//    }
-    
-    for (var i = 0; i < 5; i++) {
-    //  for (var i = 0; i < study_length; i++) {
-      
-      films.push(new Image());
-      
-      // first draw is called, clear loading screen
-//        console.log("HELLO");
-//  $("#atlasOverlay").css("display", "none");
-      films[i].onload = function () { 
-        Session.set("loadingText", "Loading study " + load.getProgress(1, study_length));
-        if (++loaded >= study_length) { 
-          redraw(); 
-          $("#atlasOverlay").css("display", "none");
-        }
-
-//        redraw(); 
-//        $("#atlasOverlay").css("display", "none");
-      };
-      var imageFile = Images.findOne({_id: study.imageArray[i]});
-      // TODO make this a loading image--acutally, this should be a broken image
-      if (!imageFile) { imageFile = { url: function () { return "/loadingArial12.png"; } }; }
-      
-      
-      
-      films[i].src = imageFile.url();
-    } 
-    
-    
-    
-    
   } else {
-    console.log("No study for loading");
+    study_length = 0;
   }
-}
+};
 
 var loadFilmsRecursively = function () {
   console.log("loading films recursively");
-  // set studyName variable for this file from params
-  studyName = Router.current().params.study;
   var study = Studies.findOne({name: studyName});
-  // abort load if no study
+  // abort load if no study images
   if (!study || !study.imageArray) {
     console.log("Aborting load films");
     return;
   }
-  
-  // set study_length for the file
-  study_length = study.imageArray.length;
   
   // set iterating i for recursion
   var i = 0;
@@ -89,7 +42,6 @@ var loadFilmsRecursively = function () {
     films.push(new Image());
     films[i].onload = function () {
         redraw(); 
-        $("#atlasOverlay").css("display", "none");
     };
     var imageFile = Images.findOne({_id: study.imageArray[i]});
     
@@ -106,8 +58,8 @@ var loadFilmsRecursively = function () {
     }
   }
   
+  // can use setTimeout to simulate lag in runtime
   setTimeout(loadNextFilms, 3000);
-  //loadNextFilms();
 }
 
 
@@ -119,46 +71,9 @@ var addClick = function (x, y, dragging) {
 }
 
 var loadOrgan = function () {
-  // need to figure out how to make organ appear and disappear
-  // with check of box for now just for one organ, but later
-  // need to generalize to multiple...
-  // maybe add a checked field to the organ object and check for that
-  // also, need to figure out how to add to clickX and clickY for each
-  // organ with different colors. does load organ need to be a part of
-  // redraw? do i need a clickColor array? or maybe just an organ color
-  // would work actually. maybe a clickSize down the road
-  // array3 = array1.concat(array2);
-  
-  
-//  // draw organs for film
-//  console.log("loading film " + films[index].src);
-//  var study = Studies.findOne({ name: "Normal" });
-//  var organ = study.organs[0];
-//  console.log("organ " + organ);
-//  // var data = Organs.findOne({ film: "Im3.jpg" }).data;
-////  if (organ.checked) {
-////    alert("true");
-////  } else {
-////    alert("false " + organ.checked);
-////  }
-//  
-//  if (organ && organ.data[index] && organ.checked) {
-//    console.log("organ checked");
-//    clickX = organ.data[index].clickX;
-//    clickY = organ.data[index].clickY;
-//    clickDrag = organ.data[index].clickDrag;
-//    clickColor = organ.color;
-//  } else {
-//    clickX = [];
-//    clickY = [];
-//    clickDrag = [];
-//    clickColor = 0;
-//  }
  clickX = [];
  clickY = [];
  clickDrag = [];
- //clickColor = "#FFFFFF";
-  
 }
 
 // drawOrgan is complete
@@ -192,17 +107,13 @@ var drawOrgan = function(context, x, y, continuation, color) {
 
 var redraw = function () {
   // draw everything on canvas
-  
-  // TODO better way to do this?
   var studyCanvas = document.getElementById("canvas");
-  //studyCanvas.height = films[0].height;
-  //studyCanvas.width = films[0].width;
-  //studyCanvas.height = 700;
-  //studyCanvas.width = 700;
+
   var study = Studies.findOne({ name: studyName });
   var studyHeightY;
   var studyWidthX;
   if (films && films[0]) {
+    console.log("USING FILM HEIGHTS AND WIDTHS");
     studyHeightY = films[0].height;
     studyWidthX = films[0].width;
   } else if (study && study.firstImageHeight && study.firstImageWidth) {
@@ -210,13 +121,13 @@ var redraw = function () {
     studyHeightY = study.firstImageHeight;
     studyWidthX = study.firstImageWidth;
   } else {
+    console.log("ERROR: USING 300 HEIGHTS AND WIDTHS");
     studyHeightY = 300;
     studyWidthX = 300;
   }
   
   var studyHeightYConst = studyHeightY;
   var studyWidthXConst = studyWidthX;
-  //var maxHeightWidth = 700; // why did I choose 700?
   
   // max dimension is set to the size of the viewport
   var maxHeight = window.innerHeight;
@@ -226,7 +137,6 @@ var redraw = function () {
   maxHeight = maxHeight - document.getElementById("study_title_id").offsetHeight;
   maxHeight = maxHeight - document.getElementById("organ_title_id").offsetHeight;
   maxHeight = maxHeight - 100; // pixel padding at bottom of #study-description
-  console.log(document.getElementById("organ_title_id").offsetHeight + " IS ORGAN TITLE H");
   // and when descriptions are added TODO
   //maxHeight = maxHeight - document.getElementById("description_id").offsetHeight;
   
@@ -236,18 +146,6 @@ var redraw = function () {
     // only scale if not admin
     // find the largest dimension, set it to the max dimension
     // scale the other dimension to size
-    
-//    if (studyHeightY > studyWidthX && studyHeightY > maxHeightWidth) {
-//      // so, if the image is tall and skinny, h>w, then
-//      studyWidthX = maxHeightWidth / studyHeightY * studyWidthX;
-//      studyHeightY = maxHeightWidth;
-//    } else if (studyWidthX > maxHeightWidth) {
-//      // so, if the image is wide and fat, w>=h, then
-//      studyHeightY = maxHeightWidth / studyWidthX * studyHeightY;
-//      studyWidthX = maxHeightWidth;
-//    }
-    
-    
     // if the study is bigger than the viewport in one of the dimensions
     // calc dimensions to scale the study to fit
     if (studyHeightY > maxHeight && (studyHeightY - maxHeight) > (studyWidthX - maxWidth)) {
@@ -324,6 +222,23 @@ var redraw = function () {
       }
       drawOrgan(context, clickXX, clickYY, clickDragD, clickColorC);
     }
+  } else {
+    // film not yet loaded, draw loading text
+    if (context.fillText) {
+      context.font = "italic 16px Sans-serif";
+      context.fillStyle = "#c7c7c7";
+      context.textAlign = "center";
+      context.fillText("Image " + index + " of " + study_length + " loading...", studyWidthXConst / 2, studyHeightYConst / 2);
+    } else {
+      // some older browsers do not support fillText
+      loadingImage = new Image();
+      loadingImage.onload = function () {
+        context.drawImage(loadingImage, 
+                          studyWidthXConst / 2 - loadingImage.width / 2,
+                          studyHeightYConst / 2 - loadingImage.height / 2);
+      };
+      loadingImage.src = "/LoadingArial12.png";
+    }
   }
 }
 
@@ -358,10 +273,15 @@ var doInOrgan = function(e, doMe, elseDoMe) {
     // click event
     myclientX = e.clientX;
     myclientY = e.clientY;
-  } else {
+  } else if (e.originalEvent && 
+             e.originalEvent.changedTouches &&
+             e.originalEvent.changedTouches[0]) {
     // touchend event
     myclientX = e.originalEvent.changedTouches[0].clientX;
     myclientY = e.originalEvent.changedTouches[0].clientY;
+  } else {
+    console.log("ERROR weird X Y 200");
+    return;
   }
   
   var mouseX = myclientX - rect.left;
@@ -442,11 +362,13 @@ Meteor.startup(function () {
 });
 
 Template.atlas.onCreated(function () {
-  loadFilmsRecursively();
+  initializePageVariables();
 });
 
 Template.atlas.onRendered(function () {
+  redraw();
   
+  loadFilmsRecursively();
   
   
   $("body").addClass("menu");
@@ -492,7 +414,6 @@ Template.atlas.onRendered(function () {
     }
   });
   
-  //loadFilms();
   if (study_length === 0) {
     $("#atlasOverlay").css("display", "none");
   }
