@@ -238,6 +238,22 @@ var completeSaveOf = function (currentStudy, newStudyTitle, newStudyOwner, newSt
     console.log("Study tags saved");
   });
   
+  // height and width of first image
+  if (editImageArray && editImageArray.length > 0) {
+    var firstImageFile = Images.findOne({ _id: editImageArray[0] });
+    var firstImage = new Image();
+    firstImage.onload = function () {
+      continueCompleteSaveOf(currentStudy, this.height, this.width);
+    }
+    firstImage.src = firstImageFile.url();
+  } else {
+    continueCompleteSaveOf(currentStudy, 0, 0);
+  }
+}
+
+var continueCompleteSaveOf = function (currentStudy, firstImageHeight, firstImageWidth) {
+  Meteor.call("updateFirstHeightWidth", currentStudy, firstImageHeight, firstImageWidth);
+    
   // save images to Study
   Meteor.call("saveStudyImagesArray", currentStudy, editImageArray, unsavedImages, toDeleteImages, function () {
     console.log("Image array saved");
@@ -247,7 +263,7 @@ var completeSaveOf = function (currentStudy, newStudyTitle, newStudyOwner, newSt
   deleteImagesPreparedForDeletion();
   // clear unsaved images, they have now been saved
   unsavedImages = [];
-}
+};
 
 var swapImageWithNextImage = function (indexA) {
   var indexB = indexA + 1;

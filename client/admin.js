@@ -28,6 +28,7 @@ var runFix = function (deleteReferences, deleteImages) {
       } else if (!imageFile.url()) {
         //console.log("Orphan reference " + imageArray[i]);
         if (deleteReferences) {
+          // could delete the image right here too
           editImageArray.splice(jQuery.inArray(editImageArray, imageArray[i]), 1);
           deletedReference = true;
         }

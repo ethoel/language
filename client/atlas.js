@@ -20,12 +20,20 @@ var loadFilms = function () {
   
   // if there is a study in database
   if (study) {
+    
     console.log("STUDY LENGTH = " + study.imageArray.length);
     
     var loaded = 0;
     study_length = study.imageArray.length;
     var load = new Load(study_length);
-    for (var i = 0; i < study_length; i++) {
+    
+//    function iteration() {
+//      
+//    }
+    
+    for (var i = 0; i < 5; i++) {
+    //  for (var i = 0; i < study_length; i++) {
+      
       films.push(new Image());
       
       // first draw is called, clear loading screen
@@ -37,33 +45,72 @@ var loadFilms = function () {
           redraw(); 
           $("#atlasOverlay").css("display", "none");
         }
+
+//        redraw(); 
+//        $("#atlasOverlay").css("display", "none");
       };
       var imageFile = Images.findOne({_id: study.imageArray[i]});
       // TODO make this a loading image--acutally, this should be a broken image
       if (!imageFile) { imageFile = { url: function () { return "/loadingArial12.png"; } }; }
       
+      
+      
       films[i].src = imageFile.url();
     } 
     
     
+    
+    
   } else {
-    console.log("ESLE");
-    //$("#atlasOverlay").css("display", "none");
-    //setTimeout( function() {$("#atlasOverlay").css("display", "none");}, 5000);
+    console.log("No study for loading");
   }
-  // will do this when i figure out a better way to load studies
-//  else {
-//    // if no study found
-//    Router.go("/");
-//  }
-  // the new code
-//  var study;
-//  study = Studies.findOne({ name: "Normal" });
-//  
-//  for (var i = 0; i < study.imageArray.length; i++) {
-//    console.log("imageArray" + imageArray[i]);
-//  }
 }
+
+var loadFilmsRecursively = function () {
+  console.log("loading films recursively");
+  // set studyName variable for this file from params
+  studyName = Router.current().params.study;
+  var study = Studies.findOne({name: studyName});
+  // abort load if no study
+  if (!study || !study.imageArray) {
+    console.log("Aborting load films");
+    return;
+  }
+  
+  // set study_length for the file
+  study_length = study.imageArray.length;
+  
+  // set iterating i for recursion
+  var i = 0;
+  
+  var loadNextFilms = function () {
+    
+    //load the next set of films before freeing process for UI
+    films.push(new Image());
+    films[i].onload = function () {
+        redraw(); 
+        $("#atlasOverlay").css("display", "none");
+    };
+    var imageFile = Images.findOne({_id: study.imageArray[i]});
+    
+    // load film and call onload defined above
+    films[i].src = imageFile.url();
+    
+    console.log("Loading film[" + i + "] " + study.imageArray[i]);
+    
+    // iterate and recurse
+    i = i + 1;
+    if (i < study.imageArray.length) {
+      // if there are more films to load, wait, then do it again
+      setTimeout(loadNextFilms, 1000);
+    }
+  }
+  
+  setTimeout(loadNextFilms, 3000);
+  //loadNextFilms();
+}
+
+
 
 var addClick = function (x, y, dragging) {
   clickX.push(x);
@@ -144,7 +191,7 @@ var drawOrgan = function(context, x, y, continuation, color) {
 
 
 var redraw = function () {
-  // draw everything on canvsas
+  // draw everything on canvas
   
   // TODO better way to do this?
   var studyCanvas = document.getElementById("canvas");
@@ -152,8 +199,23 @@ var redraw = function () {
   //studyCanvas.width = films[0].width;
   //studyCanvas.height = 700;
   //studyCanvas.width = 700;
-  var studyHeightY = films[0].height;
-  var studyWidthX = films[0].width;
+  var study = Studies.findOne({ name: studyName });
+  var studyHeightY;
+  var studyWidthX;
+  if (films && films[0]) {
+    studyHeightY = films[0].height;
+    studyWidthX = films[0].width;
+  } else if (study && study.firstImageHeight && study.firstImageWidth) {
+    console.log("USING STORED HEIGHTS AND WIDTHS");
+    studyHeightY = study.firstImageHeight;
+    studyWidthX = study.firstImageWidth;
+  } else {
+    studyHeightY = 300;
+    studyWidthX = 300;
+  }
+  
+  var studyHeightYConst = studyHeightY;
+  var studyWidthXConst = studyWidthX;
   //var maxHeightWidth = 700; // why did I choose 700?
   
   // max dimension is set to the size of the viewport
@@ -216,65 +278,53 @@ var redraw = function () {
   if (!Router.current().route.getName().includes("admin") &&
      !Router.current().route.getName().includes("edit")) {
     // only scale if not admin
-    context.scale(studyCanvas.width/films[0].width, studyCanvas.height/films[0].height);
+    context.scale(studyCanvas.width/studyWidthXConst, studyCanvas.height/studyHeightYConst);
   }
     
   context.globalAlpha = 1;
   context.clearRect(0, 0, context.canvas.width, context.canvas.height);
- 
   
-  
-  // draw film on canvas 500x500 TODO ????
-    
-  
-  
-  //context.drawImage(films[index], 0, 0, 500, 500);
-  context.drawImage(films[index], 0, 0);
-  // TODO this means that the drawings cannot be scaled anymore
-  // Only scale if not admin
-  // context.scale(films[0].width/studyCanvas.width, films[0].height/studyCanvas.height);
-  
-  // draw the current edits for organ
-  drawOrgan(context, clickX, clickY, clickDrag, clickColor);
-  
-  // TODO clean up this hack (making new local vars)
-  var clickXX, clickYY, clickDragD, clickColorC;
-  
-  // TODO: right now, only one study named "Normal" 
-  // images from study were preloaded into films
-  var study = Studies.findOne({ name: studyName });
-  var organs = study.organs;
-  var organsLength = 0;
-  if (organs) {
-    organsLength = organs.length;
-  }
-  console.log("organsLength " + organsLength);
+  if (films && films[index]) {
 
-  for (var i = 0; i < organsLength; i++) {
-    var organ = organs[i];
-    
-    // if organ is not checked, continue to next organ w/o drawing
-    //console.log(organ.organ + Session.get(organ.organ));
-    if (!Session.get(organ.organ)) { continue };
-    
-    if (organ && organ.data[index]) {
-      clickXX = organ.data[index].clickX;
-      clickYY = organ.data[index].clickY;
-      clickDragD = organ.data[index].clickDrag;
-      clickColorC = organ.color;
-    } else {
-      clickXX = [];
-      clickYY = [];
-      clickDragD = [];
-      clickColorC = "#000000";
+    context.drawImage(films[index], 0, 0); //only
+
+    // draw the current edits for organ
+    drawOrgan(context, clickX, clickY, clickDrag, clickColor);
+
+    // TODO clean up this hack (making new local vars)
+    var clickXX, clickYY, clickDragD, clickColorC;
+
+
+    // images from study were preloaded into films
+    study = Studies.findOne({ name: studyName });
+    var organs = study.organs;
+    var organsLength = 0;
+    if (organs) {
+      organsLength = organs.length;
     }
-    drawOrgan(context, clickXX, clickYY, clickDragD, clickColorC);
+    console.log("organsLength " + organsLength);
+
+    for (var i = 0; i < organsLength; i++) {
+      var organ = organs[i];
+
+      // if organ is not checked, continue to next organ w/o drawing
+      //console.log(organ.organ + Session.get(organ.organ));
+      if (!Session.get(organ.organ)) { continue };
+
+      if (organ && organ.data[index]) {
+        clickXX = organ.data[index].clickX;
+        clickYY = organ.data[index].clickY;
+        clickDragD = organ.data[index].clickDrag;
+        clickColorC = organ.color;
+      } else {
+        clickXX = [];
+        clickYY = [];
+        clickDragD = [];
+        clickColorC = "#000000";
+      }
+      drawOrgan(context, clickXX, clickYY, clickDragD, clickColorC);
+    }
   }
-  
-  //studyCanvas.height = 500;
-  //studyCanvas.width = 500;
-
-
 }
 
 var doInOrgan = function(e, doMe, elseDoMe) {
@@ -392,10 +442,12 @@ Meteor.startup(function () {
 });
 
 Template.atlas.onCreated(function () {
-  loadFilms();
+  loadFilmsRecursively();
 });
 
 Template.atlas.onRendered(function () {
+  
+  
   
   $("body").addClass("menu");
   
@@ -613,7 +665,12 @@ Template.atlas.helpers({
     if (films.length) {
       return films[0].height;
     } else {
-      return 300;
+      var study = Studies.findOne({name: studyName});
+      if (study) {
+        return study.firstImageHeight;
+      } else {
+        return 300;
+      }
     }
   },
   studyWidth: function () {
@@ -623,7 +680,12 @@ Template.atlas.helpers({
     if (films.length) {
       return films[0].width;
     } else {
-      return 300;
+      var study = Studies.findOne({name: studyName});
+      if (study) {
+        return study.firstImageWidth;
+      } else {
+        return 300;
+      }
     }
   }
 });

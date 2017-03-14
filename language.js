@@ -175,6 +175,7 @@ Meteor.methods({
     var study = Studies.findOne({ name: studyName });
     if (study) {
       var oldImageArray = study.imageArray;
+      if (!oldImageArray) { oldImageArray = []; }
       var organs = study.organs;
       
       for (var k = 0; organs && k < organs.length; k++) {
@@ -196,11 +197,13 @@ Meteor.methods({
       }
     }
     
-    
     // update the array
-    Studies.update({ name: studyName 
-    }, { $set: { "imageArray": newImageArray }});
-    console.log("New array " + newImageArray );
+    Studies.update({ name: studyName }, { $set: { "imageArray": newImageArray }});
+    //console.log("New array " + newImageArray );
+  },
+  updateFirstHeightWidth: function(studyName, height, width) {
+    // update the array
+    Studies.update({ name: studyName }, { $set: { "firstImageHeight": height, "firstImageWidth": width }});
   },
   deleteStudy: function(studyName) {
     // delete images
