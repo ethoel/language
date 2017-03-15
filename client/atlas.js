@@ -944,6 +944,14 @@ Template.controlPanel.helpers({
   currentStructure: function () {
     return Session.get("currentOrgan");
   },
+  studyOwner: function () {
+    var study = Studies.findOne({ name: studyName });
+    if (study) {
+      return study.owner;
+    } else {
+      return "";
+    }
+  },
   currentStructureDescription: function () {
     var structure = Session.get("currentOrgan");
     var study = Studies.findOne({ name: studyName });
@@ -956,7 +964,7 @@ Template.controlPanel.helpers({
         return study.organs[i].description;
       }
     }
-    return "bunk";
+    return "";
   },
   organs: function () {
     // TODO SPOT

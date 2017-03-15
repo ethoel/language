@@ -120,7 +120,8 @@
   
   <div class="structureEditingPane">
     
-    <h3 class="study_title">Editing {{studyName}} Structures</h3>
+    <h3 class="study_title">Editing {{studyName}} structures</h3>
+    <a href="/preview/{{studyOwner}}/{{studyName}}" class="catlasLink" style="display: block; text-align: center; margin-bottom: 5px; width: 100%">Preview</a>
     
     <div class="editUnit">
       <p >
@@ -129,7 +130,7 @@
           </span>
         </span>
         <input type="text" id="currentOrgan" placeholder="New structure name"/>
-        <button id="saveCurrentOrgan">New structure</button>
+        <button id="saveCurrentOrgan" class="saveButton">New structure</button>
       </p>
 
       <p> 
@@ -152,14 +153,14 @@
           <span class="tooltiptext">Enter a new name and click "Rename" to rename structure named "{{currentOrgan}}"</span>
         </span>
         <input type="text" id="renameStructureText" placeholder="New name" value="{{currentStructure}}"/>
-        <button id="renameCurrentOrgan">Rename</button>
+        <button id="renameCurrentOrgan" class="saveButton">Rename</button>
       </p>
 
       <p>
         <span class="tooltip editLabel">Delete current structure
           <span class="tooltiptext">To permanently delete structure named "{{currentOrgan}}," click "Delete structure"</span>
         </span>
-        <button id="deleteCurrentOrgan" class="tooltip">Delete structure</button>
+        <button id="deleteCurrentOrgan" class="deleteButton">Delete structure</button>
       </p>
 
       <p>
@@ -184,7 +185,7 @@
         <input type="text" id="colorpicker" value="{{currentOrganColor}}"/>
         <button id="changeColor" style="display: none">Change Color</button>
         <button id="resetColor">Reset</button>
-        <button id="save" color="green" style="display: block; margin-top: 5px">Save new highlighting</button>
+        <button id="save" style="display: block; margin-top: 5px">Save new highlighting</button>
       </p>
 
       <p>

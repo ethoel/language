@@ -517,7 +517,7 @@ button#clearAll {
 }
 
 button#deleteCurrentOrgan {
-  background-color: #ff2222;
+  
 }
 
 #savedFade {
@@ -529,5 +529,9 @@ button.saveButton {
 }
 
 button.deleteButton {
-  background-color: #ff2222;
+  background-color: #ff9999;
+}
+
+#saveOrganDescription {
+  background-color: #99ff99;
 }
