@@ -356,8 +356,12 @@ Router.route("/atlas/:study", function () {
   this.wait(Meteor.subscribe("images", "", study));
   
   if (this.ready()) {
-    this.render("atlas");
-    
+    var wholeStudy = Studies.findOne({name: study});
+    if (wholeStudy && wholeStudy.public !== "private") {
+      this.render("atlas");
+    } else {
+      this.render("unauthorized");
+    }
   } else {
     this.render("/loading");
   }

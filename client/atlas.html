@@ -117,81 +117,94 @@
 } 
     </style>
   </head>
-
-  <h2>
-  Editing
-  <select id="currentOrganDrop">
-    {{#each organs}}
-    {{> organdrop}}
-    {{/each}}
-  </select>
-  </h2>
   
-  <p>
-  <button id="clear">Clear New Drawing</button>
-  
-  </p>
-  
-  <p>
+  <div class="structureEditingPane">
     
-  <input type="color" id="colorpickerbutton" value="{{currentEditingColorNoAlpha}}"/>
-  <input type="range" id="transparencyPicker" value="{{currentEditingColorAlpha}}"/>
-  <input type="text" id="colorpicker" value="{{currentOrganColor}}"/>
-  <button id="changeColor">Change Color</button>
-  <button id="resetColor">Reset Color</button>
-  
-  </p>
-  
-  
-  
-  <p>
-  <button id="save" color="green">Save New Drawing and Color</button>
-  <button id="clearAll">Delete All Drawing and Save</button>
-  <span id="savedFade">
-  Saved
-  </span>
-  </p>
+    <h3 class="study_title">Editing {{studyName}} Structures</h3>
+    
+    <div class="editUnit">
+      <p >
+        <span class="editLabel tooltip">Create new structure
+          <span class="tooltiptext">Enter a name and click "New structure" to create and begin editing a new structure
+          </span>
+        </span>
+        <input type="text" id="currentOrgan" placeholder="New structure name"/>
+        <button id="saveCurrentOrgan">New structure</button>
+      </p>
 
-  <br/>
-  <h4> Create new organ </h4>
-  <input type="text" id="currentOrgan" placeholder="New organ name"/>
-  <button id="saveCurrentOrgan">Create New Organ</button>
-  <button id="renameCurrentOrgan">Rename Current Organ</button>
-  <button id="deleteCurrentOrgan">DELETE Current Organ</button>
-  <br/><br/>
-  <textarea id="organ-description" placeholder="Organ description" cols="100" rows="10"></textarea>
-  <br/>
-  <button id="saveOrganDescription" class="saveButton">Save Description</button>
-  <button id="loadCurrentDescription">Load Current Description</button>
-  <br/><br/>
-<!--
-  <h4>
-    Upload new study </h4>
-  <input type="file" id="loadImages" multiple>
-  <br/><br/>
-  <input type="text" id="currentStudyAddress" placeholder="Study address">
-  <button id="changeAddress">Change Study Address</button>
-  <br/><br/>
-  <input type="text" id="currentStudyName" placeholder="Study name">
-  <button id="renameStudy">Rename Current Study</button>
-  <button id="permDeleteStudy" class="deleteButton">DELETE Current Study</button>
-  <br/>
--->
-  
-<!--  <button id="testButton">Test1</button>-->
-<!--
-  
-  
-  
-  <button id="testButton2">Test2</button> 
-  <button id="testButton">Test1</button>
--->
+      <p> 
+        <span class="tooltip editLabel">Current structure
+          <span class="tooltiptext">Select a structure to edit from the dropdown menu</span>
+        </span>
+        <select id="currentOrganDrop">
+          {{#each organs}}
+          {{> organdrop}}
+          {{/each}}
+        </select>
+      </p>
+    </div>
+    
+    <div class="editUnit">
+      <h4>Edit Current Structure</h4>
+
+      <p>
+        <span class="tooltip editLabel">Rename current structure
+          <span class="tooltiptext">Enter a new name and click "Rename" to rename structure named "{{currentOrgan}}"</span>
+        </span>
+        <input type="text" id="renameStructureText" placeholder="New name" value="{{currentStructure}}"/>
+        <button id="renameCurrentOrgan">Rename</button>
+      </p>
+
+      <p>
+        <span class="tooltip editLabel">Delete current structure
+          <span class="tooltiptext">To permanently delete structure named "{{currentOrgan}}," click "Delete structure"</span>
+        </span>
+        <button id="deleteCurrentOrgan" class="tooltip">Delete structure</button>
+      </p>
+
+      <p>
+        <span class="tooltip editLabel">Edit description of current structure
+          <span class="tooltiptext">Make any changes to the description of structure named "{{currentOrgan}}" in the box below and click "Save description" to save the changes</span>
+        </span>
+        <textarea id="organ-description" placeholder="Organ description"  rows="3" value="{{currentStructureDescription}}"></textarea>
+        <button id="saveOrganDescription" class="saveButton" style="display: block">Save description</button>
+      </p>
+    </div>
+    
+    <div class="editUnit">
+      <h4>Edit Highlighting</h4>
+
+      <p>
+        <span class="tooltip editLabel">Add new highlighting of current structure to image
+          <span class="tooltiptext">Click and drag the mouse on the image to the left to outline and highlight structure named "{{currentOrgan}}" on this image with the specified color. Use the controls below save or cancel any changes for this image</span>
+        </span>
+        <button id="clear" style="display: block; margin-bottom: 2px">Clear new highlighting</button>
+        <input type="color" id="colorpickerbutton" value="{{currentEditingColorNoAlpha}}"/>
+        <input type="range" id="transparencyPicker" value="{{currentEditingColorAlpha}}"/>
+        <input type="text" id="colorpicker" value="{{currentOrganColor}}"/>
+        <button id="changeColor" style="display: none">Change Color</button>
+        <button id="resetColor">Reset</button>
+        <button id="save" color="green" style="display: block; margin-top: 5px">Save new highlighting</button>
+      </p>
+
+      <p>
+        <span class="tooltip editLabel">Delete highlighting of current structure from image
+          <span class="tooltiptext">To permanently delete all highlighting of the structure named "{{currentStructure}}" on this image, click "Delete highlighting" below</span>
+        </span>
+        <button id="clearAll">Delete highlighting</button>
+      </p>
+    </div>
+    
+    <div class="editUnit">
+      <ul id="organsEdit">{{#each organs}}{{> organ}}{{/each}}</ul>
+    </div>
+  </div>
 </template>
 
 <template name="organ"><li>
 <label  style="cursor: pointer">
 <span class="organLabel" style="cursor: pointer; background-color:{{color}}">
-  <input style="cursor: pointer" id="organCheckBox" type="checkbox" value="{{this.organ}}" {{checked this.organ}}/>
+  <input style="cursor: pointer" class="organCheckBox" type="checkbox" value="{{this.organ}}" {{checked this.organ}}/>
 </span>
   {{this.organ}}
   </label>

@@ -1,4 +1,22 @@
+.editUnit {
+  border-style: solid;
+  border-width: thin;
+  border-color: #1d1d1d;
+  border-radius: 6px;
+  margin-bottom: 10px;
+  margin-right: 30px;
+  padding-left: 10px;
+  padding-right: 10px;
+  background-color: #1d1d1d;
+}
 
+.structureEditingPane {
+  position: absolute;
+  top: 0;
+  left: 300px; /*set to width of canvas on creation*/
+  overflow-x: auto;
+  width: 200px; /*set to remainder on creation*/
+}
 
 .nav_title, #adminDiv, #filterDiv {
   background-color: #444444;
@@ -119,4 +137,11 @@ ul#organs {
   margin: 0;
   padding: 0;
   padding-bottom: 100px;
+}
+
+ul#organsEdit {
+  margin: 0;
+  padding: 0;
+  padding-top: 20px;
+  padding-bottom: 20px;
 }

@@ -119,12 +119,12 @@ var loadFilmsRecursively = function () {
     i = i + 1;
     if (i < study.imageArray.length) {
       // if there are more films to load, wait, then do it again
-      setTimeout(loadNextFilms, 1000);
+      setTimeout(loadNextFilms, 0);
     }
   }
   
   // can use setTimeout to simulate lag in runtime
-  setTimeout(loadNextFilms, 3000);
+  setTimeout(loadNextFilms, 0);
 }
 
 
@@ -501,8 +501,12 @@ Template.atlas.onRendered(function () {
   
   // if flexbox exsited, wouldnt have to do this
   var navlistHeight = $("#nav-list-id").innerHeight();
-  
+  // TODO amend this
   $("#organs").css("top", navlistHeight + "px");
+  
+  // specifically for edit, not atlas
+  $(".structureEditingPane").css("left", $("#canvas").outerWidth());
+  $(".structureEditingPane").css("width", $(document).innerWidth() - $("#canvas").outerWidth());
   
   // for safari 10 on iphone
   document.getElementById("canvas").addEventListener('touchforcechange', function (e) { e.preventDefault(); });
@@ -580,18 +584,12 @@ Template.atlas.helpers({
     return Router.current().params.study;
   },
   studyTitle: function () {
-    var studyTitle = Router.current().params.study;
-    // TODO this needs to be not hard-coded
-    if (studyTitle === "normalaxial") {
-      studyTitle = "Abdomen Axial";
-    } else if (studyTitle === "test4") {
-      studyTitle = "Abdomen Coronal";
-    } else if (studyTitle === "normalsagittal") {
-      studyTitle = "Abdomen Sagittal";
-    } else if (studyTitle === "test32") {
-      studyTitle = "Test Axial 32";
+    var study = Studies.findOne({ name: studyName });
+    if (study) {
+      return study.title;
+    } else {
+      return "";
     }
-    return studyTitle;
   },
   filteredStudies: function () {
     console.log("FILTERED STUDIES");
@@ -776,7 +774,7 @@ Template.atlas.events({
     //prevents default
     return false;
   },
-  "click #organCheckBox": function (e) {
+  "click .organCheckBox": function (e) {
     // currently working on this TODO
     // this doesn't automagically work, have to click for
     // every one to add the field TODO TODO
@@ -943,6 +941,23 @@ Template.atlas.events({
 
 // Weird that helpers are under atlas but events under layout admin. Doesnt pose a problem yet
 Template.controlPanel.helpers({
+  currentStructure: function () {
+    return Session.get("currentOrgan");
+  },
+  currentStructureDescription: function () {
+    var structure = Session.get("currentOrgan");
+    var study = Studies.findOne({ name: studyName });
+    console.log("STUDY NAME " + study.name);
+    for (var i = 0; study && study.organs && i < study.organs.length; i++) {
+      console.log("LOOPING " + study.organs[i].organ + " " + structure);
+      if (study.organs[i].organ === structure) {
+        // TODO what if there are two organs with same name?
+        //return "test <p> test";
+        return study.organs[i].description;
+      }
+    }
+    return "bunk";
+  },
   organs: function () {
     // TODO SPOT
     var study = Studies.findOne({name: studyName});
@@ -955,6 +970,14 @@ Template.controlPanel.helpers({
     }
     //console.log(organs);
     return organs;
+  },
+  studyName: function () {
+    var study = Studies.findOne({ name: studyName });
+    if (study) {
+      return study.name;
+    } else {
+      return "";
+    }
   },
   currentEditingColorNoAlpha: function () {
 //    console.log(Session.get("currentEditingColor") + "---->");
@@ -974,38 +997,39 @@ Template.controlPanel.helpers({
     }
   },
   currentOrganColor: function() {
-    if (!Session.get("currentEditingColor")) {
-      if (!Session.get("currentOrgan")) {
-        return "rgba(18,52,86,0.53)";
-      }
-
-      console.log(Session.get("currentOrgan"));
-
-      var current = Session.get("currentOrgan");
-      //return "#000000";
-
-      var study = Studies.findOne({ name: studyName });
-
-      //elemMatch not supported, { organs: { $elemMatch: { organ: "Aorta" }}});
-
-      for (var i = 0; i < study.organs.length; i++) {
-        if (study.organs[i].organ === current) {
-          // this is the organ we are looking for
-          var organ = study.organs[i];
-          
-          
-          var currentEditingColorForOrgan = processOrganColor(organ.color);
-          clickColor = currentEditingColorForOrgan;
-          redraw();
-          Session.set("currentEditingColor", currentEditingColorForOrgan);
-          return currentEditingColorForOrgan;
-        }
-      }
-    } else {
-      clickColor = Session.get("currentEditingColor");
-      redraw();
-      return Session.get("currentEditingColor");
+    // this function get called if current organ changes
+    var current = Session.get("currentOrgan");
+    
+    if (!current) {
+      // Something has gone wrong
+      console.log("ERROR: " + "something wrong in currentOrganColor 1");
+      Session.set("currentEditingColor", "rgba(18,52,86,0.51)");
+      return "rgba(18,52,86,0.51)";
     }
+    
+    // set current editing color for new organ
+    var study = Studies.findOne({ name: studyName });
+    // find organ, this kind of sucks
+    for (var i = 0; study && study.organs && i < study.organs.length; i++) {
+      if (study.organs[i].organ === current) {
+        // this is the organ we are looking for
+        var organ = study.organs[i];
+        // grab color of organ
+        var currentEditingColorForOrgan = processOrganColor(organ.color);
+        // set the color for drawing
+        clickColor = currentEditingColorForOrgan;
+        // redraw the thing with new color
+        redraw();
+        // set current editing color to new color
+        Session.set("currentEditingColor", currentEditingColorForOrgan);
+        return currentEditingColorForOrgan;
+      }
+    }
+      
+    // could not find current organ, something went wrong
+    console.log("ERROR: " + "something wrong in currentOrganColor 2");
+    Session.set("currentEditingColor", "rgba(18,52,86,0.52)");
+    return "rgba(18,52,86,0.52)";
   },
   currentOrgan: function() {
     return Session.get("currentOrgan");
@@ -1093,6 +1117,62 @@ Template.layoutAdmin.events({
     }
     redraw();
   },
+    "click .organCheckBox": function (e) {
+    // currently working on this TODO
+    // this doesn't automagically work, have to click for
+    // every one to add the field TODO TODO
+    //console.log("checked");
+    //console.log(e.target);
+    //console.log(e.target.checked);
+    //console.log(e.target.getAttribute("value"));
+    Session.set(e.target.getAttribute("value"), e.target.checked);
+    
+    // update the descriptors
+    if (Session.get(e.target.getAttribute("value"))) {
+      Session.set("hoverOrgan", e.target.getAttribute("value"));
+      
+      // find organ description
+      var myOrganName = e.target.getAttribute("value");
+      
+      //begin find organ description--these need to become functions eventually
+      var study = Studies.findOne({ name: studyName });
+      var organs = study.organs;
+      var organsLength = 0;
+      if (organs) {
+        organsLength = organs.length;
+      }
+      console.log("organsLength " + organsLength);
+
+      var organ;
+      var myorgan;
+      for (var i = 0; i < organsLength; i++) {
+        organ = organs[i];
+
+        // if organ is not checked, continue to next organ w/o drawing
+        //console.log(organ.organ + Session.get(organ.organ));
+        if (organ.organ === myOrganName) { myorgan = organ; break; };
+
+      }
+      //end new code that should be a function
+      
+      if (myorgan) { Session.set("studyDescription", myorgan.description); }
+    } else {
+      Session.set("hoverOrgan", "");
+      Session.set("studyDescription", "");
+    }
+    
+    redraw();
+    
+    //alert("checked " + event.target.checked);
+//    Meteor.call("checkOrgan",
+//      "Normal",
+//      "Aorta",
+//      event.target.checked
+//    );
+    // JUST REDRAW
+    //loadOrgan();
+    //redraw();
+  },
   "click #save": function (e) {
     // TODO this method works grossly but needs cleaning up
     if (!Session.get("currentOrgan")) {
@@ -1136,7 +1216,6 @@ Template.layoutAdmin.events({
     
     Meteor.call("saveDrawingToOrgan",
                 studyName,
-                //$("#currentOrgan").val(),
                 Session.get("currentOrgan"),
                 clickColor,
                 index,
@@ -1148,7 +1227,7 @@ Template.layoutAdmin.events({
     clickX = [];
     clickY = [];
     clickDrag = [];
-    clickColor = 0;
+    //clickColor = 0;
     redraw();
   },
   "click #clearAll": function (e) {
@@ -1157,7 +1236,6 @@ Template.layoutAdmin.events({
     }
     Meteor.call("deleteDrawing",
                 studyName,
-                //$("#currentOrgan").val(),
                 Session.get("currentOrgan"),
                 index
                );
@@ -1256,15 +1334,18 @@ Template.layoutAdmin.events({
     });
   },
   "click #saveCurrentOrgan": function (e) {
-    if ($("#currentOrgan").val() === "" || study_length < 1) {
+    var newStructure = $("#currentOrgan").val();
+    
+    if (!newStructure || study_length < 1) {
       return;
     }
     console.log("Added organ");
     
-    Session.set("currentOrgan", $("#currentOrgan").val());
+    
     // TODO others other than "NORMAL"--though I don't think this code is active anymore
-    Meteor.call("addOrganToStudy", studyName, Session.get("currentOrgan"), study_length,
+    Meteor.call("addOrganToStudy", studyName, newStructure, study_length,
                function () {
+      Session.set("currentOrgan", newStructure);
      // set the dropdown to new organ
       $("#currentOrganDrop").val(Session.get("currentOrgan")).change();
       
@@ -1274,7 +1355,9 @@ Template.layoutAdmin.events({
     // TODO above needs to become more than just a test button
   },
   "click #renameCurrentOrgan": function (e) {
-    if ($("#currentOrgan").val() === "" || study_length < 1 || !Session.get("currentOrgan")) {
+    var newStructureName = $("#renameStructureText").val();
+    
+    if ( !newStructureName || study_length < 1 || !Session.get("currentOrgan")) {
       console.log("Aborted");
       return;
     }
@@ -1283,11 +1366,11 @@ Template.layoutAdmin.events({
     // TODO hoverOrgan does not update, but do not want to bother right now
     
     
-    Meteor.call("renameOrgan", studyName, $("#currentOrganDrop option:selected").val(), $("#currentOrgan").val(),
+    Meteor.call("renameOrgan", studyName, Session.get("currentOrgan"), newStructureName,
                function () {
       // call back function
       // rename the organ pointer
-      Session.set("currentOrgan", $("#currentOrgan").val());
+      Session.set("currentOrgan", newStructureName);
      // set the dropdown to new organ
       $("#currentOrganDrop").val(Session.get("currentOrgan")).change();
       
@@ -1303,18 +1386,16 @@ Template.layoutAdmin.events({
       return;
     }
     
-    if ($("#currentOrgan").val() !== "DELETE") {
-      console.log("Aborted");
-      alert('You must type in "DELETE" in the field to the left to delete organ permanently')
+    if (!confirm('Permanently delete structure named"' + Session.get("currentOrgan") + '"?')) {
+      console.log("Aborted: not confirmed");
       return;
     }
-    $("#currentOrgan").val("");
     console.log("Deleting organ");
     
     // TODO hoverOrgan does not update, but do not want to bother right now, drawings don't update, but they are gone gone gone
     
     
-    Meteor.call("deleteOrgan", studyName, $("#currentOrganDrop option:selected").val(),
+    Meteor.call("deleteOrgan", studyName, Session.get("currentOrgan"),
                function () {
       // call back function
       // if there are still options
