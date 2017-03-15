@@ -996,12 +996,14 @@ Template.controlPanel.helpers({
           
           var currentEditingColorForOrgan = processOrganColor(organ.color);
           clickColor = currentEditingColorForOrgan;
+          redraw();
           Session.set("currentEditingColor", currentEditingColorForOrgan);
           return currentEditingColorForOrgan;
         }
       }
     } else {
       clickColor = Session.get("currentEditingColor");
+      redraw();
       return Session.get("currentEditingColor");
     }
   },
@@ -1045,7 +1047,6 @@ Template.layoutAdmin.events({
     console.log("rgba(" + rgb.r + "," + rgb.g + "," + rgb.b + "," + rgbaAlpha(Session.get("currentEditingColor")) + ")");
     
     Session.set("currentEditingColor", "rgba(" + rgb.r + "," + rgb.g + "," + rgb.b + "," + rgbaAlpha(Session.get("currentEditingColor")) + ")");
-    redraw();
   },
   "change #transparencyPicker": function (e) {
     console.log("transparencyPicker changed");
@@ -1054,7 +1055,6 @@ Template.layoutAdmin.events({
     var rgba = colorString.match(/[\d\.]+/g);
     
     Session.set("currentEditingColor", "rgba(" + rgba[0] + "," + rgba[1] + "," + rgba[2] + "," + e.target.value / 100. + ")");
-    redraw();
   },
   "click #changeColor": function (e) {
     var newEditingColor = $("#colorpicker").val().toLowerCase();
@@ -1069,7 +1069,6 @@ Template.layoutAdmin.events({
     }
     console.log("clickColor " + clickColor);
     //console.log("labelvalue " + $('#testingabc').text().trim());
-    redraw();
   },
   "click #resetColor": function (e) {
     //console.log(Session.get("currentOrgan"));
