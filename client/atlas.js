@@ -293,7 +293,7 @@ var redraw = function () {
       context.font = "italic 16px Sans-serif";
       context.fillStyle = "#c7c7c7";
       context.textAlign = "center";
-      context.fillText("Image " + index + " of " + study_length + " loading...", studyWidthXConst / 2, studyHeightYConst / 2);
+      context.fillText("Image " + (index + 1) + " of " + study_length + " loading...", studyWidthXConst / 2, studyHeightYConst / 2);
     } else {
       // some older browsers do not support fillText
       loadingImage = new Image();

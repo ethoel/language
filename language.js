@@ -363,25 +363,25 @@ Router.route("/atlas/:study", function () {
   }
 });
 
-Router.route("/admin", function () {
-  this.redirect("/admin/test4");
-});
-
-Router.route("/admin/:study", function() {
-  this.layout("layoutAdmin");
-  
-  this.wait(Meteor.subscribe("organs"));
-  this.wait(Meteor.subscribe("studies"));
-  this.wait(Meteor.subscribe("tags"));
-  this.wait(Meteor.subscribe("images"));
-  
-  if (this.ready()) {
-    this.render("atlas");
-    
-  } else {
-    this.render("/loading");
-  }
-}, {name: 'admin.study'});
+//Router.route("/admin", function () {
+//  this.redirect("/admin/test4");
+//});
+//
+//Router.route("/admin/:study", function() {
+//  this.layout("layoutAdmin");
+//  
+//  this.wait(Meteor.subscribe("organs"));
+//  this.wait(Meteor.subscribe("studies"));
+//  this.wait(Meteor.subscribe("tags"));
+//  this.wait(Meteor.subscribe("images"));
+//  
+//  if (this.ready()) {
+//    this.render("atlas");
+//    
+//  } else {
+//    this.render("/loading");
+//  }
+//}, {name: 'admin.study'});
 
 // When log in should be required
 Router.onBeforeAction(function () {
@@ -396,7 +396,7 @@ Router.onBeforeAction(function () {
     // otherwise continue routing
     this.next();
   }
-}, { only: ['admin', 'admin.study', 'admincheck'] });
+}, { only: [/*'admin', 'admin.study', */'admincheck'] });
 
 // When log in should be required
 Router.onBeforeAction(function () {
@@ -413,7 +413,7 @@ Router.onBeforeAction(function () {
     // otherwise continue routing
     this.next();
   }
-}, { only: ['edit.owner', 'edit.owner.study'] });
+}, { only: ['edit.owner', 'edit.owner.study', 'preview.owner.study'] });
 
 Router.onBeforeAction(function () {
   var owner = this.params.owner;
@@ -470,6 +470,22 @@ Router.route("/edit/:owner/:study", function () {
     this.render("/loading");
   }
 }, {name: 'edit.owner.study'});
+
+Router.route("/preview/:owner/:study", function () {
+  
+  var owner = this.params.owner;
+  var study = this.params.study;
+  
+  this.wait(Meteor.subscribe("studies"));
+  this.wait(Meteor.subscribe("images", owner, study));
+  
+  if (this.ready()) {
+    this.render("atlas");
+    
+  } else {
+    this.render("/loading");
+  }
+}, {name: 'preview.owner.study'});
 
 Router.route("/admincheck", function () {
   this.wait(Meteor.subscribe("studies"));

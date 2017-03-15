@@ -315,6 +315,14 @@ Template.edit.helpers({
       return '<span class="catlasLinkDead">Edit structures</span>';
     }
   },
+  previewLink: function () {
+    var study = Studies.findOne({ name: Session.get("currentStudy") });
+    if (study) {
+      return '<a class="catlasLink" href=' + '"/preview/' + study.owner + "/" + study.name + '">Preview study</a>';
+    } else {
+      return '<span class="catlasLinkDead">Preview study</span>';
+    }
+  },
   allTags: function () {
     var addedStudyTag = Session.get("updateReactive");
     var tags = ["Normal", "Abnormal", "Ultrasound"];
@@ -340,7 +348,7 @@ Template.edit.helpers({
     if (study) {
       studyOwner = study.owner;
     } else {
-      studyOwner = "";
+      studyOwner = Meteor.user().username;
     }
     return studyOwner;
   },
