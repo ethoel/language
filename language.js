@@ -96,7 +96,7 @@ Meteor.methods({
     Studies.upsert({
       name: name
     }, { $push: { 
-      organs: { organ: organ, color: "#FFFFFF",
+      organs: { organ: organ, color: "rgba(12,34,56,0.78)",
               data: new Array(arrayN) } 
     }
     });

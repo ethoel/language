@@ -31,11 +31,11 @@ var rgbaAlpha = function (rgbaString) {
 
 var verifyColorRgba = function (colorString) {
   var matchArray = colorString.match(/^rgba\(\d+,\d+,\d+,(\d*\.*\d*)\)$/);
-  for (var i = 0; matchArray && i < matchArray.length; i++) {
-    console.log("matchArray " + matchArray[i]);
-  }
+//  for (var i = 0; matchArray && i < matchArray.length; i++) {
+//    console.log("matchArray " + matchArray[i]);
+//  }
   if (matchArray && matchArray[1] && matchArray[1].length) {
-    console.log("MATCH!");
+    //console.log("MATCH!");
     return true;
   } else {
     return false;
@@ -48,7 +48,7 @@ var verifyHex = function (colorHex) {
 
 var processOrganColor = function (organColor) {
   organColor = organColor.toLowerCase();
-  console.log("LOWERCASE " + organColor);
+  //console.log("LOWERCASE " + organColor);
   // some old colors may not be in rgba
   if (verifyColorRgba(organColor)) {
     // already in rgba
@@ -90,7 +90,7 @@ var initializePageVariables = function () {
 };
 
 var loadFilmsRecursively = function () {
-  console.log("loading films recursively");
+  //console.log("loading films recursively");
   var study = Studies.findOne({name: studyName});
   // abort load if no study images
   if (!study || !study.imageArray) {
@@ -113,7 +113,8 @@ var loadFilmsRecursively = function () {
     // load film and call onload defined above
     films[i].src = imageFile.url();
     
-    console.log("Loading film[" + i + "] " + study.imageArray[i]);
+    console.log("Loading film");
+    //console.log("Loading film[" + i + "] " + study.imageArray[i]);
     
     // iterate and recurse
     i = i + 1;
@@ -171,18 +172,23 @@ var drawOrgan = function(context, x, y, continuation, color) {
 
 
 var redraw = function () {
+  
   // draw everything on canvas
   var studyCanvas = document.getElementById("canvas");
+  if (!studyCanvas) {
+    console.log("document not ready");
+    return;
+  }
 
   var study = Studies.findOne({ name: studyName });
   var studyHeightY;
   var studyWidthX;
   if (films && films[0]) {
-    console.log("USING FILM HEIGHTS AND WIDTHS");
+    //console.log("USING FILM HEIGHTS AND WIDTHS");
     studyHeightY = films[0].height;
     studyWidthX = films[0].width;
   } else if (study && study.firstImageHeight && study.firstImageWidth) {
-    console.log("USING STORED HEIGHTS AND WIDTHS");
+    //console.log("USING STORED HEIGHTS AND WIDTHS");
     studyHeightY = study.firstImageHeight;
     studyWidthX = study.firstImageWidth;
   } else {
@@ -236,7 +242,7 @@ var redraw = function () {
   var context = document.getElementById("canvas").getContext("2d");
   
   // make the image fit if not admin
-  console.log(Router.current().route.getName().includes("admin"));
+  //console.log(Router.current().route.getName().includes("admin"));
   // TODO fix this hack--this whole program is becoming one big hack
   if (!Router.current().route.getName().includes("admin") &&
      !Router.current().route.getName().includes("edit")) {
@@ -265,7 +271,7 @@ var redraw = function () {
     if (organs) {
       organsLength = organs.length;
     }
-    console.log("organsLength " + organsLength);
+    //console.log("organsLength " + organsLength);
 
     for (var i = 0; i < organsLength; i++) {
       var organ = organs[i];
@@ -308,6 +314,7 @@ var redraw = function () {
 }
 
 var doInOrgan = function(e, doMe, elseDoMe) {
+  //console.log("doInOrgan");
   // TODO consolidate code with redraw somehow
     // put it in a separate function
     // draw everything on canvsas
@@ -363,7 +370,7 @@ var doInOrgan = function(e, doMe, elseDoMe) {
     if (organs) {
       organsLength = organs.length;
     }
-    console.log("organsLength " + organsLength);
+    //console.log("organsLength " + organsLength);
     for (var k = 0; k < organsLength; k++) {
       var organ = organs[k];
       
@@ -515,7 +522,7 @@ Template.atlas.onRendered(function () {
 var setMenuWidth = function (menuWidth, percentOfWindowWidth) {
   // if the menu covers pretty much the whole screen, just cover the whole screen
   // increase width of menu to full screen if greater than % screen size
-  console.log("WINDOW W " + window.innerWidth + "px");
+  //console.log("WINDOW W " + window.innerWidth + "px");
   if (menuWidth > percentOfWindowWidth * window.innerWidth) {
     menuWidth = "100vw";
   } else {
@@ -550,7 +557,7 @@ Template.atlas.helpers({
     
     if (study && study.organs) {
       organs = study.organs;
-      console.log("ORGANS UNSORTED " + organs[0].organ);
+      //console.log("ORGANS UNSORTED " + organs[0].organ);
       organs.sort(function (a, b) {
         return a.organ.localeCompare(b.organ);
       }); // sort organs alphabetically
@@ -592,7 +599,7 @@ Template.atlas.helpers({
     }
   },
   filteredStudies: function () {
-    console.log("FILTERED STUDIES");
+    //console.log("FILTERED STUDIES");
     var filterUpdated = Session.get("filterUpdated");
     
     // sample filter
@@ -635,7 +642,7 @@ Template.atlas.helpers({
     
     var filter = { $and: finalAndFilter };
     
-    console.log(filter);
+    //console.log(filter);
     
     var filteredStudies = Studies.find(filter);
     return filteredStudies;
@@ -713,6 +720,39 @@ Tracker.autorun(function() {
       console.log("Images Loaded HAHAHAHAH " + study.imageArray.length);
       location.reload(true);
     }
+  }
+});
+
+Tracker.autorun(function () {
+  // this function get called if current organ changes
+  var current = Session.get("currentOrgan");
+  console.log("current organ changed to " + current);
+  if (current) {
+    Tracker.nonreactive(function () {
+      // set current editing color for new organ
+      var study = Studies.findOne({ name: studyName });
+      // find organ, this kind of sucks
+      for (var i = 0; study && study.organs && i < study.organs.length; i++) {
+        if (study.organs[i].organ === current) {
+          // this is the organ we are looking for
+          var organ = study.organs[i];
+          // grab color of organ
+          var currentEditingColorForOrgan = processOrganColor(organ.color);
+          // set current editing color to new color
+          Session.set("currentEditingColor", currentEditingColorForOrgan);
+          break;
+        }
+      }
+    });
+  }
+});
+
+Tracker.autorun(function () {
+  var currentEditingColor = Session.get("currentEditingColor");
+  if (currentEditingColor) {
+    console.log("current editing color changed to " + currentEditingColor);
+    clickColor = currentEditingColor;
+    Tracker.nonreactive(redraw);
   }
 });
 
@@ -798,7 +838,7 @@ Template.atlas.events({
       if (organs) {
         organsLength = organs.length;
       }
-      console.log("organsLength " + organsLength);
+      //console.log("organsLength " + organsLength);
 
       var organ;
       var myorgan;
@@ -837,7 +877,7 @@ Template.atlas.events({
     doInOrgan(e, function (canvas, myorgan) {
       canvas.style.cursor = "pointer";
       if (Session.get(myorgan.organ)) {
-        console.log(myorgan.organ);
+        //console.log(myorgan.organ);
         Session.set("hoverOrgan", myorgan.organ);
         Session.set("studyDescription", myorgan.description);
       } else {
@@ -857,9 +897,9 @@ Template.atlas.events({
       return false;
     }
     
-    console.log("CLICKED CANVAS");
+    // console.log("CLICKED CANVAS");
     var organ = doInOrgan(e, function (canvas, myorgan) {
-      console.log("clicked organ");
+      //console.log("clicked organ");
       Session.set(myorgan.organ, !Session.get(myorgan.organ));
       if (Session.get(myorgan.organ)) {
         Session.set("hoverOrgan", myorgan.organ);
@@ -955,9 +995,9 @@ Template.controlPanel.helpers({
   currentStructureDescription: function () {
     var structure = Session.get("currentOrgan");
     var study = Studies.findOne({ name: studyName });
-    console.log("STUDY NAME " + study.name);
+    //console.log("STUDY NAME " + study.name);
     for (var i = 0; study && study.organs && i < study.organs.length; i++) {
-      console.log("LOOPING " + study.organs[i].organ + " " + structure);
+      //console.log("LOOPING " + study.organs[i].organ + " " + structure);
       if (study.organs[i].organ === structure) {
         // TODO what if there are two organs with same name?
         //return "test <p> test";
@@ -1004,40 +1044,14 @@ Template.controlPanel.helpers({
       return 50;
     }
   },
-  currentOrganColor: function() {
-    // this function get called if current organ changes
-    var current = Session.get("currentOrgan");
+  currentEditingColorText: function () {
+    var currentEditingColorText = Session.get("currentEditingColor");
     
-    if (!current) {
-      // Something has gone wrong
-      console.log("ERROR: " + "something wrong in currentOrganColor 1");
-      Session.set("currentEditingColor", "rgba(18,52,86,0.51)");
-      return "rgba(18,52,86,0.51)";
+    if (currentEditingColorText) {
+      return currentEditingColorText;
+    } else {
+      return "rgba(4,3,2,0.2)";
     }
-    
-    // set current editing color for new organ
-    var study = Studies.findOne({ name: studyName });
-    // find organ, this kind of sucks
-    for (var i = 0; study && study.organs && i < study.organs.length; i++) {
-      if (study.organs[i].organ === current) {
-        // this is the organ we are looking for
-        var organ = study.organs[i];
-        // grab color of organ
-        var currentEditingColorForOrgan = processOrganColor(organ.color);
-        // set the color for drawing
-        clickColor = currentEditingColorForOrgan;
-        // redraw the thing with new color
-        redraw();
-        // set current editing color to new color
-        Session.set("currentEditingColor", currentEditingColorForOrgan);
-        return currentEditingColorForOrgan;
-      }
-    }
-      
-    // could not find current organ, something went wrong
-    console.log("ERROR: " + "something wrong in currentOrganColor 2");
-    Session.set("currentEditingColor", "rgba(18,52,86,0.52)");
-    return "rgba(18,52,86,0.52)";
   },
   currentOrgan: function() {
     return Session.get("currentOrgan");
@@ -1077,7 +1091,6 @@ Template.layoutAdmin.events({
     var rgb = hexToRgb(e.target.value);
     
     console.log("rgba(" + rgb.r + "," + rgb.g + "," + rgb.b + "," + rgbaAlpha(Session.get("currentEditingColor")) + ")");
-    
     Session.set("currentEditingColor", "rgba(" + rgb.r + "," + rgb.g + "," + rgb.b + "," + rgbaAlpha(Session.get("currentEditingColor")) + ")");
   },
   "change #transparencyPicker": function (e) {
@@ -1085,7 +1098,6 @@ Template.layoutAdmin.events({
     
     var colorString = Session.get("currentEditingColor");
     var rgba = colorString.match(/[\d\.]+/g);
-    
     Session.set("currentEditingColor", "rgba(" + rgba[0] + "," + rgba[1] + "," + rgba[2] + "," + e.target.value / 100. + ")");
   },
   "click #changeColor": function (e) {
@@ -1123,7 +1135,6 @@ Template.layoutAdmin.events({
         Session.set("currentEditingColor", processOrganColor(organ.color));
       }
     }
-    redraw();
   },
     "click .organCheckBox": function (e) {
     // currently working on this TODO
@@ -1188,12 +1199,7 @@ Template.layoutAdmin.events({
     }
     
     console.log("saved " + clickColor);
-    $("#savedFade").fadeIn(100).fadeOut(900);
-//    Meteor.call("upsertOrgan", 
-//      films[index].src,
-//      "aorta",
-//      { clickX: clickX, clickY: clickY, clickDrag: clickDrag, clickColor: clickColor }
-//    );
+    
     var study = Studies.findOne({ name: studyName }, {fields: { organs: 1, _id: 0 }});
     
     //elemMatch not supported, { organs: { $elemMatch: { organ: "Aorta" }}});
