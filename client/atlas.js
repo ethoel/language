@@ -516,9 +516,9 @@ Template.atlas.onRendered(function () {
   setMenuWidth(400, .80);
   
   // if flexbox exsited, wouldnt have to do this
-  var navlistHeight = $("#nav-list-id").innerHeight();
+  var filterStudyListHeight = $("#filterStudyList").outerHeight();
   // TODO amend this
-  $("#organs").css("top", navlistHeight + "px");
+  $("#currentOrganList").css("top", filterStudyListHeight + "px");
   
   // specifically for edit, not atlas
   $(".structureEditingPane").css("left", $("#canvas").outerWidth());
@@ -654,6 +654,12 @@ Template.atlas.helpers({
     //console.log(filter);
     
     var filteredStudies = Studies.find(filter);
+    if (filteredStudies.count() > 0) {
+      Session.set("filterStudyCount", filteredStudies.count());
+    } else {
+      Session.set("filterStudyCount", 0);
+      filteredStudies = [{ name: "", title: "No matching studies" }];
+    }
     return filteredStudies;
     
     //return ["banana"];
@@ -701,6 +707,35 @@ Template.organ.helpers({
       return "";
     }
   }
+});
+
+Tracker.autorun(function() {
+  var count = Session.get("filterStudyCount");
+  Tracker.nonreactive(function () {
+    if (!count && count === 0) {
+      console.log("No items!");
+      $("#nav-list-id").css("visibility", "hidden");
+      count = 1;
+    } else if (count) {
+      $("#nav-list-id").css("visibility", "visible");
+    }
+
+    if (count) {
+
+        console.log("Filter Updated! Count = " + count);
+        // if flexbox exsited, wouldnt have to do this
+        var maxHeight = $(window).innerHeight() / 10 * 4; // max height is 40%
+        var filterStudyListHeight = $(".studyListItem").outerHeight() * count;
+        filterStudyListHeight += $("#catlasNavTitle").outerHeight();
+        filterStudyListHeight += $("#filterDiv").outerHeight();
+        if (filterStudyListHeight > maxHeight) {
+          $("#currentOrganList").css("top", maxHeight + "px");
+        } else {
+          $("#currentOrganList").css("top", filterStudyListHeight + "px");
+        }
+
+    }
+  });
 });
 
 Tracker.autorun(function() {

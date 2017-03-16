@@ -535,3 +535,11 @@ button.deleteButton {
 #saveOrganDescription {
   background-color: #99ff99;
 }
+
+#noStudiesText {
+  font-size: 0.8rem;
+  font-style: italic;
+  text-align: center;
+  display: block;
+  padding-top: 5px;
+}

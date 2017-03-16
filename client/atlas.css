@@ -41,7 +41,7 @@
   border-style: solid;
   border-color: #1d1d1d;
 */
-  height: 30%;
+  max-height: 40%;
   width: 100%;
   overflow: auto;
   z-index: 450;
@@ -123,21 +123,28 @@
 }
 
 #currentOrganList {
+  position: absolute;
+  top: 0px;
+  bottom: 0px;
+  /*
   height: 70%;
+  */
   width: 100%;
   overflow: auto;
   
     
-  background-image: url("/favicon-96.png");
-  background-repeat: no-repeat;
-  background-position: bottom right;
-  background-attachment: local;
+
 }
 
 ul#organs {
   margin: 0;
   padding: 0;
   padding-bottom: 100px;
+  
+  background-image: url("/favicon-96.png");
+  background-repeat: no-repeat;
+  background-position: bottom right;
+  background-attachment: local;
 }
 
 ul#organsEdit {

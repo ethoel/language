@@ -14,7 +14,7 @@
         
       
       <div id="filterStudyList">
-        <h3 class="nav_title">Catlas</h3>
+        <h3 id="catlasNavTitle" class="nav_title">Catlas</h3>
         <div id="adminDiv">
           {{> loginButtons}}
         </div>
@@ -32,6 +32,7 @@
         </div>
 
         <div id="currentStudiesList">
+<!--          <span id="noStudiesText">No studies matching filter criteria</span>-->
           <ul id="nav-list-id" class="nav-list">
             {{#each filteredStudies}}
             {{> filteredStudy}}
@@ -224,5 +225,5 @@
 </template>
 
 <template name="filteredStudy">
-  <li><a class="filteredStudyLink" href="{{this.name}}">{{this.title}}</a></li>
+  <li class="studyListItem"><a class="filteredStudyLink" href="{{this.name}}">{{this.title}}</a></li>
 </template>
