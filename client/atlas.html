@@ -137,11 +137,16 @@
         <span class="tooltip editLabel">Current structure
           <span class="tooltiptext">Select a structure to edit from the dropdown menu</span>
         </span>
-        <select id="currentOrganDrop">
+        <select id="currentOrganDrop" style="display: inline-block">
           {{#each organs}}
           {{> organdrop}}
           {{/each}}
         </select>
+        
+
+        <span class="organLabel" style="cursor: pointer; background-color: {{currentEditingColorText}}; display: inline-block">
+          <input style="cursor: pointer" id="loneCheckBox" class="organCheckBox" type="checkbox" value="{{currentOrgan}}"/>
+        </span>
       </p>
     </div>
     

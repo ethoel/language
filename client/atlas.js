@@ -737,6 +737,7 @@ Tracker.autorun(function () {
   var current = Session.get("currentOrgan");
   console.log("current organ changed to " + current);
   if (current) {
+    // set color
     Tracker.nonreactive(function () {
       // set current editing color for new organ
       var study = Studies.findOne({ name: studyName });
@@ -751,6 +752,17 @@ Tracker.autorun(function () {
           Session.set("currentEditingColor", currentEditingColorForOrgan);
           break;
         }
+      }
+    });
+    
+    // set organ checked -- this is hacky but man did i plan the check/click
+    // organ code out poorly. i will have to go fix it some time when i have
+    // time to think about how it is actually working
+    Tracker.nonreactive(function () {
+      console.log("setting organ checked");
+      $("#loneCheckBox").prop("checked", true);
+      if (!$(".organCheckBox[value='" + current + "']").prop("checked")) {
+        $(".organCheckBox[value='" + current + "']").click();
       }
     });
   }
@@ -1208,7 +1220,7 @@ Template.layoutAdmin.events({
       return;
     }
     
-    console.log("saved " + clickColor);
+    //console.log("saved " + clickColor);
     
     var study = Studies.findOne({ name: studyName }, {fields: { organs: 1, _id: 0 }});
     
@@ -1243,7 +1255,13 @@ Template.layoutAdmin.events({
                 Session.get("currentOrgan"),
                 clickColor,
                 index,
-                { clickX: clickXXX, clickY: clickYYY, clickDrag: clickDragDD }
+                { clickX: clickXXX, clickY: clickYYY, clickDrag: clickDragDD },
+                function () { 
+                  clickX = []; 
+                  clickY = [];
+                  clickDrag = [];
+                  redraw();
+                  console.log("SAVED"); }
                );
   },
   "click #clear": function (e) {
