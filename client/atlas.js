@@ -255,9 +255,11 @@ var redraw = function () {
   
   if (films && films[index]) {
 
-    context.drawImage(films[index], 0, 0); //only
+    context.drawImage(films[index], 0, 0);
 
     // draw the current edits for organ
+    // this is drawing the new highlighting, draw the old is below with
+    // hacky local vars with poor naming
     drawOrgan(context, clickX, clickY, clickDrag, clickColor);
 
     // TODO clean up this hack (making new local vars)
@@ -291,7 +293,14 @@ var redraw = function () {
         clickDragD = [];
         clickColorC = "#000000";
       }
-      drawOrgan(context, clickXX, clickYY, clickDragD, clickColorC);
+      
+      // if current organ, then draw using current click color
+      //console.log("current organ " + organ);
+      if (organ && organ.organ && organ.organ === Session.get("currentOrgan")) {
+        drawOrgan(context, clickXX, clickYY, clickDragD, clickColor);
+      } else {
+        drawOrgan(context, clickXX, clickYY, clickDragD, clickColorC);
+      }
     }
   } else {
     // film not yet loaded, draw loading text
@@ -1075,6 +1084,7 @@ Template.layoutAdmin.events({
   },
   "mousemove #canvas": function (e) {
     if (paint) {
+      lastY = true; // prevent a click event
       addClick(e.pageX - e.target.offsetLeft, e.pageY - e.target.offsetTop, true);
       redraw();
     }
