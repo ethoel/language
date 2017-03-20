@@ -53,6 +53,10 @@ body {
 
 }
 
+.inlineButton {
+  display: inline;
+}
+
 textarea {
      width: 100%;
      max-width: 100%;
@@ -542,4 +546,20 @@ button.deleteButton {
   text-align: center;
   display: block;
   padding-top: 5px;
+}
+
+#studyEditPane {
+  max-width: 680px;
+  overflow: auto;
+}
+
+.imageItemDiv {
+  margin-top: 15px;
+  margin-bottom: 15px;
+  background-color: #0a0a0a;
+  display: inline-block;
+  border-radius: 6px;
+  border-style: solid;
+  border-width: thick;
+  border-color: #0a0a0a;
 }

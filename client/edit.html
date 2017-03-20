@@ -1,107 +1,143 @@
 <template name="edit">
-  <h1>Edit</h1>
-  {{> loginButtons}}
-  
-  <div>
-    <h3>Upload new study</h3>
-    <button id="newStudyButton">New study</button>
+  <div id="studyEditPane">
     
-<!--    <input type="file" id="loadImagesForNewStudy" class="fileLoadButton" multiple>-->
+    <h3 class="study_title">Edit studies</h3>
+    <span style="width: 100%; display: block; margin-bottom: 5px; text-align: center">{{> loginButtons}}</span>
     
-    <h3>Edit existing study</h3>
+    <div class="editUnit">
+      <p>
+        <span class="editLabel tooltip">Create new study
+          <span class="tooltiptext">Click "New study" to begin creating a study. Enter details and upload images below. Click "Save" to create. After saving, click the "Edit structures"   link to highlight structures
+          </span>
+        </span>
+      
+      
+        <button id="newStudyButton">New study</button>
+      </p>
+
+  <!--    <input type="file" id="loadImagesForNewStudy" class="fileLoadButton" multiple>-->
+
+      
+
+      <p>
+        <span class="tooltip editLabel">Current study
+          <span class="tooltiptext">Select a study to edit from the dropdown menu</span>
+        </span>
+        <select id="studiesDropDown">
+          {{#each studies}}
+          {{> studiesDropDownItem}}
+          {{/each}}
+          <option value="Untitled" hidden disabled>New study</option>
+        </select>
+        <button id="editStudy">Edit</button>
+        <button id="cancelStudy" class="hiddenFirst">Cancel</button>
+        <button id="saveStudy" class="hiddenFirst saveButton">Save</button>
+      </p>
+    </div>
     
-    <p>
-      <select id="studiesDropDown">
-        {{#each studies}}
-        {{> studiesDropDownItem}}
+    <div class="editUnit">
+      <p>
+        <span class="tooltip editLabel">Delete current study
+          <span class="tooltiptext">To permanently delete current study, click "Delete study"</span>
+        </span>
+        <button id="currentStudyDeleteButton" class="studyEditField deleteButton">Delete study</button>
+      </p>
+
+      <p>
+  <!--      <a href="{{adminLink}}" class="catlasLink">Edit structures</a>-->
+       {{{adminLink}}}
+       {{{previewLink}}}
+      </p>
+
+      <p>
+        <span class="tooltip editLabel">Visibility
+          <span class="tooltiptext">Select visibility. "Private" can only be previewed by you, "Unlisted" can be acessed by anyone with the link to the current study, and "Public" will be listed in the public study menu once verified by us</span>
+        </span>
+        <select id="publishDropDown" class="studyEditField" >
+          <option value="private">Private</option>
+          <option value="link only">Unlisted</option>
+          <option value="public" selected>Public</option>
+        </select>
+        <input type="checkbox" id="verifiedCheckbox" class="studyEditField"  {{verified}}>
+        <label for="verifiedCheckbox" class="verifiedLabel">Verified</label>
+      </p>
+
+  <!--
+      <p>
+        <select id="normalAbnormalDropDown" class="studyEditField" >
+          <option value="normal">Normal</option>
+          <option value="abnormal">Abnormal</option>
+        </select>
+      </p>
+
+      <p>
+        <select id="imageTypeDropDown" class="studyEditField" >
+          <option value="CT">Computed tomography (CT)</option>
+          <option value="MRI">Magnetic resonance imaging (MRI)</option>
+          <option value="US">Ultrasound</option>
+        </select>
+      </p>
+  -->
+      <p>
+        <span class="tooltip editLabel">Tags
+          <span class="tooltiptext">Select tags from the dropdown menu and click "Add" to add it to your study. Click on any added tag to remove it. Tag your study so that users can easily find it from the public study menu. We suggest at the very least indicating whether your study shows "Normal" or "Abnormal" anatomy</span>
+        </span>
+        <select id="allTagsDropDown" class="studyEditField" >
+          {{#each allTags}}
+          {{> allTagsDropDownItem}}
+          {{/each}}
+        </select>
+        <input type="text" id="addStudyTagField" class="studyEditField hiddenFirst" placeholder="Study tag" >
+        <button id="addStudyTagButton" class="studyEditField" >Add</button>
+      </p>
+
+      <p>
+        {{#each studyTags}}
+        {{> studyTag}}
         {{/each}}
-        <option value="Untitled" hidden disabled>New study</option>
-      </select>
-      <button id="editStudy">Edit</button>
-      <button id="cancelStudy" class="hiddenFirst">Cancel</button>
-      <button id="saveStudy" class="hiddenFirst">Save</button>
-    </p>
+      </p>
+
+      <p>
+        <span class="tooltip editLabel">Owner
+          <span class="tooltiptext">The owner of the current study. Usually you</span>
+        </span>
+        <input type="text" id="currentStudyOwner" class="studyEditField" placeholder="Study owner" value="{{studyOwner}}" >
+      </p>
+
+      <p>
+        <span class="tooltip editLabel">Unique name
+          <span class="tooltiptext">Give your study a unique name. Unless "Private," anyone should be able to access your study at "http://www.catlas.org/atlas/[uniquename]"</span>
+        </span>
+        <input type="text" id="currentStudyAddress" class="studyEditField" placeholder="uniquename172" value="{{studyAddress}}" >
+      </p>
+
+      <p>
+        <span class="tooltip editLabel">Title
+          <span class="tooltiptext">Give your study a title. The title will be displayed above the study and also in the public study menu</span>
+        </span>
+        <input type="text" id="currentStudyTitle" class="studyEditField" placeholder="Study Title" value="{{studyTitle}}" >
+      </p>
+
+      <p>
+        <span class="tooltip editLabel">Credit
+          <span class="tooltiptext">Give yourself credit. Credit will be displayed underneath the study. Ex. "Case contributed by Dr. Gregory Parker"</span>
+        </span>
+        <input type="text" id="currentStudyCredit" class="studyEditField" placeholder="Contributed by you" value="{{studyCredit}}" >
+      </p>
+
+      <p>
+        <span class="tooltip editLabel">Description
+        <span class="tooltiptext">Enter a description of your study. The description will be displayed underneath the study when a user first navigates to it</span>
+        </span>
+        <textarea id="currentStudyDescription" class="studyEditField" placeholder="Study description" cols="30" rows="3" value="{{studyDescription}}" ></textarea>
+      </p>
+    </div>
     
+    <div class="editUnit">
     <p>
-      <button id="currentStudyDeleteButton" class="studyEditField">Delete</button>
-    </p>
-    
-    <p>
-<!--      <a href="{{adminLink}}" class="catlasLink">Edit structures</a>-->
-     {{{adminLink}}}
-     {{{previewLink}}}
-    </p>
-    
-    <p>
-      <span class="editLabel">Visibility</span>
-      <select id="publishDropDown" class="studyEditField" >
-        <option value="private">Private</option>
-        <option value="link only">Unlisted</option>
-        <option value="public" selected>Public</option>
-      </select>
-      <input type="checkbox" id="verifiedCheckbox" class="studyEditField"  {{verified}}>
-      <label for="verifiedCheckbox" class="verifiedLabel">Verified</label>
-    </p>
-    
-<!--
-    <p>
-      <select id="normalAbnormalDropDown" class="studyEditField" >
-        <option value="normal">Normal</option>
-        <option value="abnormal">Abnormal</option>
-      </select>
-    </p>
-    
-    <p>
-      <select id="imageTypeDropDown" class="studyEditField" >
-        <option value="CT">Computed tomography (CT)</option>
-        <option value="MRI">Magnetic resonance imaging (MRI)</option>
-        <option value="US">Ultrasound</option>
-      </select>
-    </p>
--->
-    <p>
-      <span class="editLabel">Tags</span>
-      <select id="allTagsDropDown" class="studyEditField" >
-        {{#each allTags}}
-        {{> allTagsDropDownItem}}
-        {{/each}}
-      </select>
-      <input type="text" id="addStudyTagField" class="studyEditField hiddenFirst" placeholder="Study tag" >
-      <button id="addStudyTagButton" class="studyEditField" >Add</button>
-    </p>
-    
-    <p>
-      {{#each studyTags}}
-      {{> studyTag}}
-      {{/each}}
-    </p>
-    
-    <p>
-      <span class="editLabel">Owner</span>
-      <input type="text" id="currentStudyOwner" class="studyEditField" placeholder="Study owner" value="{{studyOwner}}" >
-    </p>
-  
-    <p>
-      <span class="editLabel">Unique name</span>
-      <input type="text" id="currentStudyAddress" class="studyEditField" placeholder="Study address" value="{{studyAddress}}" >
-    </p>
-    
-    <p>
-      <span class="editLabel">Title</span>
-      <input type="text" id="currentStudyTitle" class="studyEditField" placeholder="Study title" value="{{studyTitle}}" >
-    </p>
-    
-    <p>
-      <span class="editLabel">Credit</span>
-      <input type="text" id="currentStudyCredit" class="studyEditField" placeholder="Study credit" value="{{studyCredit}}" >
-    </p>
-    
-    <p>
-      <span class="editLabel">Description</span>
-      <textarea id="currentStudyDescription" class="studyEditField" placeholder="Study description" cols="30" rows="3" value="{{studyDescription}}" ></textarea>
-    </p>
-    
-    <p>
+      <span class="tooltip editLabel">Edit images
+        <span class="tooltiptext">Click "Insert images" to upload images for the current study. Multiple can be added at a time. They will appear below as they load. Controls for redordering and deleting will appear below after uploading</span>
+      </span>
       <input type="file" id="loadImagesForNewStudy" class="fileLoadButton" multiple>
       <button class="insertImagesButton imageButton studyEditField" value="-1">Insert images</button>
       {{#each images}}
@@ -120,7 +156,7 @@
   <button id="permDeleteStudy" class="deleteButton">DELETE Current Study</button>
   <br/>
 -->
-    
+    </div>
   </div>
 </template>
 
@@ -137,12 +173,13 @@
 </template>
 
 <template name="imageItem">
-  <!--delete by clicking on image-->
-  <img src="{{this.url}}" height="100">
-  <span>
-    {{this.index}}
-    <button class="swapImage imageButton studyEditField" value="{{this.index}}" disabled style={{display}}>&lt;&gt;</button>
-    <button class="deleteImageButton imageButton studyEditField" value="{{this.index}}" disabled>Delete</button>
-    <button class="insertImagesButton imageButton studyEditField" value="{{this.index}}" disabled>Insert images</button>
-  </span>
+  <div class="imageItemDiv">
+    <img src="{{this.url}}" height="100" style="display: inline">
+    {{indexPlusOne}}
+    <div style="display: block">
+    <button class="swapImage imageButton studyEditField inlineButton" value="{{this.index}}" disabled style={{display}}>Move down</button>
+    <button class="deleteImageButton imageButton studyEditField inlineButton" value="{{this.index}}" disabled>Delete</button>
+    </div>
+  </div>
+  <button class="insertImagesButton imageButton studyEditField" value="{{this.index}}" disabled>Insert images</button>
 </template>

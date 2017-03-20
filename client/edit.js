@@ -289,6 +289,9 @@ Template.imageItem.helpers({
     } else {
       return "";
     }
+  },
+  indexPlusOne: function () {
+    return this.index + 1;
   }
 });
 
