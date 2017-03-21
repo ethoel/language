@@ -244,6 +244,8 @@ var finishSaveAll = function (newStudyName, newVisibility, newVerified,
         // clear unsaved images, they have now been saved
         unsavedImages = [];
         console.log("Big study created callback");
+        
+        // TODO this is called too soon...
         $("#studiesDropDown select").val(newStudyName);
         Session.set("currentStudy", newStudyName);
       } else {
@@ -272,7 +274,7 @@ var finishSaveAll = function (newStudyName, newVisibility, newVerified,
         unsavedImages = [];
         console.log("Big study renamed callback");
         
-        // this is called too soon...
+        // TODO this is called too soon...
         $("#studiesDropDown select").val(newStudyName);
         Session.set("currentStudy", newStudyName);
       } else {
