@@ -728,6 +728,7 @@ Tracker.autorun(function() {
         var filterStudyListHeight = $(".studyListItem").outerHeight() * count;
         filterStudyListHeight += $("#catlasNavTitle").outerHeight();
         filterStudyListHeight += $("#filterDiv").outerHeight();
+        filterStudyListHeight += $("#adminDiv").outerHeight();
         if (filterStudyListHeight > maxHeight) {
           $("#currentOrganList").css("top", maxHeight + "px");
         } else {

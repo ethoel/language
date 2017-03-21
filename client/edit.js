@@ -30,11 +30,13 @@ var deleteImagesPreparedForDeletion = function () {
 var setCurrentStudy = function (studyName) {
   // set current study
   var study = Studies.findOne({ name: studyName });
-  editImageArray = study.imageArray || [];
-  resetEditStudyTags(study.tags);
-  Session.set("currentStudy", studyName);
-  Session.set("updateReactive", studyName);
-  $("#publishDropDown").val(study.public).change();
+  if (study) {
+    editImageArray = study.imageArray || [];
+    resetEditStudyTags(study.tags);
+    Session.set("currentStudy", studyName);
+    Session.set("updateReactive", studyName);
+    $("#publishDropDown").val(study.public).change();
+  }
   setFieldsDisabled(true);
 }
 
@@ -88,6 +90,7 @@ var clearAllFields = function () {
 
 var setEditFieldsForNewStudy = function () {
   clearAllFields();
+  $("#publishDropDown").val("public").change()
   displayCancelSaveButton();
   setFieldsDisabled(false);
   $("#currentStudyDeleteButton").prop("disabled", true);
@@ -117,7 +120,6 @@ var loadNewImagesAt = function (e, index, number) {
     });
   });
 };
-
 
 
 var resetAllFields = function () {
@@ -154,6 +156,8 @@ var saveAllFields = function () {
   var newStudyOwner = $("#currentStudyOwner").val();
   var newStudyCredit = $("#currentStudyCredit").val();
   var newStudyDescription = $("#currentStudyDescription").val();
+  var newVisibility = $("#publishDropDown option:selected").val()
+  var newVerified = $("#verifiedCheckbox").prop("checked");
   
   
   // check all the values, return false if not correct
@@ -198,78 +202,88 @@ var saveAllFields = function () {
     return false;
   }
   
-  // save all fields
-  // if new study, create new study
-  var currentStudy = Session.get("currentStudy");
-  if (currentStudy === "Untitled") {
-    Meteor.call("createNewStudy", newStudyName, function () {
-      console.log("Study created callback");
-      completeSaveOf(newStudyName, newStudyTitle, newStudyOwner, newStudyCredit, newStudyDescription);
-      $("#currentOrganDrop").val(newStudyName).change();
-      Session.set("currentStudy", newStudyName);
-    });
-  } else {
-    Meteor.call("renameStudy", currentStudy, newStudyName, function () {
-      console.log("Study renamed callback");
-      completeSaveOf(newStudyName, newStudyTitle, newStudyOwner, newStudyCredit, newStudyDescription);
-      $("#currentOrganDrop").val(newStudyName).change();
-      Session.set("currentStudy", newStudyName);
-    });
-  }
-  
-  // should have attempted save, so should be a success 
-  return true;
-};
-
-var completeSaveOf = function (currentStudy, newStudyTitle, newStudyOwner, newStudyCredit, newStudyDescription) {
-  Meteor.call("setStudyVisibility", currentStudy, $("#publishDropDown option:selected").val(), function () { console.log("Study visibility callback"); });
-  
-  Meteor.call("setStudyVerified", currentStudy, $("#verifiedCheckbox").prop("checked"), function () { console.log("Study set verified callback"); });
-  
-  Meteor.call("retitleStudy", currentStudy, newStudyTitle, function () {
-    console.log("Study retitled callback");
-  });
-
-  
-  Meteor.call("setStudyOwner", currentStudy, newStudyOwner, function () { console.log("Study set owner callback"); });
-  
-  Meteor.call("setStudyCredit", currentStudy, newStudyCredit, function () { console.log("Study set credit callback"); });
-  
-  Meteor.call("setStudyDescription", currentStudy, newStudyDescription, function () { console.log("Study set description callback"); });
-  
-  // save new tags to Tags database
-  
-  // save tags to Study
-  Meteor.call("saveStudyTags", currentStudy, editStudyTags, function () {
-    console.log("Study tags saved");
-  });
-  
   // height and width of first image
   if (editImageArray && editImageArray.length > 0) {
     var firstImageFile = Images.findOne({ _id: editImageArray[0] });
     var firstImage = new Image();
     firstImage.onload = function () {
-      continueCompleteSaveOf(currentStudy, this.height, this.width);
+      finishSaveAll(newStudyName, newVisibility, newVerified,
+                newStudyTitle, newStudyOwner, 
+                newStudyCredit, newStudyDescription, 
+                editStudyTags, editImageArray, this.height, this.width);
     }
     firstImage.src = firstImageFile.url();
   } else {
-    continueCompleteSaveOf(currentStudy, 0, 0);
+    finishSaveAll(newStudyName, newVisibility, newVerified,
+                newStudyTitle, newStudyOwner, 
+                newStudyCredit, newStudyDescription, 
+                editStudyTags, editImageArray, 0, 0);
+  }
+  // should have attempted save, so should be a success
+  // unless there was an attempted insecurity
+  return true;
+};
+
+var finishSaveAll = function (newStudyName, newVisibility, newVerified,
+                newStudyTitle, newStudyOwner, 
+                newStudyCredit, newStudyDescription, 
+                editStudyTags, editImageArray, firstImageHeight, firstImageWidth) {
+    // save all fields
+  // if new study, create new study
+  var currentStudy = Session.get("currentStudy");
+  if (currentStudy === "Untitled") {
+    Meteor.call("bigCreateNewStudy", newStudyName, newVisibility, newVerified,
+                newStudyTitle, newStudyOwner, 
+                newStudyCredit, newStudyDescription, 
+                editStudyTags, editImageArray, firstImageHeight, firstImageWidth,
+                function (error, saveSuccessful) {
+      
+      if (saveSuccessful) {
+        // delete images that have been deleted
+        deleteImagesPreparedForDeletion();
+        // clear unsaved images, they have now been saved
+        unsavedImages = [];
+        console.log("Big study created callback");
+        $("#studiesDropDown select").val(newStudyName);
+        Session.set("currentStudy", newStudyName);
+      } else {
+        // delete images that have been added but are not in study.imageArray
+        deleteUnsavedImages();
+        // the images prepared for deletion will be deleted when the study is deleted
+        toDeleteImages = [];
+      }
+      
+      
+    });
+  } else {
+    console.log("calling big rename");
+    Meteor.call("bigRenameStudy", currentStudy,
+                newStudyName, newVisibility, newVerified, newStudyTitle, 
+                newStudyOwner, newStudyCredit, 
+                newStudyDescription, editStudyTags, editImageArray, firstImageHeight, firstImageWidth,
+                function (error, saveSuccessful) {
+      
+      if (saveSuccessful) {
+
+        console.log("saveSuccessful");
+        // delete images that have been deleted
+        deleteImagesPreparedForDeletion();
+        // clear unsaved images, they have now been saved
+        unsavedImages = [];
+        console.log("Big study renamed callback");
+        
+        // this is called too soon...
+        $("#studiesDropDown select").val(newStudyName);
+        Session.set("currentStudy", newStudyName);
+      } else {
+        // delete images that have been added but are not in study.imageArray
+        deleteUnsavedImages();
+        // the images prepared for deletion will be deleted when the study is deleted
+        toDeleteImages = [];
+      }
+    });
   }
 }
-
-var continueCompleteSaveOf = function (currentStudy, firstImageHeight, firstImageWidth) {
-  Meteor.call("updateFirstHeightWidth", currentStudy, firstImageHeight, firstImageWidth);
-    
-  // save images to Study
-  Meteor.call("saveStudyImagesArray", currentStudy, editImageArray, unsavedImages, toDeleteImages, function () {
-    console.log("Image array saved");
-  });
-  
-  // delete images that have been deleted
-  deleteImagesPreparedForDeletion();
-  // clear unsaved images, they have now been saved
-  unsavedImages = [];
-};
 
 var swapImageWithNextImage = function (indexA) {
   var indexB = indexA + 1;
@@ -405,11 +419,10 @@ Template.edit.helpers({
     // makes this responsive
     var getImageURLs = Session.get("updateReactive");
     var imageURLs = [];
+    
     for (var i = 0; editImageArray && i < editImageArray.length; i++) {
       var imageFile = Images.findOne({_id: editImageArray[i]});
-      // TODO make into loading image
       if (!imageFile) {
-        // TODO: this is not the issue!
         console.log("not imageFile " + editImageArray[i]);
         imageFile = { url: function () { return "/loadingArial12.png"; } }; 
       }
@@ -427,6 +440,7 @@ Template.edit.events({
     // make fields editable
     setFieldsDisabled(false);
     displayCancelSaveButton();
+    //Meteor.call("testMethod");
   },
   "click #cancelStudy": function () {
     // reset variables manually, not reactive here as currentStudy unchanged

@@ -26,7 +26,7 @@
 }
 
 .nav_title {
-  padding-bottom: .5rem;
+/*  padding-bottom: .5rem;*/
   padding-top: .5rem;
   font-weight: bold;
   font-size: 26px;
@@ -55,10 +55,10 @@
 }
 
 #adminDiv {
-  display: none;
-  padding-left: 0.5rem;
+/*  display: none;*/
+/*  padding-left: 0.5rem;*/
   padding-bottom: 0.5rem;
-  text-align: left;
+  text-align: center;
 }
 
 #moreFilters {
