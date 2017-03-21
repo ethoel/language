@@ -157,38 +157,44 @@ var saveAllFields = function () {
   
   
   // check all the values, return false if not correct
-  if (!newStudyName) { 
-    console.log("Address must be filled out");
+  if (!newStudyName.match(/^[a-z0-9]+$/)) { 
+    alert("Study name must be alphanumeric and lowercase. Save aborted");
     return false;
   };
   // cannot have duplicate name, unless current name
   var duplicateStudy = Studies.findOne({name: newStudyName});
   if (duplicateStudy && (!Session.equals("currentStudy", duplicateStudy.name))) {
-    alert("Address taken. Please choose unique address");
+    alert('Study name "' + newStudyName + '" is not unique. Please enter a unique name. Save aborted');
     return false;
   }
   
   if (!newStudyTitle || newStudyTitle === "Untitled") {
     console.log("Title must be filled out");
+    alert('Study title field must be filled out with a valid study name. Save aborted');
     return false;
   };
   
   // USER COLLECTION TEST
-  var usernamesTest = Meteor.users.find({});
-  console.log("USERS");
-  usernamesTest.forEach(function (user) {
-    console.log("Username " + user.username);
-  });
-  var userExists = Meteor.users.findOne({username: newStudyOwner});
-  console.log("Exists " + userExists);
+//  var usernamesTest = Meteor.users.find({});
+//  console.log("USERS");
+//  usernamesTest.forEach(function (user) {
+//    console.log("Username " + user.username);
+//  });
+//  var userExists = Meteor.users.findOne({username: newStudyOwner});
+//  console.log("Exists " + userExists);
   //USER COLLECTION TEST
   
+  if (newStudyOwner !== Meteor.user().username && Meteor.user().username !== "admin") {
+    // this is insecure, these messages are for folks who aren't trying to game
+    alert("Owner cannot be changed. Save aborted");
+    return false;
+  }
+  
   if (!newStudyOwner) {
-    // TODO search for valid owner
-    console.log("Owner must be filled out");
+    alert("Owner must be valid user. Save aborted");
     return false;
   } else if (!Meteor.users.findOne({ username: newStudyOwner })) {
-    console.log("Owner must be valid");
+    alert("Owner must be valid user. Save aborted");
     return false;
   }
   
@@ -312,7 +318,7 @@ Template.edit.helpers({
   },
   adminLink: function () {
     var study = Studies.findOne({ name: Session.get("currentStudy") });
-    if (study) {
+    if (study && study.imageArray && study.imageArray.length) {
       return '<a class="catlasLink" href=' + '"/edit/' + study.owner + "/" + study.name + '">Edit structures</a>';
     } else {
       return '<span class="catlasLinkDead">Edit structures</span>';
@@ -320,7 +326,7 @@ Template.edit.helpers({
   },
   previewLink: function () {
     var study = Studies.findOne({ name: Session.get("currentStudy") });
-    if (study) {
+    if (study && study.imageArray && study.imageArray.length) {
       return '<a class="catlasLink" href=' + '"/preview/' + study.owner + "/" + study.name + '">Preview study</a>';
     } else {
       return '<span class="catlasLinkDead">Preview study</span>';
@@ -399,7 +405,7 @@ Template.edit.helpers({
     // makes this responsive
     var getImageURLs = Session.get("updateReactive");
     var imageURLs = [];
-    for (var i = 0; i < editImageArray.length; i++) {
+    for (var i = 0; editImageArray && i < editImageArray.length; i++) {
       var imageFile = Images.findOne({_id: editImageArray[i]});
       // TODO make into loading image
       if (!imageFile) {

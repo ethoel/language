@@ -1,3 +1,4 @@
+
 // for IE
 // Production steps of ECMA-262, Edition 5, 15.4.4.14
 // Reference: http://es5.github.io/#x15.4.4.14
@@ -130,21 +131,32 @@ Meteor.methods({
   },
   setStudyVisibility: function(studyName, newVisibility) {
     // find the organ named organName in the study named studyName
+    if (newVisibility !== "public" && 
+        newVisibility !== "private" && 
+        newVisibility !== "link only") {
+      // securing code from losers
+      newVisibility = "public";
+    }
+    
     Studies.update({ name: studyName 
     }, { $set: { "public": newVisibility }});
     console.log("Setting public to " + newVisibility );
   },
   setStudyVerified: function(studyName, newVerified) {
     // find the organ named organName in the study named studyName
-    Studies.update({ name: studyName 
-    }, { $set: { "verified": newVerified }});
-    console.log("Setting verified to " + newVerified );
+    if (Meteor.user().username === "admin") {
+      Studies.update({ name: studyName 
+      }, { $set: { "verified": newVerified }});
+      console.log("Setting verified to " + newVerified );
+    }
   },
   setStudyOwner: function(studyName, newOwner) {
     // find the organ named organName in the study named studyName
-    Studies.update({ name: studyName 
-    }, { $set: { "owner": newOwner }});
-    console.log("Setting owner to " + newOwner );
+    if (Meteor.user().username === "admin") {
+      Studies.update({ name: studyName 
+      }, { $set: { "owner": newOwner }});
+      console.log("Setting owner to " + newOwner );
+    }
   },
   setStudyCredit: function(studyName, newCredit) {
     // find the organ named organName in the study named studyName
@@ -161,13 +173,27 @@ Meteor.methods({
   renameStudy: function(studyName, newStudyName) {
     // find the organ named organName in the study named studyName
     // remove that organ from the organs array
-    Studies.update({ name: studyName 
-    }, { $set: { "name": newStudyName }});
-    console.log("Renaming " + newStudyName );
+    //fight losers
+    duplicate = Studies.findOne({ name: newStudyName });
+    if (newStudyName.match(/^[a-z0-9]+$/) && !duplicate) {
+      // valid
+      Studies.update({ name: studyName 
+      }, { $set: { "name": newStudyName }});
+      console.log("Renaming " + newStudyName );
+    } else {
+      // abort save
+    }
   },
   createNewStudy: function(newStudyName) {
-    Studies.insert({ name: newStudyName, createdAt: new Date() });
-    console.log("Creating new study " + newStudyName );
+    //fight losers
+    duplicate = Studies.findOne({ name: newStudyName });
+    if (newStudyName.match(/^[a-z0-9]+$/) && !duplicate) {
+      // valid
+      Studies.insert({ name: newStudyName, createdAt: new Date() });
+      console.log("Creating new study " + newStudyName );
+    } else {
+      //abort save
+    }
   },
   saveStudyImagesArray: function(studyName, newImageArray) {
     // TODO, so new array, need to update the organ arrays if not a new study, ugh
