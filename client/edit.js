@@ -291,7 +291,7 @@ Template.imageItem.helpers({
     }
   },
   indexPlusOne: function () {
-    return this.index + 1;
+    return (this.index + 1) + "/" + (editImageArray.length);
   }
 });
 

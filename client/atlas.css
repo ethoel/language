@@ -12,6 +12,7 @@
 
 .structureEditingPane {
   max-width: 680px;
+  min-width: 480px;
   position: absolute;
   top: 0;
   left: 300px; /*set to width of canvas on creation*/

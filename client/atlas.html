@@ -182,17 +182,19 @@
       </p>
     </div>
     
+    
+    
     <div class="editUnit">
       <h4>Edit Highlighting</h4>
 
       <p>
         <span class="tooltip editLabel">Add new highlighting of current structure to image
-          <span class="tooltiptext">Click and drag the mouse on the image to the left to outline and highlight structure named "{{currentOrgan}}" on this image with the specified color. Use the controls below save or cancel any changes for this image</span>
+          <span class="tooltiptext">Click and drag the mouse on the image to the left to outline and highlight structure named "{{currentOrgan}}" on this image with the specified color. Use the controls below save or cancel any changes for this image. Change color and transparency by using the color picker and slider, or typing a color in and pressing the enter key</span>
         </span>
         <button id="clear" style="display: block; margin-bottom: 2px">Clear new highlighting</button>
         <input type="color" id="colorpickerbutton" value="{{currentEditingColorNoAlpha}}"/>
         <input type="range" id="transparencyPicker" value="{{currentEditingColorAlpha}}"/>
-        <input type="text" id="colorpicker" value="{{currentEditingColorText}}"/>
+        <input type="text" id="colorpicker" value="{{currentEditingColorText}}" onkeypress="if (event.keyCode == 13) document.getElementById('changeColor').click()"/>
         <button id="changeColor" style="display: none" value="{{currentOrganColor}}">Change Color</button>
         <button id="resetColor">Reset</button>
         <button id="save" style="display: block; margin-top: 5px">Save new highlighting</button>
