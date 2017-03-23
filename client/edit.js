@@ -39,6 +39,14 @@ var setCurrentStudy = function (studyName) {
     Session.set("updateReactive", studyName);
     $("#publishDropDown").val(study.public).change();
   }
+
+  if (studyName === "None") {
+    //disable the edit button
+    $("#editStudy").prop("disabled", true);
+  } else {
+    $('#editStudy').prop("disabled", false);
+  }
+
   setFieldsDisabled(true);
 }
 
@@ -93,6 +101,7 @@ var clearAllFields = function () {
 var setEditFieldsForNewStudy = function () {
   clearAllFields();
   $("#publishDropDown").val("public").change()
+  $("#currentStudyOwner").val(Meteor.user().username);
   displayCancelSaveButton();
   setFieldsDisabled(false);
   $("#currentStudyDeleteButton").prop("disabled", true);
@@ -174,7 +183,7 @@ var saveAllFields = function () {
     return false;
   }
   
-  if (!newStudyTitle || newStudyTitle === "Untitled") {
+  if (!newStudyTitle) {
     console.log("Title must be filled out");
     alert('Study title field must be filled out with a valid study name. Save aborted');
     return false;
@@ -332,6 +341,14 @@ Template.edit.helpers({
     var addedStudyTag = Session.get("updateReactive");
     var studyTags = editStudyTags;
     return studyTags;
+  },
+  noStudyTags: function () {
+    if (editStudyTags && editStudyTags.length) {
+      // there are study tags
+      return "";
+    } else {
+      return "No tags selected";
+    }
   },
   verified: function () {
     var study = Studies.findOne({ name: Session.get("currentStudy") });

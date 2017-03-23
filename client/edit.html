@@ -24,10 +24,11 @@
           <span class="tooltiptext">Select a study to edit from the dropdown menu</span>
         </span>
         <select id="studiesDropDown">
+          <option value="None">None selected</option>
+          <option value="Untitled" hidden>New study</option>
           {{#each studies}}
           {{> studiesDropDownItem}}
           {{/each}}
-          <option value="Untitled" hidden>New study</option>
         </select>
         <button id="editStudy">Edit</button>
         <button id="cancelStudy" class="hiddenFirst">Cancel</button>
@@ -92,6 +93,7 @@
       </p>
 
       <p>
+        <span style="font-style: italic">{{noStudyTags}}</span>
         {{#each studyTags}}
         {{> studyTag}}
         {{/each}}
@@ -108,28 +110,28 @@
         <span class="tooltip editLabel">Unique name
           <span class="tooltiptext">Give your study a unique name. Name should be alphanumeric and lowercase. Unless "Private," anyone should be able to access your study at "http://www.catlas.org/atlas/[uniquename]"</span>
         </span>
-        <input type="text" id="currentStudyAddress" class="studyEditField" placeholder="uniquename172" value="{{studyAddress}}" >
+        <input type="text" id="currentStudyAddress" class="studyEditField" placeholder="uniquenameofstudy" value="{{studyAddress}}" >
       </p>
 
       <p>
         <span class="tooltip editLabel">Title
           <span class="tooltiptext">Give your study a title. The title will be displayed above the study and also in the public study menu</span>
         </span>
-        <input type="text" id="currentStudyTitle" class="studyEditField" placeholder="Study Title" value="{{studyTitle}}" >
+        <input type="text" id="currentStudyTitle" class="studyEditField" placeholder="Title of Study" value="{{studyTitle}}" >
       </p>
 
       <p>
         <span class="tooltip editLabel">Credit
           <span class="tooltiptext">Give yourself credit. Credit will be displayed underneath the study. Ex. "Case contributed by Dr. Gregory Parker"</span>
         </span>
-        <input type="text" id="currentStudyCredit" class="studyEditField" placeholder="Contributed by you" value="{{studyCredit}}" >
+        <input type="text" id="currentStudyCredit" class="studyEditField" placeholder="Case contributed by..." value="{{studyCredit}}" >
       </p>
 
       <p>
         <span class="tooltip editLabel">Description
         <span class="tooltiptext">Enter a description of your study. The description will be displayed underneath the study when a user first navigates to it</span>
         </span>
-        <textarea id="currentStudyDescription" class="studyEditField" placeholder="Study description" cols="30" rows="3" value="{{studyDescription}}" ></textarea>
+        <textarea id="currentStudyDescription" class="studyEditField" placeholder="A description of the study..." cols="30" rows="3" value="{{studyDescription}}" ></textarea>
       </p>
     </div>
     
