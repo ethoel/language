@@ -1,3 +1,10 @@
+// secured:
+// create new organ/saveCurrentOrgan
+// rename structure/renameOrgan 
+// delete structure/deleteCurrentOrgan
+// save highlighting/saveDrawing
+// delete highlighting/deleteDrawing
+// save structure description/saveDescription
 
 // for IE
 // Production steps of ECMA-262, Edition 5, 15.4.4.14
@@ -93,6 +100,14 @@ Meteor.methods({
     });
   },
   addOrganToStudy: function(name, organ, arrayN) {
+    // untested code to prevent insecurity
+    var study = Studies.findOne({name: name});
+    if (!study) {
+      return;
+    }
+    if (!Meteor.user() || (Meteor.user().username !== "admin" && Meteor.user().username !== study.owner)) {
+      return;
+    }
   
     Studies.upsert({
       name: name
@@ -103,6 +118,15 @@ Meteor.methods({
     });
   },
   renameOrgan: function(studyName, oldOrganName, newOrganName) {
+    // untested code to prevent insecurity
+    var study = Studies.findOne({name: studyName});
+    if (!study) {
+      return;
+    }
+    if (!Meteor.user() || (Meteor.user().username !== "admin" && Meteor.user().username !== study.owner)) {
+      return;
+    }
+
     // find the organ named oldOrganName in the study named studyName
     // rename THAT organ ($ is index into organs array) to newOrganName
     Studies.update({ name: studyName, "organs.organ": oldOrganName 
@@ -110,6 +134,15 @@ Meteor.methods({
     console.log("Renamed " + oldOrganName + " organ " + newOrganName);
   },
   saveDescription: function(studyName, organName, newDescription) {
+    // untested code to prevent insecurity
+    var study = Studies.findOne({name: studyName});
+    if (!study) {
+      return;
+    }
+    if (!Meteor.user() || (Meteor.user().username !== "admin" && Meteor.user().username !== study.owner)) {
+      return;
+    }
+
     // find the organ named oldOrganName in the study named studyName
     // rename THAT organ ($ is index into organs array) to newOrganName
     Studies.update({ name: studyName, "organs.organ": organName 
@@ -117,6 +150,14 @@ Meteor.methods({
     console.log("Added " + newDescription + " to organ " + organName);
   },
   deleteOrgan: function(studyName, organName) {
+    // untested code to prevent insecurity
+    var study = Studies.findOne({name: studyName});
+    if (!study) {
+      return;
+    }
+    if (!Meteor.user() || (Meteor.user().username !== "admin" && Meteor.user().username !== study.owner)) {
+      return;
+    }
     // find the organ named organName in the study named studyName
     // remove that organ from the organs array
     Studies.update({ name: studyName 
@@ -208,80 +249,73 @@ Meteor.methods({
 
     }
   },
-  bigCreateNewStudy: function(newStudyName, newVisibility, newVerified, newStudyTitle, newStudyOwner, newStudyCredit, newStudyDescription, editStudyTags, editImageArray, firstImageHeight, firstImageWidth) {
+  bigCreateRenameStudy: function(studyName, newStudyName, newVisibility,
+                                 newVerified, newStudyTitle, newStudyOwner,
+                                 newStudyCredit,
+                                 newStudyDescription, editStudyTags,
+                                 editImageArray, firstImageHeight,
+                                 firstImageWidth) {
     //fight insecurity
-    duplicate = Studies.findOne({ name: newStudyName });
+    if (!Meteor.user()) {
+      // no one is logged in
+      return false;
+    }
+
+    // if changing studyName, then need to look for a duplicate
+    if (!studyName || studyName !== newStudyName) {
+      duplicate = Studies.findOne({ name: newStudyName });
+    } else {
+      duplicate = false;
+    }
+
+    // only make changes if no duplicate and study name is valid 
     if (newStudyName.match(/^[a-z0-9]+$/) && !duplicate) {
-      // valid
-      Studies.insert({ name: newStudyName, createdAt: new Date() }, function (error, study_id) {
-        if (study_id) {
-          completeSaveOf(newStudyName, newVisibility, newVerified, newStudyTitle, newStudyOwner, newStudyCredit, newStudyDescription, editStudyTags, editImageArray, firstImageHeight, firstImageWidth);
+      // get ready to update the database
+      var setBundle = completeSaveOf(newStudyName, newVisibility,
+                                     newVerified, newStudyTitle,
+                                     newStudyOwner, newStudyCredit,
+                                     newStudyDescription, editStudyTags,
+                                     editImageArray, firstImageHeight,
+                                     firstImageWidth);
+
+      // if new study, need to add a create date, and upsert with new name
+      if (!studyName) {
+        setBundle.createdAt = new Date();
+        studyName = newStudyName;
+      }
+      // wrap in all this in async
+      // not needed, collections block automagically without callback
+      var bigSavedCount = false;
+      bigSavedCount = Studies.update({ name: studyName },
+                                     { $set: setBundle },
+                                     { upsert: true });
+
+      if (bigSavedCount > 0) {
+        // upsert successful
+        console.log("Upserted" +  newStudyName);
+        // for each image, link with studyName so that not all
+        // images need to be
+        // loaded when studyName is loaded, only associated images.
+        // improve speed
+        for (var i = 0; i < editImageArray.length; i++) {
+          Images.update({ _id: editImageArray[i] },
+                        {$set: { "metadata.studyName": newStudyName }},
+                        {upsert: false});
         }
-      });
-      console.log("Attempted to create big new study " + newStudyName );
-      return true;
+        // study succesfully saved
+        console.log("Save success: created " + newStudyName );
+        console.log("this should display last - 2");
+        return true;
+      } else {
+        //abort save
+        console.log("Save attempted but not successful");
+        return false;
+      }
     } else {
       //abort save
-      console.log("Save aborted");
+      console.log("Save will be aborted. Illegal");
       return false;
     }
-  },
-  bigRenameStudy: function(studyName, newStudyName, newVisibility, newVerified, newStudyTitle, newStudyOwner, newStudyCredit, newStudyDescription, editStudyTags, editImageArray, firstImageHeight, firstImageWidth) {
-    // find the organ named organName in the study named studyName
-    // remove that organ from the organs array
-    //fight losers
-    if (newStudyName.match(/^[a-z0-9]+$/)) {
-      // valid
-      Studies.update({ name: studyName }, { $set: { "name": newStudyName }}, { upsert: false }, function (error, count) {
-        if (count) {
-          completeSaveOf(newStudyName, newVisibility, newVerified, newStudyTitle, newStudyOwner, newStudyCredit, newStudyDescription, editStudyTags, editImageArray, firstImageHeight, firstImageWidth);
-        }
-      });
-      console.log("Attempted renaming big " + newStudyName );
-      return true;
-    } else {
-      // abort save
-      console.log("Save aborted");
-      return false;
-    }
-  },
-  saveStudyImagesArray: function(studyName, newImageArray) {
-      // TODO, so new array, need to update the organ arrays if not a new study, ugh
-      // maybe create a better data structure in the future to avoid this!
-      var study = Studies.findOne({ name: studyName });
-      if (study) {
-        var oldImageArray = study.imageArray;
-        if (!oldImageArray) { oldImageArray = []; }
-        var organs = study.organs;
-
-        for (var k = 0; organs && k < organs.length; k++) {
-          // update the data array for each organ
-          var newDataArray = [];
-          var oldDataArray = organs[k].data;
-
-          for (var i = 0; i < newImageArray.length; i++) {
-            // find the old index of the image at i, move data at old index to i
-            var oldIndex = oldImageArray.indexOf(newImageArray[i]);
-            newDataArray.push(oldDataArray[oldIndex]);
-          }
-
-          // set the data array in database
-          var key = "organs." + k + ".data";
-          var newData = {};
-          newData[key] = newDataArray; // newData = { organs.k.data: newDataArray }
-          Studies.update({ name: studyName }, { $set: newData });
-        }
-      }
-
-      // for each image, link with studyName so that not all images need to be
-      // loaded when studyName is loaded, only associated images. improve speed
-      for (var i = 0; i < newImageArray.length; i++) {
-        Images.update({ _id: newImageArray[i] }, {$set: { "metadata.studyName": studyName } });
-      }
-
-      // update the array
-      Studies.update({ name: studyName }, { $set: { "imageArray": newImageArray }});
-      //console.log("New array " + newImageArray );
   },
   updateFirstHeightWidth: function(studyName, height, width) {
     // update the array
@@ -364,6 +398,15 @@ Meteor.methods({
     }
   },
   deleteDrawing: function(name, organ, index) {
+    // untested code to prevent insecurity
+    var study = Studies.findOne({name: name});
+    if (!study) {
+      return;
+    }
+    if (!Meteor.user() || (Meteor.user().username !== "admin" && Meteor.user().username !== study.owner)) {
+      return;
+    }
+
     // prepare key for drawing index b/c mongodb cannot handle $$
     var key = "organs.$.data." + index;
     var drawData = {};
@@ -376,6 +419,15 @@ Meteor.methods({
     }, { $set: drawData });
   },
   saveDrawingToOrgan: function(name, organ, color, index, data) {
+    // untested code to prevent insecurity
+    var study = Studies.findOne({name: name});
+    if (!study) {
+      return;
+    }
+    if (!Meteor.user() || (Meteor.user().username !== "admin" && Meteor.user().username !== study.owner)) {
+      return;
+    }
+
     // prepare key for drawing index b/c mongodb cannot handle $$
     var key = "organs.$.data." + index;
     var drawData = {};
@@ -414,110 +466,85 @@ Meteor.methods({
 //      data: [ { clickX, clickY, clickDrag }, { clickX, clickY, clickDrag } ] }
 //}
 
-var completeSaveOf = function (currentStudy, newVisibility, newVerified, newStudyTitle, newStudyOwner, newStudyCredit, newStudyDescription, editStudyTags, editImageArray, firstImageHeight, firstImageWidth) {
-  // public is default
-  if (newVisibility !== "public" && 
-      newVisibility !== "private" && 
-      newVisibility !== "link only") {
-    newVisibility = "public";
+var completeSaveOf = function (currentStudy, newVisibility,
+                               newVerified, newStudyTitle,
+                               newStudyOwner, newStudyCredit,
+                               newStudyDescription, editStudyTags,
+                               editImageArray,
+                               firstImageHeight, firstImageWidth) {
+  
+  console.log("Setting a ton of stuff");
+
+  var studySetBundle = {};
+  var study = Studies.findOne({ name: currentStudy });
+
+  // set public, public is default
+  if (newVisibility === "public"  ||
+      newVisibility === "private" || 
+      newVisibility === "link only") {
+    studySetBundle.public = newVisibility;
+  } else if (study && !study.public) {
+    // not previously set
+    studySetBundle.public = "public";
+  }
+  
+  // find the organ named organName in the study named studyName
+  if (Meteor.user().username === "admin") {
+    studySetBundle.verified = newVerified;
   }
 
-  Studies.update({ name: currentStudy }, { $set: 
-                                       { "public": newVisibility }
-                                      });
-  console.log("Setting public to " + newVisibility );
-  
-  // TODO: get rid of the calls
-  
-  Meteor.call("setStudyVerified", currentStudy, newVerified, function () { console.log("Study set verified callback"); });
-  
-  Meteor.call("retitleStudy", currentStudy, newStudyTitle, function () {
-    console.log("Study retitled callback");
-  });
-
-  
-  Meteor.call("setStudyOwner", currentStudy, newStudyOwner, function () { console.log("Study set owner callback"); });
-  
-  Meteor.call("setStudyCredit", currentStudy, newStudyCredit, function () { console.log("Study set credit callback"); });
-  
-  Meteor.call("setStudyDescription", currentStudy, newStudyDescription, function () { console.log("Study set description callback"); });
+  if (Meteor.user().username === "admin") {
+    studySetBundle.owner = newStudyOwner;
+  } else if (study && !study.owner) {
+    // if study doesn't already have an owner, make it this person
+    studySetBundle.owner = Meteor.user().username;
+  }
   
   // save new tags to Tags database
+  var studyTagsArray = editStudyTags;
+  var studyTags = [];
+  for (var i = 0; i < studyTagsArray.length; i++) {
+    studyTags.push({ tag: studyTagsArray[i] });
+  }
+  studySetBundle.tags = studyTags;
   
-  // save tags to Study
-  Meteor.call("saveStudyTags", currentStudy, editStudyTags, function () {
-    console.log("Study tags saved");
-  });
-  
-  // height and width of first image
-  Meteor.call("updateFirstHeightWidth", currentStudy, firstImageHeight, firstImageWidth);
-    
   // save images to Study
-  Meteor.call("saveStudyImagesArray", currentStudy, editImageArray, function () {
-    console.log("Image array saved");
-  });
+  var newImageArray = editImageArray;
+  if (study) {
+    var oldImageArray = study.imageArray;
+    if (!oldImageArray) { oldImageArray = []; }
+    var organs = study.organs;
+
+    for (var k = 0; organs && k < organs.length; k++) {
+      // update the data array for each organ
+      var newDataArray = [];
+      var oldDataArray = organs[k].data;
+
+      for (var i = 0; i < newImageArray.length; i++) {
+        // find the old index of the image at i, move data at old index to i
+        var oldIndex = oldImageArray.indexOf(newImageArray[i]);
+        newDataArray.push(oldDataArray[oldIndex]);
+      }
+
+      // set the data array in database
+      var key = "organs." + k + ".data";
+      //var newData = {};
+      //newData[key] = newDataArray; // newData = { organs.k.data: newDataArray }
+      studySetBundle[key] = newDataArray;
+      // THE ISSUE COULD BE HERE
+      //Studies.update({ name: studyName }, { $set: newData });
+    }
+  }
+
+  // update the image array
+  studySetBundle.imageArray = newImageArray;
+
+  // update height and width, etc
+  studySetBundle.title = newStudyTitle; 
+  studySetBundle.credit = newStudyCredit;
+  studySetBundle.description = newStudyDescription;
+  studySetBundle.firstImageHeight = firstImageHeight;
+  studySetBundle.firstImageWidth = firstImageWidth;
+     
+  return studySetBundle;
 };
-
-//
-//var completeSaveOf = function (currentStudy, newStudyTitle, newStudyOwner, newStudyCredit, newStudyDescription) {
-//  Meteor.call("setStudyVisibility", currentStudy, $("#publishDropDown option:selected").val(), function () { console.log("Study visibility callback"); });
-//  
-//  Meteor.call("setStudyVerified", currentStudy, $("#verifiedCheckbox").prop("checked"), function () { console.log("Study set verified callback"); });
-//  
-//  Meteor.call("retitleStudy", currentStudy, newStudyTitle, function () {
-//    console.log("Study retitled callback");
-//  });
-//
-//  
-//  Meteor.call("setStudyOwner", currentStudy, newStudyOwner, function () { console.log("Study set owner callback"); });
-//  
-//  Meteor.call("setStudyCredit", currentStudy, newStudyCredit, function () { console.log("Study set credit callback"); });
-//  
-//  Meteor.call("setStudyDescription", currentStudy, newStudyDescription, function () { console.log("Study set description callback"); });
-//  
-//  // save new tags to Tags database
-//  
-//  // save tags to Study
-//  Meteor.call("saveStudyTags", currentStudy, editStudyTags, function () {
-//    console.log("Study tags saved");
-//  });
-//  
-//  // height and width of first image
-//  if (editImageArray && editImageArray.length > 0) {
-//    var firstImageFile = Images.findOne({ _id: editImageArray[0] });
-//    var firstImage = new Image();
-//    firstImage.onload = function () {
-//      continueCompleteSaveOf(currentStudy, this.height, this.width);
-//    }
-//    firstImage.src = firstImageFile.url();
-//  } else {
-//    continueCompleteSaveOf(currentStudy, 0, 0);
-//  }
-//}
-
-//var continueCompleteSaveOf = function (currentStudy, firstImageHeight, firstImageWidth) {
-//  Meteor.call("updateFirstHeightWidth", currentStudy, firstImageHeight, firstImageWidth);
-//    
-//  // save images to Study
-//  Meteor.call("saveStudyImagesArray", currentStudy, editImageArray, unsavedImages, toDeleteImages, function () {
-//    console.log("Image array saved");
-//  });
-//  
-//  Meteor.call("endSave", function (error, saveAborted) {
-//    if (saveAborted) {
-//      // delete images that have been added but are not in study.imageArray
-//      deleteUnsavedImages();
-//      // the images prepared for deletion will be deleted when the study is deleted
-//      toDeleteImages = [];
-//    } else {
-//      // delete images that have been deleted
-//      deleteImagesPreparedForDeletion();
-//      // clear unsaved images, they have now been saved
-//      unsavedImages = [];
-//    }
-//  });
-//  
-//  
-//  
-//  
-//};

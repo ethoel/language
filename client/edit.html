@@ -1,5 +1,5 @@
 <template name="edit">
-  <div id="studyEditPane">
+  <div id="studyEditPane" style="margin-left: 20px">
     
     <h3 class="study_title">Edit studies</h3>
     <span style="width: 100%; display: block; margin-bottom: 5px; text-align: center">{{> loginButtons}}</span>
@@ -27,7 +27,7 @@
           {{#each studies}}
           {{> studiesDropDownItem}}
           {{/each}}
-          <option value="Untitled" hidden disabled>New study</option>
+          <option value="Untitled" hidden>New study</option>
         </select>
         <button id="editStudy">Edit</button>
         <button id="cancelStudy" class="hiddenFirst">Cancel</button>

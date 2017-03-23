@@ -120,12 +120,12 @@ var loadFilmsRecursively = function () {
     i = i + 1;
     if (i < study.imageArray.length) {
       // if there are more films to load, wait, then do it again
-      setTimeout(loadNextFilms, 0);
+      Meteor.setTimeout(loadNextFilms, 0);
     }
   }
   
   // can use setTimeout to simulate lag in runtime
-  setTimeout(loadNextFilms, 0);
+  Meteor.setTimeout(loadNextFilms, 0);
 }
 
 
@@ -1315,9 +1315,10 @@ Template.layoutAdmin.events({
     Meteor.call("deleteDrawing",
                 studyName,
                 Session.get("currentOrgan"),
-                index
-               );
-    redraw();
+                index,
+                function () {
+                  redraw();
+                });
   },
   "click #saveOrganDescription": function (e) {
     if (!Session.get("currentOrgan")) {

@@ -3,6 +3,8 @@ var editImageArray = [];
 var editStudyTags = [];
 var unsavedImages = [];
 var toDeleteImages = [];
+var firstHeight = 0;
+var firstWidth = 0;
 
 var deleteUnsavedImages = function () {
   for (var i = 0; i < unsavedImages.length; i++) {
@@ -202,88 +204,60 @@ var saveAllFields = function () {
     return false;
   }
   
-  // height and width of first image
-  if (editImageArray && editImageArray.length > 0) {
-    var firstImageFile = Images.findOne({ _id: editImageArray[0] });
-    var firstImage = new Image();
-    firstImage.onload = function () {
-      finishSaveAll(newStudyName, newVisibility, newVerified,
-                newStudyTitle, newStudyOwner, 
-                newStudyCredit, newStudyDescription, 
-                editStudyTags, editImageArray, this.height, this.width);
-    }
-    firstImage.src = firstImageFile.url();
-  } else {
-    finishSaveAll(newStudyName, newVisibility, newVerified,
-                newStudyTitle, newStudyOwner, 
-                newStudyCredit, newStudyDescription, 
-                editStudyTags, editImageArray, 0, 0);
-  }
-  // should have attempted save, so should be a success
-  // unless there was an attempted insecurity
-  return true;
+  // attempt a save
+  finishSaveAll(newStudyName, newVisibility, newVerified,
+                        newStudyTitle, newStudyOwner, 
+                        newStudyCredit, newStudyDescription, 
+                        editStudyTags, editImageArray,
+                        firstHeight, firstWidth);
 };
 
 var finishSaveAll = function (newStudyName, newVisibility, newVerified,
-                newStudyTitle, newStudyOwner, 
-                newStudyCredit, newStudyDescription, 
-                editStudyTags, editImageArray, firstImageHeight, firstImageWidth) {
-    // save all fields
-  // if new study, create new study
+                              newStudyTitle, newStudyOwner, 
+                              newStudyCredit, newStudyDescription, 
+                              editStudyTags, editImageArray,
+                              firstImageHeight, firstImageWidth) {
+  // save all fields
   var currentStudy = Session.get("currentStudy");
   if (currentStudy === "Untitled") {
-    Meteor.call("bigCreateNewStudy", newStudyName, newVisibility, newVerified,
-                newStudyTitle, newStudyOwner, 
-                newStudyCredit, newStudyDescription, 
-                editStudyTags, editImageArray, firstImageHeight, firstImageWidth,
-                function (error, saveSuccessful) {
-      
-      if (saveSuccessful) {
-        // delete images that have been deleted
-        deleteImagesPreparedForDeletion();
-        // clear unsaved images, they have now been saved
-        unsavedImages = [];
-        console.log("Big study created callback");
-        
-        // TODO this is called too soon...
-        $("#studiesDropDown select").val(newStudyName);
-        Session.set("currentStudy", newStudyName);
-      } else {
-        // delete images that have been added but are not in study.imageArray
-        deleteUnsavedImages();
-        // the images prepared for deletion will be deleted when the study is deleted
-        toDeleteImages = [];
-      }
-      
-      
-    });
-  } else {
-    console.log("calling big rename");
-    Meteor.call("bigRenameStudy", currentStudy,
-                newStudyName, newVisibility, newVerified, newStudyTitle, 
-                newStudyOwner, newStudyCredit, 
-                newStudyDescription, editStudyTags, editImageArray, firstImageHeight, firstImageWidth,
-                function (error, saveSuccessful) {
-      
-      if (saveSuccessful) {
+    currentStudy = "";
+  }
 
-        console.log("saveSuccessful");
-        // delete images that have been deleted
-        deleteImagesPreparedForDeletion();
-        // clear unsaved images, they have now been saved
-        unsavedImages = [];
-        console.log("Big study renamed callback");
-        
-        // TODO this is called too soon...
-        $("#studiesDropDown select").val(newStudyName);
-        Session.set("currentStudy", newStudyName);
-      } else {
-        // delete images that have been added but are not in study.imageArray
-        deleteUnsavedImages();
-        // the images prepared for deletion will be deleted when the study is deleted
-        toDeleteImages = [];
-      }
-    });
+  Meteor.call("bigCreateRenameStudy", currentStudy, newStudyName,
+              newVisibility, newVerified,
+              newStudyTitle, newStudyOwner, 
+              newStudyCredit, newStudyDescription, 
+              editStudyTags, editImageArray, firstImageHeight,
+              firstImageWidth,
+              function (error, saveSuccessful) {
+    if (saveSuccessful) {
+      // delete images that have been deleted
+      deleteImagesPreparedForDeletion();
+      // clear unsaved images, they have now been saved
+      unsavedImages = [];
+      console.log("Big study created callback");
+      
+      finalizeSave(true, newStudyName);
+    } else {
+      // delete images that have been added but are not in study.imageArray
+      deleteUnsavedImages();
+      // the images prepared for deletion will be deleted
+      // when the study is deleted
+      toDeleteImages = [];
+      finalizeSave(false, currentStudy);
+    }
+  });
+}
+
+var finalizeSave = function (success, studyName) {
+if (success) {
+    setFieldsDisabled(true);
+    displayEditButton();
+    $("#studiesDropDown").val(studyName).change();
+  } else {
+    alert("Save aborted. Please cancel and try again");
+    //$("#studiesDropDown select").val(studyName);
+    //Session.set("currentStudy", studyName);
   }
 }
 
@@ -421,7 +395,22 @@ Template.edit.helpers({
     // makes this responsive
     var getImageURLs = Session.get("updateReactive");
     var imageURLs = [];
+
+    // calculate height and width of first image
+    if (editImageArray && editImageArray.length > 0) {
+      var firstImageFile = Images.findOne({ _id: editImageArray[0] });
+      var firstImage = new Image();
+      firstImage.onload = function () {
+        firstHeight = this.height;
+        firstWidth = this.width;
+      }
+      firstImage.src = firstImageFile.url();
+    } else {
+      firstHeight = 0;
+      firstWidth = 0;
+    }
     
+    // build image array
     for (var i = 0; editImageArray && i < editImageArray.length; i++) {
       var imageFile = Images.findOne({_id: editImageArray[i]});
       if (!imageFile) {
@@ -451,10 +440,7 @@ Template.edit.events({
     displayEditButton();
   },
   "click #saveStudy": function () {
-    if (saveAllFields()) {
-      setFieldsDisabled(true);
-      displayEditButton();
-    }
+    saveAllFields();
   },
   "change #allTagsDropDown": function () {
     if ($("#allTagsDropDown option:selected").val() === "Custom...") {
