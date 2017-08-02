@@ -276,7 +276,7 @@ Meteor.methods({
                                      newStudyOwner, newStudyCredit,
                                      newStudyDescription, editStudyTags,
                                      editImageArray, firstImageHeight,
-                                     firstImageWidth);
+                                     firstImageWidth, Meteor.user().username);
 
       // if new study, need to add a create date, and upsert with new name
       if (!studyName) {
@@ -471,9 +471,10 @@ var completeSaveOf = function (currentStudy, newVisibility,
                                newStudyOwner, newStudyCredit,
                                newStudyDescription, editStudyTags,
                                editImageArray,
-                               firstImageHeight, firstImageWidth) {
+                               firstImageHeight, firstImageWidth
+                               ) {
   
-  console.log("Setting a ton of stuff");
+  console.log("Setting a ton of stuff for " + Meteor.user().username);
 
   var studySetBundle = {};
   var study = Studies.findOne({ name: currentStudy });
@@ -483,7 +484,7 @@ var completeSaveOf = function (currentStudy, newVisibility,
       newVisibility === "private" || 
       newVisibility === "link only") {
     studySetBundle.public = newVisibility;
-  } else if (study && !study.public) {
+  } else if (!study || study && !study.public) {
     // not previously set
     studySetBundle.public = "public";
   }
@@ -495,7 +496,7 @@ var completeSaveOf = function (currentStudy, newVisibility,
 
   if (Meteor.user().username === "admin") {
     studySetBundle.owner = newStudyOwner;
-  } else if (study && !study.owner) {
+  } else if (!study || study && !study.owner) {
     // if study doesn't already have an owner, make it this person
     studySetBundle.owner = Meteor.user().username;
   }

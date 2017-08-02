@@ -248,11 +248,13 @@ var finishSaveAll = function (newStudyName, newVisibility, newVerified,
       
       finalizeSave(true, newStudyName);
     } else {
+      // you have to click "cancel" if save is unsuccessful
+      // TODO: what to do if user navigates away without saving? -- needs to cancel
       // delete images that have been added but are not in study.imageArray
-      deleteUnsavedImages();
+      //deleteUnsavedImages();
       // the images prepared for deletion will be deleted
       // when the study is deleted
-      toDeleteImages = [];
+      //toDeleteImages = [];
       finalizeSave(false, currentStudy);
     }
   });
