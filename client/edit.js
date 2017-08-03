@@ -306,6 +306,21 @@ Template.imageItem.helpers({
   }
 });
 
+Template.studyTag.helpers({
+  disabledTag: function () {
+    var addedStudyTag = Session.get("updateReactive");
+    var disabledTag;
+    if ($.type(addedStudyTag) === "string" && addedStudyTag.match(/^(added|removed) studyTag .*/)) {
+      console.log("study tag edited");
+      disabledTag = "";
+    } else {
+      console.log("study tag not edited");
+      disabledTag = "disabled";
+    }
+    return disabledTag;
+  }
+});
+
 Template.edit.helpers({
   studies: function () {
     // log in first
@@ -339,8 +354,8 @@ Template.edit.helpers({
   },
   allTags: function () {
     var addedStudyTag = Session.get("updateReactive");
-    var tags = ["Normal", "Abnormal", "Ultrasound"];
-    tags.push("Custom...");
+    var tags = ["Normal", "Abnormal", "Easy", "Medium", "Hard", "CT", "US", "XR", "MR"];
+    //tags.push("Custom...");
     return tags;
   },
   studyTags: function () {
@@ -349,6 +364,7 @@ Template.edit.helpers({
     return studyTags;
   },
   noStudyTags: function () {
+    var addedStudyTag = Session.get("updateReactive");
     if (editStudyTags && editStudyTags.length) {
       // there are study tags
       return "";
@@ -479,14 +495,14 @@ Template.edit.events({
     }
     if (studyTag && (jQuery.inArray(studyTag, editStudyTags) < 0)) {
       editStudyTags.push(studyTag);
-      Session.set("updateReactive", "added " + studyTag);
+      Session.set("updateReactive", "added studyTag " + studyTag);
     }
   },
    "click .studyTagButton": function (event) {
      // get value of clicked tag
      var studyTag = event.target.value;
      editStudyTags.splice(jQuery.inArray(studyTag, editStudyTags), 1);
-     Session.set("updateReactive", "removed " + studyTag);
+     Session.set("updateReactive", "removed studyTag " + studyTag);
   },
   "click .swapImage": function (event) {
     // convert value (index) to integer
