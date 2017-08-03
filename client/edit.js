@@ -77,11 +77,13 @@ var displayEditButton = function () {
 };
 
 var setFieldsDisabled = function (disabled) {
-  $(".studyEditField").attr("disabled", disabled);
+  // console.log("disabled = " + disabled);
+  $(".studyEditField").prop("disabled", disabled);
   if (Meteor.user().username !== "admin") {
     // the following fields are always disabled for non-admin
-    $("#verifiedCheckBox").attr("disabled", true);
-    $("#currentStudyOwner").attr("disabled", true);
+    // console.log("disable check box");
+    $("#verifiedCheckbox").prop("disabled", true);
+    $("#currentStudyOwner").prop("disabled", true);
   }
 };
 
