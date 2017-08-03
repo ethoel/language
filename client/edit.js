@@ -126,6 +126,8 @@ var loadNewImagesAt = function (e, index, number) {
             console.log(fileObj._id + " successfully added");
             unsavedImages.push(fileObj._id);
             Session.set("updateReactive", fileObj._id + "uploaded");
+            // enable the disabled image buttons
+            $(".imageButton").prop("disabled", false);
             Meteor.clearInterval(intervalHandle);
           }
         }, 200);
