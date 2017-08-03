@@ -482,13 +482,13 @@ Template.edit.events({
       Session.set("updateReactive", "added " + studyTag);
     }
   },
-   "click .studyTagButton": function () {
+   "click .studyTagButton": function (event) {
      // get value of clicked tag
      var studyTag = event.target.value;
      editStudyTags.splice(jQuery.inArray(studyTag, editStudyTags), 1);
      Session.set("updateReactive", "removed " + studyTag);
   },
-  "click .swapImage": function () {
+  "click .swapImage": function (event) {
     // convert value (index) to integer
     var index = event.target.value * 1;
     Session.set("updateReactive", swapImageWithNextImage(index));
