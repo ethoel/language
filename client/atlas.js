@@ -87,6 +87,8 @@ var initializePageVariables = function () {
   } else {
     study_length = 0;
   }
+
+  Session.set("studyEditingColor", "rgba(43,0,43,0.2)");
 };
 
 var loadFilmsRecursively = function () {
@@ -440,6 +442,8 @@ Meteor.startup(function () {
   Session.set("loadingText", "Loading study 0%");
   Session.setDefault("hoverOrgan", "Welcome to Catlas");
   Session.setDefault("studyDescription", CATLAS_INSTRUCTIONS);
+
+  Session.setDefault("studyEditingColor", "rgba(4,3,2,0.1)");
 });
 
 Template.atlas.onCreated(function () {
