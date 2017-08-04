@@ -1024,7 +1024,7 @@ Template.atlas.events({
     // i think it has something to do with iron router/meteor, will use to my advantage
     // for now and just reload the right pane
     Router.go(e.target.href);
-    document.location.reload(true);
+    //document.location.reload(true);
     return false;
   },
   "change .filterCheckbox": function (e) {
