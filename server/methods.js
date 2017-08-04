@@ -271,7 +271,7 @@ Meteor.methods({
     // only make changes if no duplicate and study name is valid 
     if (newStudyName.match(/^[a-z0-9]+$/) && !duplicate) {
       // get ready to update the database
-      var setBundle = completeSaveOf(newStudyName, newVisibility,
+      var setBundle = completeSaveOf(studyName, newStudyName, newVisibility,
                                      newVerified, newStudyTitle,
                                      newStudyOwner, newStudyCredit,
                                      newStudyDescription, editStudyTags,
@@ -466,7 +466,7 @@ Meteor.methods({
 //      data: [ { clickX, clickY, clickDrag }, { clickX, clickY, clickDrag } ] }
 //}
 
-var completeSaveOf = function (currentStudy, newVisibility,
+var completeSaveOf = function (currentStudy, newStudyName, newVisibility,
                                newVerified, newStudyTitle,
                                newStudyOwner, newStudyCredit,
                                newStudyDescription, editStudyTags,
@@ -478,6 +478,11 @@ var completeSaveOf = function (currentStudy, newVisibility,
 
   var studySetBundle = {};
   var study = Studies.findOne({ name: currentStudy });
+
+  // set new name
+  if (currentStudy !== newStudyName) {
+    studySetBundle.name = newStudyName;
+  }
 
   // set public, public is default
   if (newVisibility === "public"  ||
