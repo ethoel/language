@@ -77,7 +77,6 @@ var studyName = "";
 //var filmsLoaded = false;
 var lastY;
 
-
 var initializePageVariables = function () {
   studyName = Router.current().params.study;
   
@@ -88,7 +87,7 @@ var initializePageVariables = function () {
     study_length = 0;
   }
 
-  Session.set("studyEditingColor", "rgba(43,0,43,0.2)");
+  Session.set("currentEditingColor", "rgba(43,0,43,0.2)");
 };
 
 var loadFilmsRecursively = function () {
@@ -443,7 +442,7 @@ Meteor.startup(function () {
   Session.setDefault("hoverOrgan", "Welcome to Catlas");
   Session.setDefault("studyDescription", CATLAS_INSTRUCTIONS);
 
-  Session.setDefault("studyEditingColor", "rgba(4,3,2,0.1)");
+  Session.setDefault("currentEditingColor", "rgba(4,3,2,0.1)");
 });
 
 Template.atlas.onCreated(function () {
@@ -530,6 +529,25 @@ Template.atlas.onRendered(function () {
   
   // for safari 10 on iphone
   document.getElementById("canvas").addEventListener('touchforcechange', function (e) { e.preventDefault(); });
+
+
+
+  // listen for length changes to select element
+  $("#currentOrganDrop").bind("DOMNodeInserted",function(e){
+    console.log("changing the organ to " + Session.get("currentOrgan") + "by adding " + e.target.getAttribute("value"));
+    if (e.target.getAttribute("value") === Session.get("currentOrgan")) {
+      $("#currentOrganDrop").val(Session.get("currentOrgan")).change();
+    }
+  });
+
+  // listen for length changes to select element
+  $("#currentOrganDrop").bind("DOMNodeRemoved",function(e){
+    console.log("removing the organ " + Session.get("currentOrgan") + "by adding " + e.target.getAttribute("value"));
+    if (Session.get("currentOrgan") === "") {
+      $("#currentOrganDrop").val($("#currentOrganDrop option").eq(0).val()).change();
+    }
+  });
+
 });
 
 var setMenuWidth = function (menuWidth, percentOfWindowWidth) {
@@ -801,9 +819,15 @@ Tracker.autorun(function () {
     Tracker.nonreactive(function () {
       console.log("setting organ checked");
       $("#loneCheckBox").prop("checked", true);
+      $(".organCheckBox[value='" + current + "']").click();
       if (!$(".organCheckBox[value='" + current + "']").prop("checked")) {
         $(".organCheckBox[value='" + current + "']").click();
       }
+    });
+  } else {
+    Tracker.nonreactive(function () {
+      console.log("setting organ unchecked");
+      $("#loneCheckBox").prop("checked", false);
     });
   }
 });
@@ -884,6 +908,7 @@ Template.atlas.events({
     //console.log(e.target.checked);
     //console.log(e.target.getAttribute("value"));
     Session.set(e.target.getAttribute("value"), e.target.checked);
+
     
     // update the descriptors
     if (Session.get(e.target.getAttribute("value"))) {
@@ -1121,7 +1146,8 @@ Template.controlPanel.helpers({
   
 Template.layoutAdmin.events({
   "change #currentOrganDrop": function (e) {
-//    console.log($("#currentOrganDrop option:selected").val());
+    //console.log($("#currentOrganDrop").val());
+    // TODO this is happening before it can be added!
     Session.set("currentOrgan", $("#currentOrganDrop option:selected").val());
     //console.log(e);
 //    paint = true;
@@ -1199,14 +1225,30 @@ Template.layoutAdmin.events({
     }
   },
     "click .organCheckBox": function (e) {
+
+    if (!e.target.getAttribute("value")) {
+      return;
+    }
     // currently working on this TODO
     // this doesn't automagically work, have to click for
     // every one to add the field TODO TODO
     //console.log("checked");
     //console.log(e.target);
     //console.log(e.target.checked);
-    //console.log(e.target.getAttribute("value"));
     Session.set(e.target.getAttribute("value"), e.target.checked);
+
+    // update the lone check box
+    console.log("1 setting prop to " + e.target.checked);
+    console.log(e.target.getAttribute("value"));
+    console.log(Session.get("currentOrgan"));
+    var str1 = e.target.getAttribute("value");
+    var str2 = Session.get("currentOrgan");
+    console.log(str1 === str2);
+    if (str1 === str2) {
+      // current organ is clicked, change the lone checkbox
+      console.log("2 setting prop to " + e.target.checked);
+      $("#loneCheckBox").prop("checked", e.target.checked);
+    }
     
     // update the descriptors
     if (Session.get(e.target.getAttribute("value"))) {
@@ -1420,22 +1462,19 @@ Template.layoutAdmin.events({
     var newStructure = $("#currentOrgan").val();
     
     if (!newStructure || study_length < 1) {
+      console.log("Organ not added");
       return;
     }
     console.log("Added organ");
     
     
-    // TODO others other than "NORMAL"--though I don't think this code is active anymore
-    Meteor.call("addOrganToStudy", studyName, newStructure, study_length,
-               function () {
-      Session.set("currentOrgan", newStructure);
+    Session.set("currentOrgan", newStructure);
+    Meteor.call("addOrganToStudy", studyName, newStructure, study_length);
+    //TODO here I need "organs" helper to run first!!
+      //Session.set("currentOrgan", newStructure);
      // set the dropdown to new organ
-      $("#currentOrganDrop").val(Session.get("currentOrgan")).change();
-      
-                           }
-               );
-    // TODO get rid of jquery
-    // TODO above needs to become more than just a test button
+     //console.log("currentOrgan = " + Session.get("currentOrgan") + " vs " + newStructure);
+      //$("#currentOrganDrop").val(newStructure).change();
   },
   "click #renameCurrentOrgan": function (e) {
     var newStructureName = $("#renameStructureText").val();
@@ -1478,24 +1517,8 @@ Template.layoutAdmin.events({
     // TODO hoverOrgan does not update, but do not want to bother right now, drawings don't update, but they are gone gone gone
     
     
-    Meteor.call("deleteOrgan", studyName, Session.get("currentOrgan"),
-               function () {
-      // call back function
-      // if there are still options
-      if ($("#currentOrganDrop option").length > 0) {
-      // rename the organ pointer
-      Session.set("currentOrgan", $("#currentOrganDrop option").eq(0).val());
-     // set the dropdown to new organ
-      $("#currentOrganDrop").val(Session.get("currentOrgan")).change();
-      } else {
-        Session.set("currentOrgan", "");
-      }
-      
-                           }
-               );
-    
-    
-    
+    Meteor.call("deleteOrgan", studyName, Session.get("currentOrgan"));
+    Session.set("currentOrgan", "");
   },
   "click #permDeleteStudy": function (e) {
     if (study_length < 1) {
