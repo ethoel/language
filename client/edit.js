@@ -89,7 +89,7 @@ var setFieldsDisabled = function (disabled) {
 
 var clearAllFields = function () {
   $("#publishDropDown").val("Public");
-  $("#allTagsDropDown").val("Abnormal");
+  $("#allTagsDropDown").val("Case");
   $("#currentStudyOwner").val("");
   $("#currentStudyAddress").val("");
   $("#currentStudyTitle").val("");
@@ -354,7 +354,7 @@ Template.edit.helpers({
   },
   allTags: function () {
     var addedStudyTag = Session.get("updateReactive");
-    var tags = ["Normal", "Abnormal", "Easy", "Medium", "Hard", "CT", "US", "XR", "MR"];
+    var tags = ["Reference", "Case", "Easy", "Medium", "Hard", "CT", "US", "XR", "MR"];
     //tags.push("Custom...");
     return tags;
   },

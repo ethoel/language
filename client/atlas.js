@@ -638,7 +638,7 @@ Template.atlas.helpers({
     
     var finalAndFilter = [];
     
-    // only verified studies
+    // only verified studies -- TODO these are insecure lol
     finalAndFilter.push({ verified: true });
     
     // only public studies
@@ -651,17 +651,18 @@ Template.atlas.helpers({
     var normalFilter = [];
     if ($("#normalCheckbox").prop("checked") === undefined) {
       // default filter
-      normalFilter = [{ "tags.tag": "Normal" }, { "tags.tag": "Abnormal" }];
+      normalFilter = [{ "tags.tag": "Reference" }, { "tags.tag": "Case" }];
     } else {
     
 
       if ($("#normalCheckbox").prop("checked")) {
-        normalFilter.push({ "tags.tag": "Normal" });
+        normalFilter.push({ "tags.tag": "Reference" });
       } else {
         normalFilter.push({ "tags.tag": "" });
       }
+
       if ($("#abnormalCheckbox").prop("checked")) {
-        normalFilter.push({ "tags.tag": "Abnormal" });
+        normalFilter.push({ "tags.tag": "Case" });
       } else {
         normalFilter.push({ "tags.tag": "" });
       }
@@ -670,6 +671,38 @@ Template.atlas.helpers({
     
     // add the tags
     finalAndFilter.push(tagFilter);
+
+
+    var diffFilter = [];
+    if ($("#easyCheckbox").prop("checked") === undefined) {
+      // default filter
+      diffFilter = [{ "tags.tag": "Easy" }, { "tags.tag": "Medium" }, { "tags.tag": "Hard" }];
+    } else {
+    
+
+      if ($("#easyCheckbox").prop("checked")) {
+        diffFilter.push({ "tags.tag": "Easy" });
+      } else {
+        diffFilter.push({ "tags.tag": "" });
+      }
+
+      if ($("#mediumCheckbox").prop("checked")) {
+        diffFilter.push({ "tags.tag": "Medium" });
+      } else {
+        diffFilter.push({ "tags.tag": "" });
+      }
+
+      if ($("#hardCheckbox").prop("checked")) {
+        diffFilter.push({ "tags.tag": "Hard" });
+      } else {
+        diffFilter.push({ "tags.tag": "" });
+      }
+    }
+    var tagFilter = { $or : diffFilter };
+    
+    // add the tags
+    finalAndFilter.push(tagFilter);
+
     
     var filter = { $and: finalAndFilter };
     
