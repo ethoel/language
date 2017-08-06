@@ -16,17 +16,42 @@
       <div id="filterStudyList">
         <h3 id="catlasNavTitle" class="nav_title">Catlas</h3>
         <div id="adminDiv">
-          <a href="/edit" class="smallcatlaslink catlasLink">Contribute</a>
+          <!--<a href="/edit" class="smallcatlaslink catlasLink">Contribute</a>
+          -->
+          <span class="smallcatlaslink">Time spent with cats is never wasted</span>
         </div>
         
         <div id="filterDiv">
           <div class="filterCheckboxSetDiv">
             
+            <div class="checkboxSet">
+            <div class="filterCheckBoxDiv">
             <input type="checkbox" id="normalCheckbox" class="filterCheckbox" checked>
-            <label for="normalCheckbox">Normal</label>
+            <label for="normalCheckbox" class="smallFilterLabel">Normal</label>
+            </div>
 
+            <div class="filterCheckBoxDiv">
             <input type="checkbox" id="abnormalCheckbox" class="filterCheckbox" checked>
-            <label for="abnormalCheckbox">Abnormal</label>
+            <label for="abnormalCheckbox" class="smallFilterLabel">Abnormal</label>
+            </div>
+            </div>
+
+
+            <div class="checkboxSet">
+            <div class="filterCheckBoxDiv">
+            <input type="checkbox" id="easyCheckbox" class="filterCheckbox" checked>
+            <label for="easyCheckbox" class="smallFilterLabel">Easy</label>
+            </div>
+            <div class="filterCheckBoxDiv">
+            <input type="checkbox" id="mediumCheckbox" class="filterCheckbox" checked>
+            <label for="mediumCheckbox" class="smallFilterLabel">Medium</label>
+            </div>
+            <div class="filterCheckBoxDiv">
+            <input type="checkbox" id="hardCheckbox" class="filterCheckbox" checked>
+            <label for="hardCheckbox" class="smallFilterLabel">Hard</label>
+            </div>
+            </div>
+
             <a href="#" id="moreFilters">More filters...</a>
           </div>
         </div>
