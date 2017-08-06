@@ -434,11 +434,26 @@ a.menu-toggle {
 
 #study-description {
   color: #c7c7c7;
+  font-size: 0.8rem;
   padding-left: 2rem;
   padding-right: 2rem;
   padding-bottom: 100px;
   text-align: justify;
-    text-justify: inter-word;
+  text-justify: inter-word;
+}
+
+#actualStudyDescription::before {
+  content: "\200B";
+}
+
+#actualStudyDescription {
+  color: #c7c7c7;
+  font-size: 0.8rem;
+  padding-left: 2rem;
+  padding-right: 2rem;
+  padding-bottom: 0.5rem;
+  text-align: justify;
+  text-justify: inter-word;
 }
 
 #organs li {

@@ -440,7 +440,7 @@ Meteor.startup(function () {
   Session.set("tracker_goal", 0);
   Session.set("loadingText", "Loading study 0%");
   Session.setDefault("hoverOrgan", "Welcome to Catlas");
-  Session.setDefault("studyDescription", CATLAS_INSTRUCTIONS);
+  Session.setDefault("studyDescription", "");
 
   Session.setDefault("currentEditingColor", "rgba(4,3,2,0.1)");
 });
@@ -613,6 +613,14 @@ Template.atlas.helpers({
     var studyDescription = Session.get("studyDescription");
     if (studyDescription) {
       return studyDescription;
+    } else {
+      return "";
+    }
+  },
+  actualStudyDescription: function () {
+    var study = Studies.findOne({ name: studyName });
+    if (study) {
+      return study.description;
     } else {
       return "";
     }
