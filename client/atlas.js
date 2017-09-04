@@ -78,6 +78,7 @@ var studyName = "";
 var lastY;
 
 var initializePageVariables = function () {
+  index = 0;
   studyName = Router.current().params.study;
   
   var study = Studies.findOne({name: studyName});
