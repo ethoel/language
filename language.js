@@ -10,7 +10,7 @@ Router.route("/", function () {
 });
 
 Router.route("/atlas", function () {
-  this.redirect("/atlas/test4");
+  this.redirect("/atlas/abdomenaxial");
 });
 
 Router.route("/atlas/:study", function () {
