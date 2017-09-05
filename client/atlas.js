@@ -109,6 +109,7 @@ var loadFilmsRecursively = function () {
     //load the next set of films before freeing process for UI
     films.push(new Image());
     films[i].onload = function () {
+        $(".overlay").css("display", "none");
         redraw(); 
     };
     var imageFile = Images.findOne({_id: study.imageArray[i]});
@@ -452,6 +453,8 @@ Template.atlas.onCreated(function () {
 });
 
 Template.atlas.onRendered(function () {
+  $(".overlay").css("display", "block");
+
   redraw();
   
   loadFilmsRecursively();
