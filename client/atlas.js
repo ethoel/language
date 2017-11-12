@@ -257,7 +257,7 @@ var redraw = function () {
   context.globalAlpha = 1;
   context.clearRect(0, 0, context.canvas.width, context.canvas.height);
   
-  if (films && films[index]) {
+  if (films && index < films.length && films[index]) {
 
     context.drawImage(films[index], 0, 0);
 
@@ -925,12 +925,14 @@ Template.atlas.events({
   //    return true;
    // }
 
-    var slowScroll = 1000;
+    // doesn't slow the scroll at all
+    var slowScroll = 0;
  //   if (e.originalEvent.touches.length == 2) {
   //    slowScroll = 100;
    // } else {
     //  slowScroll = 100;
     //}
+    // doesn't prevent shit
     e.preventDefault();
     e.originalEvent.preventDefault();
     
