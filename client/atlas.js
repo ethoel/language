@@ -914,19 +914,22 @@ Template.atlas.events({
     //prevents default action
     return false;
   },
+  "touchstart #canvas": function (e) {
+    return false;
+  },
   "touchmove #canvas": function (e) {
     //e.preventDefault();
     // require more than two fingers
-    if (e.originalEvent.touches.length < 2) {
-      console.log("one finger touch");
-      return true;
-    }
+//    if (e.originalEvent.touches.length < 2) {
+ //     console.log("one finger touch");
+  //    return true;
+   // }
 
     var slowScroll;
     if (e.originalEvent.touches.length == 2) {
-      slowScroll = 0;
+      slowScroll = 20;
     } else {
-      slowScroll = 10;
+      slowScroll = 0;
     }
     
     console.log("TOUCHED");
