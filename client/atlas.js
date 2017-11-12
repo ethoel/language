@@ -925,12 +925,13 @@ Template.atlas.events({
   //    return true;
    // }
 
-    var slowScroll;
-    if (e.originalEvent.touches.length == 2) {
-      slowScroll = 100;
-    } else {
-      slowScroll = 100;
-    }
+    var slowScroll = 0;
+ //   if (e.originalEvent.touches.length == 2) {
+  //    slowScroll = 100;
+   // } else {
+    //  slowScroll = 100;
+    //}
+    e.originalEvent.preventDefault();
     
     console.log("TOUCHED");
     var currentY = e.originalEvent.touches[0].clientY;
