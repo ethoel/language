@@ -914,9 +914,9 @@ Template.atlas.events({
     //prevents default action
     return false;
   },
-  "touchstart #canvas": function (e) {
-    return false;
-  },
+//  "touchstart #canvas": function (e) {
+//    return false;
+//  },
   "touchmove #canvas": function (e) {
     //e.preventDefault();
     // require more than two fingers
@@ -927,9 +927,9 @@ Template.atlas.events({
 
     var slowScroll;
     if (e.originalEvent.touches.length == 2) {
-      slowScroll = 20;
+      slowScroll = 100;
     } else {
-      slowScroll = 0;
+      slowScroll = 100;
     }
     
     console.log("TOUCHED");
