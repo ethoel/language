@@ -916,10 +916,23 @@ Template.atlas.events({
   },
   "touchmove #canvas": function (e) {
     //e.preventDefault();
+    // require more than two fingers
+    if (e.originalEvent.touches.length < 2) {
+      console.log("one finger touch");
+      //return true;
+    }
+
+    var slowScroll;
+    if (e.originalEvent.touches.length == 2) {
+      slowScroll = 0;
+    } else {
+      slowScroll = 10;
+    }
+    
     console.log("TOUCHED");
     var currentY = e.originalEvent.touches[0].clientY;
     //if (!lastY) lastY = currentY;
-    if (currentY > lastY){
+    if (currentY > lastY && currentY > (lastY + slowScroll)){
          // moved down
       console.log('down');
       
@@ -930,7 +943,7 @@ Template.atlas.events({
         loadOrgan();
         redraw();
       }
-     } else if (currentY < lastY){
+     } else if (currentY < lastY && currentY < (lastY - slowScroll)){
          // moved up
        console.log("up");
        
