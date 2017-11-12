@@ -919,7 +919,7 @@ Template.atlas.events({
     // require more than two fingers
     if (e.originalEvent.touches.length < 2) {
       console.log("one finger touch");
-      //return true;
+      return true;
     }
 
     var slowScroll;
