@@ -1055,13 +1055,18 @@ Template.atlas.events({
   },
   "touchend #canvas, click #canvas": function (e) {
     // TODO this is way too convuluted man
-    
-    if (lastY) {
-      // was a touchmove event
-      slowScrolling = false;
-      slowScrollNumber = 0;
-      lastY = "";
+
+    if (e.originalEvent.touches.length > 0) {
+      // touchmove is still going
       return false;
+    } else {
+      if (lastY) {
+        // was a touchmove event
+        slowScrolling = false;
+        slowScrollNumber = 0;
+        lastY = "";
+        return false;
+      }
     }
     
     // console.log("CLICKED CANVAS");
