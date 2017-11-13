@@ -409,7 +409,7 @@ a.menu-toggle {
 
 .overlay{
 /*  display: none;*/
-    display: none;
+    display: block;
     opacity:1;
     background-color: black;
 /*  background-color: #1d1d1d;*/
@@ -420,6 +420,8 @@ a.menu-toggle {
     left:0;
     bottom:0;
     right:0;
+    padding: 0;
+    margin: 0;
     height:100%;
     width:100%;
     z-index:1000;
