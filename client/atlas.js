@@ -443,7 +443,7 @@ Meteor.startup(function () {
 //  Session.set("tracker_study_length", 0);
   Session.set("tracker_goal", 0);
   Session.set("loadingText", "Loading study 0%");
-  Session.setDefault("hoverOrgan", "Welcome to Catlas1");
+  Session.setDefault("hoverOrgan", "Welcome to Catlas2");
   Session.setDefault("studyDescription", "");
 
   Session.setDefault("currentEditingColor", "rgba(4,3,2,0.1)");
@@ -942,7 +942,7 @@ Template.atlas.events({
       console.log('down');
 
       // scroll down
-      if (!slowScrolling || slowScroll > 10) {
+      if (!slowScrolling || slowScroll > 100) {
         slowScroll = 0;
         if ((index + 1) < study_length) {
           
@@ -955,7 +955,7 @@ Template.atlas.events({
          // moved up
        console.log("up");
        
-      if (!slowScrolling || slowScroll > 10) {
+      if (!slowScrolling || slowScroll > 100) {
         slowScroll = 0;
         if ((index - 1) >= 0) {
           index = index - 1;
@@ -1109,7 +1109,7 @@ Template.atlas.events({
   },
   "click .help-button": function (e) {
     console.log("clicked help button");
-    Session.set("hoverOrgan", "Welcome to Catlas1");
+    Session.set("hoverOrgan", "Welcome to Catlas2");
     Session.set("studyDescription", CATLAS_INSTRUCTIONS);
     // do I need to clear currentOrgan TODO
     // prevent default action
