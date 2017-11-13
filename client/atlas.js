@@ -929,7 +929,7 @@ Template.atlas.events({
 
     // doesn't slow the scroll at all
     var slowScrolling = false;
-    if (e.originalEvent.touches.length > 2) {
+    if (e.originalEvent.touches.length > 1) {
       slowScrolling = true;
       slowScroll++;
     }    
@@ -942,7 +942,7 @@ Template.atlas.events({
       console.log('down');
 
       // scroll down
-      if (!slowScrolling || slowScroll > 100) {
+      if (!slowScrolling || slowScroll > 10) {
         slowScroll = 0;
         if ((index + 1) < study_length) {
           
@@ -955,7 +955,7 @@ Template.atlas.events({
          // moved up
        console.log("up");
        
-      if (!slowScrolling || slowScroll > 100) {
+      if (!slowScrolling || slowScroll > 10) {
         slowScroll = 0;
         if ((index - 1) >= 0) {
           index = index - 1;
