@@ -76,6 +76,7 @@ var study_length = 0;
 var studyName = "";
 //var filmsLoaded = false;
 var lastY;
+var slowScroll = 0;
 
 var initializePageVariables = function () {
   index = 0;
@@ -927,35 +928,40 @@ Template.atlas.events({
    // }
 
     // doesn't slow the scroll at all
-    var slowScroll = 0;
-    if (e.originalEvent.touches.length == 2) {
-      slowScroll = 20;
-    } else {
-      slowScroll = 00;
-    }
-    
+    var slowScrolling = false;
+    if (e.originalEvent.touches.length > 2) {
+      slowScrolling = true;
+      slowScroll++;
+    }    
+
     console.log("TOUCHED");
     var currentY = e.originalEvent.touches[0].clientY;
     //if (!lastY) lastY = currentY;
-    if (currentY > lastY && currentY > (lastY + slowScroll)){
+    if (currentY > lastY){
          // moved down
       console.log('down');
-      
+
       // scroll down
-      if ((index + 1) < study_length) {
-        
-        index = index + 1;
-        loadOrgan();
-        redraw();
+      if (!slowScrolling || slowScroll > 10) {
+        slowScroll = 0;
+        if ((index + 1) < study_length) {
+          
+          index = index + 1;
+          loadOrgan();
+          redraw();
+        }
       }
-     } else if (currentY < lastY && currentY < (lastY - slowScroll)){
+     } else if (currentY < lastY) {
          // moved up
        console.log("up");
        
-      if ((index - 1) >= 0) {
-        index = index - 1;
-        loadOrgan();
-        redraw();
+      if (!slowScrolling || slowScroll > 10) {
+        slowScroll = 0;
+        if ((index - 1) >= 0) {
+          index = index - 1;
+          loadOrgan();
+          redraw();
+        }
       }
      }
      lastY = currentY;
