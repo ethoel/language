@@ -462,6 +462,7 @@ Template.atlas.onRendered(function () {
   
   
   $("body").addClass("menu");
+  $('body').removeClass("menu-open");
   
   $("#savedFade").fadeOut(0);
   
