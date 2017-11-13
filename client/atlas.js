@@ -933,7 +933,6 @@ Template.atlas.events({
     // doesn't slow the scroll at all
     if (e.originalEvent.touches.length > 1) {
       slowScrolling = true;
-      slowScroll++;
       if (slowScrollNumber < 15) {
         slowScrollNumber = 15;
       }
@@ -949,6 +948,7 @@ Template.atlas.events({
     if (currentY > lastY){
          // moved down
       console.log('down');
+      slowScroll++;
 
       // scroll down
       if (!slowScrolling || slowScroll > slowScrollNumber) {
@@ -963,8 +963,9 @@ Template.atlas.events({
      } else if (currentY < lastY) {
          // moved up
        console.log("up");
+      slowScroll--;
        
-      if (!slowScrolling || slowScroll > slowScrollNumber) {
+      if (!slowScrolling || slowScroll < (slowScrollNumber*-1)) {
         slowScroll = 0;
         if ((index - 1) >= 0) {
           index = index - 1;
@@ -1056,8 +1057,9 @@ Template.atlas.events({
   "touchend #canvas, click #canvas": function (e) {
     // TODO this is way too convuluted man
 
-    if (e.originalEvent.touches.length > 0) {
+    if (lastY && e.originalEvent.touches.length > 0) {
       // touchmove is still going
+      console.log("still going");
       return false;
     } else {
       if (lastY) {
