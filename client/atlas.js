@@ -918,7 +918,7 @@ Template.atlas.events({
 //    return false;
 //  },
   "touchmove #canvas": function (e) {
-    e.stopImmediatePropagation();
+    //e.stopImmediatePropagation();
     //e.preventDefault();
     // require more than two fingers
 //    if (e.originalEvent.touches.length < 2) {
@@ -928,14 +928,11 @@ Template.atlas.events({
 
     // doesn't slow the scroll at all
     var slowScroll = 0;
- //   if (e.originalEvent.touches.length == 2) {
-  //    slowScroll = 100;
-   // } else {
-    //  slowScroll = 100;
-    //}
-    // doesn't prevent shit
-    //e.preventDefault();
-    //e.originalEvent.preventDefault();
+    if (e.originalEvent.touches.length == 2) {
+      slowScroll = 20;
+    } else {
+      slowScroll = 00;
+    }
     
     console.log("TOUCHED");
     var currentY = e.originalEvent.touches[0].clientY;
