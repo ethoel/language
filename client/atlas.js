@@ -918,6 +918,7 @@ Template.atlas.events({
 //    return false;
 //  },
   "touchmove #canvas": function (e) {
+    e.stopImmediatePropagation();
     //e.preventDefault();
     // require more than two fingers
 //    if (e.originalEvent.touches.length < 2) {
@@ -933,8 +934,8 @@ Template.atlas.events({
     //  slowScroll = 100;
     //}
     // doesn't prevent shit
-    e.preventDefault();
-    e.originalEvent.preventDefault();
+    //e.preventDefault();
+    //e.originalEvent.preventDefault();
     
     console.log("TOUCHED");
     var currentY = e.originalEvent.touches[0].clientY;
