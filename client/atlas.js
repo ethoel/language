@@ -78,6 +78,7 @@ var studyName = "";
 var lastY;
 var slowScroll = 0;
 var slowScrolling = false;
+var slowScrollNumber = 0;
 
 var initializePageVariables = function () {
   index = 0;
@@ -930,11 +931,12 @@ Template.atlas.events({
    // }
 
     // doesn't slow the scroll at all
-    var slowScrollNumber = 0;
     if (e.originalEvent.touches.length > 1) {
       slowScrolling = true;
       slowScroll++;
-      slowScrollNumber = 15;
+      if (slowScrollNumber < 15) {
+        slowScrollNumber = 15;
+      }
     }    
 
     if (e.originalEvent.touches.length > 2) {
@@ -1057,6 +1059,7 @@ Template.atlas.events({
     if (lastY) {
       // was a touchmove event
       slowScrolling = false;
+      slowScrollNumber = 0;
       lastY = "";
       return false;
     }
