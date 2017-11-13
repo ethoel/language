@@ -77,6 +77,7 @@ var studyName = "";
 //var filmsLoaded = false;
 var lastY;
 var slowScroll = 0;
+var slowScrolling = false;
 
 var initializePageVariables = function () {
   index = 0;
@@ -929,7 +930,6 @@ Template.atlas.events({
    // }
 
     // doesn't slow the scroll at all
-    var slowScrolling = false;
     var slowScrollNumber = 0;
     if (e.originalEvent.touches.length > 1) {
       slowScrolling = true;
@@ -938,7 +938,7 @@ Template.atlas.events({
     }    
 
     if (e.originalEvent.touches.length > 2) {
-      slowScrollNumber = 50;
+      slowScrollNumber = 30;
     }    
 
     console.log("TOUCHED");
@@ -1056,6 +1056,7 @@ Template.atlas.events({
     
     if (lastY) {
       // was a touchmove event
+      slowScrolling = false;
       lastY = "";
       return false;
     }
