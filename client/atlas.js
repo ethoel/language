@@ -892,6 +892,16 @@ Tracker.autorun(function () {
 });
 
 Template.atlas.events({
+  "click .question": function (e) {
+    var answer = $(e.currentTarget).next();
+    if (answer.css("display") === "block") {
+      //alert("clicked " + answer);
+      answer.css("display", "none");
+    } else {
+      //alert("clicked else " + answer.css("display"));
+      answer.css("display", "block");
+    }
+  },
   "wheel #canvas": function (e) { //touchmove?
     //var index = Session.get("index");
     //console.log(e);
