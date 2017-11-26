@@ -1067,7 +1067,7 @@ Template.atlas.events({
   "touchend #canvas, click #canvas": function (e) {
     // TODO this is way too convuluted man
 
-    if (lastY && e.originalEvent.touches.length > 0) {
+    if (lastY && e.originalEvent.touches && e.originalEvent.touches.length > 0) {
       // touchmove is still going
       console.log("still going");
       return false;
@@ -1243,6 +1243,16 @@ Template.controlPanel.helpers({
 });
   
 Template.layoutAdmin.events({
+  "click .question": function (e) {
+    var answer = $(e.currentTarget).next();
+    if (answer.css("display") === "block") {
+      //alert("clicked " + answer);
+      answer.css("display", "none");
+    } else {
+      //alert("clicked else " + answer.css("display"));
+      answer.css("display", "block");
+    }
+  },
   "change #currentOrganDrop": function (e) {
     //console.log($("#currentOrganDrop").val());
     // TODO this is happening before it can be added!
@@ -1255,17 +1265,49 @@ Template.layoutAdmin.events({
   "mousedown #canvas": function (e) {
     //console.log(e);
     paint = true;
-    addClick(e.pageX - e.target.offsetLeft, e.pageY - e.target.offsetTop, false);
+
+    //var rect = $("#canvas")[0].getBoundingClientRect();
+    var mous_x = e.pageX - e.target.offsetLeft;
+    var mous_y = e.pageY - e.target.offsetTop;
+    var max_mous_x = $("#canvas")[0].width - 1; 
+    var max_mous_y = $("#canvas")[0].height - 1; 
+
+    if (mous_x < 0) mous_x = 0;
+    if (mous_x > max_mous_x) mous_x = max_mous_x;
+    if (mous_y < 0) mous_y = 0;
+    if (mous_y > max_mous_y) mous_y = max_mous_y;
+
+    //console.log("xy1: " + rect.left + ", " + rect.top + rect.right + ", " + rect.bottom);
+    //console.log("xy2: " + ($("#canvas")[0].width) + ", " + ($("#canvas")[0].height));
+
+    //addClick(e.pageX - e.target.offsetLeft, e.pageY - e.target.offsetTop, false);
+    addClick(mous_x, mous_y, false);
+    e.currentTarget.setCapture(true);
     redraw();
   },
   "mousemove #canvas": function (e) {
     if (paint) {
       lastY = true; // prevent a click event
-      addClick(e.pageX - e.target.offsetLeft, e.pageY - e.target.offsetTop, true);
+
+      var mous_x = e.pageX - e.target.offsetLeft;
+      var mous_y = e.pageY - e.target.offsetTop;
+      var max_mous_x = $("#canvas")[0].width - 1; 
+      var max_mous_y = $("#canvas")[0].height - 1; 
+
+      if (mous_x < 0) mous_x = 0;
+      if (mous_x > max_mous_x) mous_x = max_mous_x;
+      if (mous_y < 0) mous_y = 0;
+      if (mous_y > max_mous_y) mous_y = max_mous_y;
+
+
+
+      //addClick(e.pageX - e.target.offsetLeft, e.pageY - e.target.offsetTop, true);
+      addClick(mous_x, mous_y, true);
       redraw();
     }
   },
   "mouseup #canvas": function(e) {
+    e.currentTarget.setCapture(false);
     paint = false;
   },
   "mouseleave #canvas": function (e) {
