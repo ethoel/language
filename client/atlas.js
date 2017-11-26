@@ -445,8 +445,8 @@ Meteor.startup(function () {
 //  Session.set("tracker_study_length", 0);
   Session.set("tracker_goal", 0);
   Session.set("loadingText", "Loading study 0%");
-  Session.setDefault("hoverOrgan", "Welcome to Catlas");
-  Session.setDefault("studyDescription", "");
+  Session.set("hoverOrgan", "");
+  Session.set("studyDescription", "");
 
   Session.setDefault("currentEditingColor", "rgba(4,3,2,0.1)");
 });
@@ -615,7 +615,12 @@ Template.atlas.helpers({
     if (hoverOrgan) {
       return hoverOrgan;
     } else {
-      return "";
+      var study = Studies.findOne({ name: studyName });
+      if (study) {
+        return study.credit;
+      } else {
+        return "";
+      }
     }
   },
   studyDescription: function () {
@@ -623,7 +628,12 @@ Template.atlas.helpers({
     if (studyDescription) {
       return studyDescription;
     } else {
-      return "";
+      var study = Studies.findOne({ name: studyName });
+      if (study) {
+        return study.description;
+      } else {
+        return "";
+      }
     }
   },
   actualStudyDescription: function () {
@@ -894,6 +904,8 @@ Tracker.autorun(function () {
 Template.atlas.events({
   "click .question": function (e) {
     var answer = $(e.currentTarget).next();
+    console.log("Curr Q " + $(e.currentTarget).text());
+    console.log("Answer class " + answer.attr("class") + ": " + answer.text());
     if (answer.css("display") === "block") {
       //alert("clicked " + answer);
       answer.css("display", "none");
@@ -1140,6 +1152,19 @@ Template.atlas.events({
     Session.set("hoverOrgan", "Welcome to Catlas");
     Session.set("studyDescription", CATLAS_INSTRUCTIONS);
     // do I need to clear currentOrgan TODO
+    // prevent default action
+    return false;
+  },
+  "click .showStudyDescription": function (e) {
+    console.log("clicked showStudyDescription");
+    var study = Studies.findOne({ name: studyName });
+    if (study) {
+      Session.set("hoverOrgan", study.credit);
+      Session.set("studyDescription", study.description);
+    } else {
+      Session.set("hoverOrgan", "");
+      Session.set("studyDescription", "");
+    }
     // prevent default action
     return false;
   },

@@ -19,6 +19,16 @@
   cursor: pointer;
 }
 
+.question {
+  font-style: italic;
+  text-decoration: underline;
+}
+
+.showStudyDescription:hover {
+  color: #f1f1f1;
+  cursor: pointer;
+}
+
 .structureEditingPane {
   max-width: 680px;
   min-width: 480px;
