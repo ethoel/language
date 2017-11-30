@@ -1334,9 +1334,11 @@ Template.layoutAdmin.events({
   "mouseup #canvas": function(e) {
     e.currentTarget.setCapture(false);
     paint = false;
+    console.log("mouseup paint = " + paint);
   },
   "mouseleave #canvas": function (e) {
     paint = false;
+    console.log("mouseleave paint = " + paint);
   },
   "change #colorpickerbutton": function (e) {
     console.log("colorpickerbutton changed " + e.target.value);
