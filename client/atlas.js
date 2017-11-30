@@ -1294,8 +1294,8 @@ Template.layoutAdmin.events({
     //var rect = $("#canvas")[0].getBoundingClientRect();
     var mous_x = e.pageX - e.target.offsetLeft;
     var mous_y = e.pageY - e.target.offsetTop;
-    var max_mous_x = $("#canvas")[0].width - 1; 
-    var max_mous_y = $("#canvas")[0].height - 1; 
+    var max_mous_x = $("#canvas")[0].width; 
+    var max_mous_y = $("#canvas")[0].height; 
 
     if (mous_x < 0) mous_x = 0;
     if (mous_x > max_mous_x) mous_x = max_mous_x;
@@ -1316,8 +1316,8 @@ Template.layoutAdmin.events({
 
       var mous_x = e.pageX - e.target.offsetLeft;
       var mous_y = e.pageY - e.target.offsetTop;
-      var max_mous_x = $("#canvas")[0].width - 1; 
-      var max_mous_y = $("#canvas")[0].height - 1; 
+      var max_mous_x = $("#canvas")[0].width; 
+      var max_mous_y = $("#canvas")[0].height; 
 
       if (mous_x < 0) mous_x = 0;
       if (mous_x > max_mous_x) mous_x = max_mous_x;
