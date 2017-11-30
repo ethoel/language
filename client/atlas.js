@@ -1307,7 +1307,7 @@ Template.layoutAdmin.events({
 
     //addClick(e.pageX - e.target.offsetLeft, e.pageY - e.target.offsetTop, false);
     addClick(mous_x, mous_y, false);
-    e.currentTarget.setCapture(true);
+    e.currentTarget.setCapture && e.currentTarget.setCapture(true);
     redraw();
   },
   "mousemove #canvas": function (e) {
@@ -1332,7 +1332,7 @@ Template.layoutAdmin.events({
     }
   },
   "mouseup #canvas": function(e) {
-    e.currentTarget.setCapture(false);
+    e.currentTarget.setCapture && e.currentTarget.setCapture(false);
     paint = false;
     console.log("mouseup paint = " + paint);
   },
