@@ -12,6 +12,7 @@
 
 .answer {
   display: none;
+  margin-top: 1em;
 }
 
 .question:hover {
