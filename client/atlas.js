@@ -735,14 +735,20 @@ Template.atlas.helpers({
     
     //console.log(filter);
     
-    var filteredStudies = Studies.find(filter);
-    if (filteredStudies.count() > 0) {
-      Session.set("filterStudyCount", filteredStudies.count());
+    var filteredStudies = Studies.find(filter).fetch();
+    if (filteredStudies.length > 0) {
+      Session.set("filterStudyCount", filteredStudies.length);
     } else {
       Session.set("filterStudyCount", 0);
       filteredStudies = [{ name: "", title: "No matching studies" }];
     }
-    return filteredStudies;
+    return filteredStudies.sort(function(a, b) {
+      if (a.title === "Introduction") {
+        return -1;
+      } else {
+        return a.title.localeCompare(b.title);
+      }
+    });
     
     //return ["banana"];
   },
