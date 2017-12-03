@@ -745,6 +745,8 @@ Template.atlas.helpers({
     return filteredStudies.sort(function(a, b) {
       if (a.title === "Introduction") {
         return -1;
+      } else if (b.title === "Introduction") {
+        return 1;
       } else {
         return a.title.localeCompare(b.title);
       }
