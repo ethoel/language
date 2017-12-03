@@ -13,6 +13,7 @@
 .answer {
   display: none;
   margin-top: 1em;
+  margin-bottom: 1em;
 }
 
 .question:hover {
