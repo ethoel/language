@@ -453,6 +453,8 @@ Meteor.startup(function () {
 
 Template.atlas.onCreated(function () {
   initializePageVariables();
+  Session.set("hoverOrgan", "");
+  Session.set("studyDescription", "");
 });
 
 Template.atlas.onRendered(function () {
@@ -959,6 +961,11 @@ Template.atlas.events({
  //     console.log("one finger touch");
   //    return true;
    // }
+
+
+    //make it all slow
+    slowScrolling = true;
+    slowScrollNumber = 5;
 
     // doesn't slow the scroll at all
     if (e.originalEvent.touches.length > 1) {
