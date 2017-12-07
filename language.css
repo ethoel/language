@@ -480,6 +480,7 @@ a.menu-toggle {
   white-space: nowrap;
 }
 
+/*
 ::-webkit-scrollbar {
   width: 5px;
 }
@@ -495,6 +496,7 @@ a.menu-toggle {
 ::-webkit-scrollbar-corner {
   background: rgba(0,0,0,0.0);
 }
+*/
 
 /*
 :hover::-webkit-scrollbar-thumb {
@@ -502,10 +504,9 @@ a.menu-toggle {
 }
 */
 
-/*
 ::-webkit-scrollbar {
-    width: 1px;
-    height: 1rem;
+    width: 4px;
+    height: 4px;
 }
 
 ::-webkit-scrollbar-track {
@@ -529,7 +530,6 @@ a.menu-toggle {
   background-color: #0d0d0d;
 
 }
-*/
 
 #canvas-container {
 /*  width: 100%;*/
