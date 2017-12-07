@@ -481,7 +481,7 @@ a.menu-toggle {
 }
 
 ::-webkit-scrollbar {
-    width: 1rem;
+    width: 1px;
     height: 1rem;
 }
 
