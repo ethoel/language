@@ -816,7 +816,7 @@ Tracker.autorun(function() {
 
         console.log("Filter Updated! Count = " + count);
         // if flexbox exsited, wouldnt have to do this
-        var maxHeight = $(window).height() / 10 * 4; // max height is 40%
+        var maxHeight = $("#menu-side-id").height() / 10 * 4; // max height is 40%
         //var maxHeight = $("#filterStudyList").outerHeight(); // max height is 40%
         var filterStudyListHeight = $(".studyListItem").outerHeight() * count;
         filterStudyListHeight += $("#catlasNavTitle").outerHeight();
