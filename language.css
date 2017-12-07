@@ -484,9 +484,23 @@ a.menu-toggle {
   width: 5px;
 }
 
+::-webkit-scrollbar-track {
+  background: rgba(0,0,0,0.0);
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(0,0,0,0.5);
+}
+
+::-webkit-scrollbar-corner {
+  background: rgba(0,0,0,0.0);
+}
+
+/*
 :hover::-webkit-scrollbar-thumb {
   background: rgba(0,0,0,0.5);
 }
+*/
 
 /*
 ::-webkit-scrollbar {
