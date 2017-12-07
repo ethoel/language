@@ -214,7 +214,7 @@ var redraw = function () {
   // need to take into account height of other elements
   maxHeight = maxHeight - document.getElementById("study_title_id").offsetHeight;
   maxHeight = maxHeight - document.getElementById("organ_title_id").offsetHeight;
-  maxHeight = maxHeight - 100; // pixel padding at bottom of #study-description
+  maxHeight = maxHeight;// - 100; // pixel padding at bottom of #study-description
   // and when descriptions are added TODO
   //maxHeight = maxHeight - document.getElementById("description_id").offsetHeight;
   
